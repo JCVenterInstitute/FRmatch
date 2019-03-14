@@ -1,0 +1,15 @@
+Package: FRmatch
+Title: Matching single-cell RNA-seq data clusters using Friedman-Rafsky (FR) statistical test
+Version: 0.0.0.0009
+Authors@R: c(person("Yun", "Zhang", email = "zhangy@jcvi.org", role = c("aut", "cre")), person("Richard", "Scheuermann", email = "RScheuermann@jcvi.org", role = c("aut")), person("Brian", "Aevermann", email = "baeverma@jcvi.org", role = c("ctb")))
+Description: FR-match is a novel cell cluster mapping algorithm for single-cell RNA-seq (scRNA-seq) data. It is based on a statistical test called Friedman-Rafsky (FR) test, which is a multivariate generalization of nonparametric two-sample test. FR-match performs cluster-to-cluster matching for two scRNA-seq experiments. It utilizes gene expression data, cluster membership information, and marker genes found by the "NS-Forest" algorithm to cross-compare the cell type clusters found in two scRNA-seq experiments, namely query and reference. This pakcage also provides graphical tools for the implemented method.
+Depends: R (>= 3.5.0), shiny (>= 1.2.0)
+Imports: lsa (>= 0.73.1), igraph (>= 1.2.2), ade4 (>= 1.7), SingleCellExperiment (>= 1.4.1), pheatmap (>= 1.0.10), dplyr (>= 0.7.8)
+Suggests: 
+    knitr,
+    rmarkdown
+License: MIT
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+VignetteBuilder: knitr
