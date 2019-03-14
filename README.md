@@ -3,7 +3,7 @@
 ## Getting Started
 
 Install FRmatch:
-```R
+```
 install.packages("devtools")
 devtools::install_github("JCVenterInstitute/FRmatch")
 ```
