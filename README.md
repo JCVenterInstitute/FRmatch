@@ -3,13 +3,13 @@
 ## Getting Started
 
 Install FRmatch:
-```
+```R
 install.packages("devtools")
 devtools::install_github("JCVenterInstitute/FRmatch")
 ```
 
 Launch Shiny App for a demo:
-```
+```R
 library(FRmatch)
 runShiny()
 ```
