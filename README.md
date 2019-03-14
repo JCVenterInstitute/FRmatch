@@ -27,9 +27,9 @@ Recently, the emergence of single cell RNA sequencing (scRNA-seq) is providing l
 
 Our method, FRmatch, is a novel application of the Friedman-Rafsky (FR) test, a non-parametric statistical test for multivariate data comparison in the context of single cell clustering results. We tailor the classical testing procedure for scRNA-seq experiment data under the null hypothesis that there is no distributional difference in the two comparing clusters (i.e. a match) and the alternative hypothesis that the distributions of the two comparing clusters are different (i.e. a non-match) in the high-dimensional data space defined by selected gene features. Our procedure takes clustered gene expression matrices of query and reference experiments, and returns the FR statistic with p-value as evidence that the pair of comparing cell clusters is matched or not. 
 
-![](vignettes/FRmatch-scheme.png){width=100%}
+![](vignettes/FRmatch-scheme.png)
 
-For more details, please see vignette and help pages.
+For more details, please see vignette and help pages. Manuscript in preparation.
 
 ## Versioning
 
