@@ -1,5 +1,5 @@
 
-#' Imputation for dropouts
+#' Imputation for zero expression of marker genes within cluster
 #'
 #' Impute the reference dataset only. Do NOT impute the query dataset. See 'Details' for imputation scheme.
 #'
@@ -18,19 +18,18 @@
 #'
 #' @seealso The \link[SingleCellExperiment]{SingleCellExperiment} class.
 #'
-#' @author Yun Zhang, \email{zhangy@jcvi.org}; Brian Aevermann, \email{baeverma@jcvi.org}; Richard Scheuermann, \email{RScheuermann@jcvi.org}.
 #'
 #' @examples
 #' \dontrun{
 #' data("sce.example")
-#' check_dropout(sce.example, plot.dropout=TRUE, main="Dropout rate before imputation")
-#' sce.example.imputed <- impute_dropout(sce.example)
-#' check_dropout(sce.example.imputed, plot.dropout=TRUE, main="Dropout rete after imputation")
+#' plot_nonzero(sce.example)
+#' sce.example.imputed <- impute.zero(sce.example)
+#' plot_nonzero(sce.example.imputed)
 #' }
 #' @export
 
 
-impute_dropout <- function(sce.object){
+impute.zero <- function(sce.object){
   dat <- logcounts(sce.object)
   cluster_membership <- colData(sce.object)$cluster_membership
   cluster_marker_info <- metadata(sce.object)$cluster_marker_info
@@ -52,7 +51,7 @@ impute_dropout <- function(sce.object){
   my.impute <- function(zz){
     ind.zero <- zz==0
     if(sum(ind.zero)>0){
-      zz[ind.zero] <- rnorm(sum(ind.zero), mean(zz[!ind.zero]), ifelse(is.na(sd(zz[!ind.zero])), 0, sd(zz[!ind.zero])))
+      zz[ind.zero] <- pmax(0,rnorm(sum(ind.zero), mean(zz[!ind.zero]), ifelse(is.na(sd(zz[!ind.zero])), 0, sd(zz[!ind.zero]))))
     }
     else zz
     return(zz)

@@ -1,4 +1,5 @@
 library(shiny)
+library(plotly)
 library(FRmatch)
 library(dplyr)
 library(tibble)
@@ -44,9 +45,19 @@ ui <- fluidPage(
                   choices = c("Layer1", "Layer1-topNodes")),
       selectInput("refdata", "Choose a reference dataset:",
                   choices = c("Layer1", "Layer1-topNodes")),
+      # Input: Checkbox if to impute reference ----
+      checkboxInput("imputation", "Imputation", FALSE),
+      ## Include clarifying text ----
+      helpText(p("Note: by checking the Imputation box,",
+               "FRmatch will impute the dropout values for each marker gene",
+               em("only"), "in the cluster that it marks and",
+               em("only"), "in the reference dataset.")),
+
+      # Horizontal line ----
+      tags$hr(),
 
       ## Input: Specify random seed ----
-      numericInput("seed", "Please set a random seed:", 999),
+      numericInput("seed", "Please set a random seed:", 100),
 
       ## Input: Specify spliting fraction ----
       sliderInput("splitFrac", "Data subsampling fraction:",
@@ -55,6 +66,9 @@ ui <- fluidPage(
       helpText("Note: the above fraction of cells will be selected",
                "in proportion to the cluster sizes from the reference dataset,",
                "and the rest of the cells will be selected from the query dataset."),
+
+      # Horizontal line ----
+      tags$hr(),
 
       ## Input: actionButton() to defer the rendering of output ----
       actionButton("updateButton", "Run FRmatch",
@@ -78,7 +92,8 @@ ui <- fluidPage(
                  tableOutput("tableRef")),
         tabPanel("Dropouts",
                  h4("Check dropouts in the reference data"),
-                 plotOutput("dropouts", height="600px")),
+                 checkboxInput("afterImputation", "Show after imputation", FALSE),
+                 plotOutput("dropouts", height="auto")),
         tabPanel("Results",
                  h4("Recommended matches"),
                  plotOutput("matches"),
@@ -95,9 +110,9 @@ ui <- fluidPage(
                  h4("Minimum spanning tree"),
                  uiOutput("querySelection"),
                  uiOutput("refSelection"),
-                 helpText("Please ignore the error message and",
-                          "choose one or more reference cluster(s)."),
-                 uiOutput("plotMST"))
+                 plotOutput("temp")
+                 # uiOutput("plotMST")
+                 )
 
       ) #close tabsetPanel
 
@@ -131,16 +146,18 @@ server <- function(input, output, session) {
   newData <- eventReactive(input$updateButton, {
     myfun.datasplit(queryInput(), refInput(), seed=input$seed, frac.ref=input$splitFrac)
   }, ignoreNULL = FALSE)
+  ## subsampled reference data
   newDataRef <- eventReactive(input$updateButton, {
     newData()$newsce.ref
   }, ignoreNULL = FALSE)
+  ## subsampled query data
   newDataQuery <- eventReactive(input$updateButton, {
     newData()$newsce.query
   }, ignoreNULL = FALSE)
 
   ## run FRmatch
   results <- eventReactive(input$updateButton, {
-    FRmatch(newDataQuery(), newDataRef())
+    FRmatch(newDataQuery(), newDataRef(), imputation=input$imputation)
   }, ignoreNULL = FALSE)
 
   ##------ tab: Data Subsampling ------##
@@ -173,7 +190,13 @@ server <- function(input, output, session) {
 
   ## dropout plot
   output$dropouts <- renderPlot({
-    check_dropout(newDataRef(), return.value=TRUE, plot.dropout=TRUE)
+    if(input$afterImputation){
+      newDataRefImputation <- impute_dropout(newDataRef())
+      check_dropout(newDataRefImputation, return.value=FALSE, plot.dropout=TRUE)
+    }
+    else check_dropout(newDataRef(), return.value=FALSE, plot.dropout=TRUE)
+  }, height = function() {
+    session$clientData$output_dropouts_width
   })
 
   ##------ tab: Results ------##
@@ -201,26 +224,48 @@ server <- function(input, output, session) {
     selectInput("refCluster", "Select reference cluster:", choices = newDataRef()@metadata$cluster_order,
                 multiple = TRUE)
   })
-  output$MST <- renderPlot({
+  ## This is the function to break the whole data into different blocks for each plot
+  plotInput <- reactive({
     markergenes <- newDataRef()@metadata$cluster_marker_info$markerGene
     query.cluster <- input$queryCluster
     ind.query <- which(colData(newDataQuery())$cluster_membership==query.cluster)
     samp.query <- unname(logcounts(newDataQuery())[markergenes, ind.query])
-    par(mfrow=c(ceiling(length(input$refCluster)/2),2))
-    for(ref.cluster in input$refCluster){
-      ind.ref <- which(colData(newDataRef())$cluster_membership==ref.cluster)
-      samp.ref <- unname(logcounts(newDataRef())[markergenes, ind.ref])
-      # samp.ref
-      FR.test(samp.query[,1:ncol(samp.query)], samp.ref[,1:ncol(samp.ref)],
-              plot.MST=TRUE, label.names = c("Query", "Reference"),
-              main=ref.cluster)
-    }
+    return(list("markergenes"=markergenes, "samp.query"=samp.query))
   })
-  # plotHeight <- reactive(350 * ceiling(length(input$refCluster)/2))
-  output$plotMST <- renderUI({
-    plotOutput("MST", height = 300*ceiling(length(input$refCluster)/2))
+  ## plots
+  # output$plotMST <- renderUI({
+  #   plot_output_list <- lapply(1:length(input$refCluster), function(i) {
+  #     plotname <- paste("plot", i, sep="")
+  #     plotOutput(plotname, width="400px", height="400px")
+  #   })
+  #   do.call(tagList, plot_output_list)
+  # })
+  # observe({
+  #   lapply(1:length(input$refCluster), function(i){
+  #     output[[paste("plot", i, sep="") ]] <- renderPlot({
+  #       markergenes <- plotInput()$markergenes
+  #       samp.query <- plotInput()$samp.query
+  #       ref.cluster <- input$refCluster[i]
+  #       ind.ref <- which(colData(newDataRef())$cluster_membership==ref.cluster)
+  #       samp.ref <- unname(logcounts(newDataRef())[markergenes, ind.ref])
+  #       # FR.test(samp.query[,1:ncol(samp.query)], samp.ref[,1:ncol(samp.ref)],
+  #       #         plot.MST=TRUE, label.names = c("Query", "Reference"),
+  #       #         main=ref.cluster)
+  #       plot(samp.ref[,1], samp.query[,1])
+  #     })
+  #   })
+  # })
+  output$temp <- renderPlot({
+    ref.cluster <- input$refCluster[1]
+    markergenes <- plotInput()$markergenes
+    samp.query <- plotInput()$samp.query
+          ind.ref <- which(colData(newDataRef())$cluster_membership==ref.cluster)
+          samp.ref <- unname(logcounts(newDataRef())[markergenes, ind.ref])
+          plot(samp.ref[,1], samp.query[,1])
+          # FR.test(samp.query[,1:ncol(samp.query)], samp.ref[,1:ncol(samp.ref)],
+          #         plot.MST=TRUE, label.names = c("Query", "Reference"),
+          #         main=ref.cluster)
   })
-
 }
 
 

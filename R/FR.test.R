@@ -46,7 +46,7 @@ FR.test <- function(samp1, samp2,
                     ## two options: 1. cosine distance, 2. use binary values
                     use.cosine=FALSE, binary=FALSE, binary.cutoff=2,
                     ## plot minimum spanning tree
-                    plot.MST=FALSE, col=c("#E69F00", "#56B4E9"), label.names=c("Sample 1","Sample 2"), ...)
+                    plot.MST=FALSE, col=c("#F0E442", "#56B4E9"), label.names=c("Sample 1","Sample 2"), ...)
 {
   ## data input matrices: rows = multivariate dimensions, columns = samples
   xx <- as.matrix(samp1)
@@ -70,7 +70,7 @@ FR.test <- function(samp1, samp2,
   ##--- OPTION 1: CONSINE DISTANCE ---##
   if(use.cosine){
     cosmat <- lsa::cosine(dat)
-    cosmat[is.na(cosmat)] <- -1 #if one point is at the origin, set the smallest cosine value
+    cosmat[is.na(cosmat)] <- -1 #if one point is at the origin, set the -1,0,1??? cosine value
     distobj <- as.dist(1-cosmat) #large cosine, small distance; and vise versa
   }
   ##---##

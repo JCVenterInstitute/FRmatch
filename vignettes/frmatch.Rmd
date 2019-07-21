@@ -134,7 +134,7 @@ We alos provide a supporting function that calculates and plots the per-cluster 
 The NS-Forest algorithm is designed to select the minimum set of *binary* genes for each cluster, which has the "best" classfication score (measured by F-measure) differentiating the cluster from all other clusters pooling toghther. The *binaryness* is desirable because it is pragmatically important for many downstream use cases of marker genes. Therefore, we are looking for few dropouts of the marker genes in the cluster that they mark, which can be checked using
 
 ```{r, dropout, fig.height=8, fig.width=7}
-check_dropout(sce.example, return.value=FALSE, plot.dropout=TRUE, main="Dropout rate plot")
+check_dropout(sce.example, return.value=FALSE, plot.dropout=TRUE)
 ```
 
 ## Friedman-Rafsky test

@@ -4,8 +4,10 @@
 \alias{FRmatch}
 \title{Cross-comparison of two single-cell RNA-seq experiments using Friedman-Rafsky test}
 \usage{
-FRmatch(sce.query, sce.ref, method = "none", imputation = FALSE,
-  numCores = NULL, return.all = FALSE, ...)
+FRmatch(sce.query, sce.ref, imputation = FALSE, filter.size = 20,
+  filter.fscore = NULL, method = "subsampling", subsamp.size = 20,
+  subsamp.iter = 1001, subsamp.seed = 1, numCores = NULL,
+  return.all = FALSE, ...)
 }
 \arguments{
 \item{sce.query}{Query experiment object of \code{SingleCellExperiment} class with necessary information.
@@ -14,10 +16,17 @@ See details in \code{\link[FRmatch]{sce.example}}.}
 \item{sce.ref}{Reference experiment object of \code{SingleCellExperiment} class with necessary information.
 See details in \code{\link[FRmatch]{sce.example}}.}
 
-\item{method}{RIGHT NOW ONLY IMPLEMENTED THE STANDARD FR TEST.}
-
 \item{imputation}{Logical variable indicating if to impute dropout values in the reference experiment. Default: \code{FALSE}.
 See details in \code{\link[FRmatch]{impute_dropout}}.}
+
+\item{filter.size, filter.fscore}{Criteria for filtering clusters. Default: \code{filter.size=20}, which filters out clusters with
+less than 20 cells per cluster; \code{filter.fscore=NULL}, which means that filtering by f-measure is not applied by default.
+If \code{filter.fscore} is set to some numeric value, then clusters with lower f-measures are filtered.}
+
+\item{method}{TO BE COMPLETED!!! Default: \code{"subsampling"}.}
+
+\item{subsamp.size, subsamp.iter, subsamp.seed}{Cluster size, number of iterations, and random seed for subsampling.
+Default: 20, 1001, 1, respectively.}
 
 \item{numCores}{\code{NULL} or an integer that specifies the number of cores to be used in parallel computing.
 Default: \code{NULL}, which sets \code{numCores = detectCores()}. See more in \code{\link[parallel]{detectCores}}.}
@@ -29,8 +38,8 @@ Default: \code{FALSE}.}
 }
 \value{
 A list of FR test results:
-\item{statmat}{A matrix of all FR statistics for pairwise comparison. Rows are reference clusters, and columns are query clusters.}
 \item{pmat}{A matrix of all p-values for pairwise comparison. Rows are reference clusters, and columns are query clusters.}
+\item{statmat}{A matrix of all FR statistics for pairwise comparison. Rows are reference clusters, and columns are query clusters.}
 If \code{return.all = TRUE}, more results are returned in \code{all.restuls} element of the list.
 }
 \description{
@@ -39,9 +48,17 @@ with cluster information and NS-Forest marker genes using Friedman-Rafsky (FR) t
 This function inputs two objects of \link[SingleCellExperiment]{SingleCellExperiment} class with necessary information,
 and returns FR statistics (a.k.a. scores) and p-values of the FR test.
 }
+\examples{
+\dontrun{
+data("sce.example")
+FRmatch(sce.example, sce.example)
+}
+}
 \seealso{
 The \link[SingleCellExperiment]{SingleCellExperiment} class.
 }
 \author{
-Yun Zhang, \email{zhangy@jcvi.org}; Brian Aevermann, \email{baeverma@jcvi.org}; Richard Scheuermann, \email{RScheuermann@jcvi.org}.
+Yun Zhang, \email{zhangy@jcvi.org};
+Brian Aevermann, \email{baeverma@jcvi.org};
+Richard Scheuermann, \email{RScheuermann@jcvi.org}.
 }

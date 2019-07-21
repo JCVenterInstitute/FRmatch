@@ -2,26 +2,41 @@
 % Please edit documentation in R/plot_FRmatch.R
 \name{plot_FRmatch}
 \alias{plot_FRmatch}
-\title{Plotting function for FRmatch results}
+\title{Visulization of FRmatch result}
 \usage{
-plot_FRmatch(rst.FRmatch, type = "matches", sig.level = 0.05,
-  cellwidth = 10, cellheight = 10, ...)
+plot_FRmatch(rst.FRmatch, type = "matches", p.adj.method = "BY",
+  sig.level = 0.05, reorder = TRUE, return.value = FALSE,
+  cellwidth = 10, cellheight = 10, main = NULL, filename = NA, ...)
 }
 \arguments{
-\item{rst.FRmatch}{The output retults from the \code{\link[FRmath]{FRmatch}} function.}
+\item{rst.FRmatch}{The result object outputed from the \code{\link[FRmath]{FRmatch}} function.}
 
 \item{type}{Character variable that specifies which element from the output list to be ploted.
-Default: \code{"matches"}, which returns the recommended matches found by FRmatch p-values thresholded at \code{sig.level}.
-Other options: \code{"pmat", "statmat"}.}
+Default: \code{"matches"}, which returns the recommended matches identified by FRmatch using \code{p.adj.method}
+and \code{sig.level}. Other options: \code{"pmat", "statmat"}.}
 
-\item{sig.level}{Numeric variable that sets the significance level for FRmatch p-values, above which is a match.
+\item{p.adj.method}{P-value adjustment method for multiple comparison correction. Default: \code{"BY"}.
+Please see \code{\link[stats]{p.adjust.methods}}.}
+
+\item{sig.level}{Numeric variable that sets the significance level for the adjusted p-values, above which is a match.
 Default value: \code{0.05}.}
 
-\item{cellwidth, cellheight, ...}{Additional plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.}
+\item{reorder}{Logical variable indicating if to reorder the columns of heatmap for better interpretability
+(aligning matches in the diagonal). This parameter only applies to \code{type="matches"}, default: \code{TRUE}.}
+
+\item{return.value}{Logical variable indicating if to return the values correponding to the "matches" plot.
+This parameter only applies to \code{type="matches"}, default: \code{FALSE}.}
+
+\item{cellwidth, cellheight, main, ...}{Additional plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.}
+}
+\value{
+Optionally, a numeric matrix corresponding to the values on the plot.
 }
 \description{
-This function facilitates visualization of \code{FRmatch} results.
+This function plots results outputed from the \code{\link[FRmath]{FRmatch}} function. By default (\code{type="matches"}),
+it returns the recomended matches determined by adjusted p-values using \code{p.adj.method} on FRmatch p-values at the
+significant level of \code{sig.level}.
 }
 \seealso{
-\link[pheatmap]{pheatmap}.
+\link[FRmatch]{FRmatch}.
 }

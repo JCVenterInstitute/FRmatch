@@ -21,7 +21,6 @@
 #' \item{colData}{One column \code{cluster_membership}, which is a character vector of cluster membership of each cell.}
 #' }
 #'
-#' @source
 #' @seealso The \link[SingleCellExperiment]{SingleCellExperiment} class.
 
 "sce.example"

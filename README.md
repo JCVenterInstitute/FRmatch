@@ -49,7 +49,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Allen Institute of Brain Science
+* Allen Institute for Brain Science
 * Chan Zuckerberg Initiative 
 
 

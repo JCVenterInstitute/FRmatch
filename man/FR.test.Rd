@@ -5,7 +5,7 @@
 \title{Friedman-Rafsky (FR) test}
 \usage{
 FR.test(samp1, samp2, use.cosine = FALSE, binary = FALSE,
-  binary.cutoff = 2, plot.MST = FALSE, col = c("#E69F00", "#56B4E9"),
+  binary.cutoff = 2, plot.MST = FALSE, col = c("#F0E442", "#56B4E9"),
   label.names = c("Sample 1", "Sample 2"), ...)
 }
 \arguments{
