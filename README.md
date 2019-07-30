@@ -1,14 +1,14 @@
-# FRmatch: Cluter-to-cluster Mapping of Single Cell RNA Sequencing (scRNA-seq) Data Clusters by Friedman-Rafsky (FR) Test
+# FRmatch: Cluster-to-cluster Mapping of Single Cell RNA Sequencing (scRNA-seq) Data Clusters by Friedman-Rafsky (FR) Test
 
 ## Getting Started
 
-Install FRmatch:
+Installation:
 ```R
 install.packages("devtools")
 devtools::install_github("JCVenterInstitute/FRmatch")
 ```
 
-Launch Shiny App for a demo:
+A demo Shiny App:
 ```R
 library(FRmatch)
 runShiny()
