@@ -62,7 +62,8 @@ plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.lev
     g <- ggplot2::ggplot(df, ggplot2::aes(x=query_cluster, y=padj)) +
       ggplot2::geom_boxplot() +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
-      ggplot2::geom_hline(linetype = "dashed", yintercept = sig.level, color = "red")
+      ggplot2::geom_hline(linetype = "dashed", yintercept = sig.level, color = "red") +
+      ggplot2::xlab("Query cluster") + ggplot2::ylab("Adjusted p-value")
     plot(g)
     if(!is.na(filename)) ggplot2::ggsave(filename, g, width=ncol(pmat.adj)*.2, height=5)
   }
