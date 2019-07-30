@@ -1,30 +1,28 @@
 
-#' Visualization of bilateral matching restuls of FRmatch
+#' Bilateral matching plot of FR-Match results
 #'
-#' This function combines two reciprocal \code{FRmatch} result objects (i.e. experiment 1 (hereinafter, E1) as query
-#' mapping to E2 as reference, and E2 as query mapping to E1 as reference), and plots the matches that are identified
-#' in both ways or just in one way or no match.
+#' This function combines two sets of reciprocal \code{\link[FRmath]{FRmatch}} outputs (i.e. experiment 1 (hereinafter, E1) as the query
+#' dataset mapping to experiment 2 (hereinafter, E2) as the reference dataset, and E2 mapping to E1), and plots the two-way matches,
+#' one-way matches, and no matches determined by FR-Match.
 #'
-#' @param rst.FRmatch.E1toE2,rst.FRmatch.E2toE1 Retults outputed from the \code{\link[FRmath]{FRmatch}} function.
-#' @param prefix.E1,prefix.E2 Prefix names for E1 and E2. Default: \code{"E1"} and \code{"E2"}, respectively.
-#' @param p.adj.method P-value adjustment method for multiple comparison correction. Default: \code{"BY"}.
-#' Please see \code{\link[stats]{p.adjust.methods}}.
-#' @param sig.level Numeric variable that sets the significance level for the adjusted p-values, above which is a match.
-#' Default value: \code{0.05}.
-#' @param reorder Logical variable indicating if to reorder the columns of heatmap for better interpretability
-#' (aligning matches in the diagonal). Default: \code{TRUE}.
-#' @param return.value Logical variable indicating if to return the values correponding to the plot. Default: \code{FALSE}.
-#' @param cellwidth,cellheight,main,... Additional plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.
+#' @param rst.FRmatch.E1toE2,rst.FRmatch.E2toE1 The \code{\link[FRmath]{FRmatch}} outputs.
+#' @param name.E1,name.E2 Customized names for E1 and E2. Default: \code{"E1"} and \code{"E2"}, respectively.
+#' @param p.adj.method See \code{\link[FRmath]{plot_FRmatch}}.
+#' @param sig.level See \code{\link[FRmath]{plot_FRmatch}}.
+#' @param reorder See \code{\link[FRmath]{plot_FRmatch}}.
+#' @param return.value Logical variable indicating if to return plotted values. Default: \code{FALSE}.
+#' @param cellwidth,cellheight,main,... Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.
 #'
-#' @return Optionally, a numeric matrix corresponding to the values on the plot.
+#' @return If \code{return.value = TRUE}, a matrix of matching results. 2 = two-way match, 1 = one-way match, and 0 = no match.
 #'
-#' @seealso \link[FRmatch]{plot_FRmatch}.
+#' @seealso \code{\link[FRmatch]{plot_FRmatch}}.
 #' @export
 
-plot_bilateral_FRmatch <- function(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1, prefix.E1="E1", prefix.E2="E2",
+plot_bilateral_FRmatch <- function(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1, name.E1="E1", name.E2="E2",
                                    p.adj.method="BY", sig.level=0.05,
                                    reorder=TRUE, return.value=FALSE,
                                    cellwidth=10, cellheight=10, main=NULL, ...){
+
   ## get binary matrices for plotting
   pmat.cutoff.E1toE2 <- FRmatch:::cutoff.FRmatch(rst.FRmatch.E1toE2$pmat, p.adj.method=p.adj.method, sig.level=sig.level)
   pmat.cutoff.E2toE1 <- FRmatch:::cutoff.FRmatch(rst.FRmatch.E2toE1$pmat, p.adj.method=p.adj.method, sig.level=sig.level)
@@ -36,8 +34,8 @@ plot_bilateral_FRmatch <- function(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1, prefi
   ## unassigned row
   mat.bi <- rbind(mat.bi, 2*as.numeric(colSums(mat.bi)==0))
   ## rename colnames and rownames
-  rownames(mat.bi) <- gsub("ref",prefix.E2,rownames(pmat.cutoff.E1toE2))
-  colnames(mat.bi) <- gsub("query",prefix.E1,colnames(pmat.cutoff.E1toE2))
+  rownames(mat.bi) <- gsub("ref",name.E2,rownames(pmat.cutoff.E1toE2))
+  colnames(mat.bi) <- gsub("query",name.E1,colnames(pmat.cutoff.E1toE2))
 
   ## plot
   if(is.null(main)) main <- "Bilatreral matches"
@@ -51,6 +49,8 @@ plot_bilateral_FRmatch <- function(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1, prefi
                      cellwidth=cellwidth, cellheight=cellheight,
                      main=main,
                      ...)
+
+  ## output
   if(return.value) return(mat.bi)
 }
 

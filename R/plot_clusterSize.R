@@ -1,4 +1,13 @@
 
+#' Cluster size plot
+#'
+#' A function to plot cluster sizes for two datasets (e.g. query and reference).
+#'
+#' @param sce.E1,sce.E2 Two \code{FRmatch} input data objects, namely \code{E1} and \code{E2}. See example in \code{\link[FRmatch]{sce.example}}.
+#' @param name.E1,name.E2 Customized names for E1 and E2. Default: \code{"E1"} and \code{"E2"}, respectively.
+#' @param col.E1,col.E2 Customized colors for E1 and E2. Default: \code{"#F0E442"} and \code{"#56B4E9"}, respectively.
+#' @param filename File name to save the plot. Default: \code{NA}, not to save.
+#'
 #' @export
 
 plot_clusterSize <- function(sce.E1, sce.E2, name.E1="E1", name.E2="E2",

@@ -1,32 +1,28 @@
 
-#' Imputation for zero expression of marker genes within cluster
-#'
-#' Impute the reference dataset only. Do NOT impute the query dataset. See 'Details' for imputation scheme.
-#'
-#' @param sce.object A \code{SingleCellExperiment} object filled with necessary information for \code{FRmatch}.
-#' See details in \code{\link[FRmatch]{sce.example}}.
-#'
-#' @return A \code{SingleCellExperiment} object with imputed data replaced in the \code{logcounts} assay of the original object.
-#'
-#' @details
-#' Imputation scheme for NS-Forest markers:
-#' \itemize{
-#' \item Assume that the cell-type-specific NS-Forest markers have non-zero expression in their corresponding cell type clusters.
-#' \item For each marker gene, impute the dropout values \emph{only} in the cluster that it marks.
-#' \item Single imputation by randomly drawing from an empirical distribution defined by the non-dropouts in that cluster.
-#' }
-#'
-#' @seealso The \link[SingleCellExperiment]{SingleCellExperiment} class.
-#'
-#'
-#' @examples
-#' \dontrun{
-#' data("sce.example")
-#' plot_nonzero(sce.example)
-#' sce.example.imputed <- impute.zero(sce.example)
-#' plot_nonzero(sce.example.imputed)
-#' }
-#' @export
+# #' Imputation for zero expression of marker genes within cluster
+# #'
+# #' Impute the reference dataset only. Do NOT impute the query dataset. See 'Details' for imputation scheme.
+# #'
+# #' @param sce.object A \link[SingleCellExperiment]{SingleCellExperiment} data object for \code{FRmatch}.
+# #' See example in \code{\link[FRmatch]{sce.example}}.
+# #'
+# #' @return A data object with imputed values for the zero expression of NS-Forest markers within their specific clusters.
+# #'
+# #' @details
+# #' Imputation scheme:
+# #' \itemize{
+# #' \item Assume that the cluster-specific NS-Forest marker genes have non-zero expression in the cell type cluster that they characterize.
+# #' \item For each marker gene, impute the zero values \emph{within} in the specific cluster.
+# #' \item Draw single imputation value from the empirical distribution formed by non-zero values in the cluster.
+# #' }
+# #'
+# #' @examples
+# #' \dontrun{
+# #' data("sce.example")
+# #' plot_nonzero(sce.example)
+# #' sce.example.imputed <- impute.zero(sce.example)
+# #' plot_nonzero(sce.example.imputed)
+# #' }
 
 
 impute.zero <- function(sce.object){

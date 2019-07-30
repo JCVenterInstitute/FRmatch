@@ -3,30 +3,31 @@
 \docType{data}
 \name{sce.example}
 \alias{sce.example}
-\title{Details about input data}
-\format{Please follow the naming convention and format of this example.
+\title{FRmatch input data}
+\format{Please follow the nomenclature and data format of this example.
 \describe{
-\item{metadata}{List of 3.
+\item{\code{metadata}}{List of 3.
 \itemize{
-  \item \code{cluster_marker_info} contains NS-Forest marker genes of each clusters.
-  \item \code{fsocres} is the F-measure classification score for the set of NS-Forest markers for each cluster.
-  \item \code{cluster_order} is some specific order of clusters to facilitate plot.
+  \item \code{cluster_marker_info} are the cluster-specific NS-Forest marker genes.
+  \item \code{fsocres} are F-measures associated with the NS-Forest marker genes for each cluster.
+  \item \code{cluster_order} is some specific order of the clusters to be used for plotting.
 }}
-\item{assays}{One data assay \code{logcounts}, which is an expression data matrix (gene by cell) with log-transformed counts.}
-\item{rownames}{Gene names.}
-\item{rowData}{One column \code{NSF_markers}, which is a logical vector indicating if a gene is an NS-Forest marker gene.}
-\item{colnames}{Cell IDs.}
-\item{colData}{One column \code{cluster_membership}, which is a character vector of cluster membership of each cell.}
+\item{\code{assays}}{Data assay \code{logcounts} is the expression data matrix (gene by cell).}
+\item{\code{rownames}}{Gene names.}
+\item{\code{rowData}}{Column \code{NSF_markers} is a logical vector indicating if a gene is an NS-Forest marker gene.}
+\item{\code{colnames}}{Cell IDs.}
+\item{\code{colData}}{Column \code{cluster_membership} is a character vector of cell cluster membership.}
 }}
 \usage{
 sce.example
 }
 \description{
-This page documents the \code{SingleCellExperiment} object and necessary information needed for \code{\link[FRmatch]{FRmatch}}
+This page describes the \link[SingleCellExperiment]{SingleCellExperiment} data object needed for the \code{\link[FRmatch]{FRmatch}}
 and other functions in this package.
-DESCRIPTION OF RAW DATA. This example scRNA-seq data contain 865 cells with 16497 genes.
+DESCRIPTION OF MTG DATA.
+This example dataset contain 865 cells with 16497 genes.
 }
 \seealso{
-The \link[SingleCellExperiment]{SingleCellExperiment} class.
+The \link[SingleCellExperiment]{SingleCellExperiment} data class.
 }
 \keyword{datasets}

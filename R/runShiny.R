@@ -1,5 +1,4 @@
 
-
 #' Shiny App for FRmatch Demo
 #'
 #' This function lauches the Shiny App for FRmatch Demo.

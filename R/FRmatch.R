@@ -1,44 +1,38 @@
-#######################
-## TO DO:
-## 1. bootstrap
-## 2. multiple hypothesis tesing correction
-#######################
 
-#' Cross-comparison of two single-cell RNA-seq experiments using Friedman-Rafsky test
+#' Cell type cluster matching of single-cell RNA-seq data using Friedman-Rafsky test
 #'
-#' This is a user-end function that wraps the steps to cross-compare two single-cell RNA-seq experiments (namely, query and reference)
-#' with cluster information and NS-Forest marker genes using Friedman-Rafsky (FR) test based methods.
-#' This function inputs two objects of \link[SingleCellExperiment]{SingleCellExperiment} class with necessary information,
-#' and returns FR statistics (a.k.a. scores) and p-values of the FR test.
+#' This is a user-end function that wraps the steps of matching cell type clusters between two single-cell RNA-seq experiments
+#' (namely, \code{query} and \code{reference}) with clustered expression data and NS-Forest marker genes using Friedman-Rafsky (FR) test.
+#' This function inputs two data objects of the \link[SingleCellExperiment]{SingleCellExperiment} data class,
+#' and outputs the FR statistics, p-values, and optional intermediated restuls from the FR test.
 #'
-#' @param sce.query Query experiment object of \code{SingleCellExperiment} class with necessary information.
+#' @param sce.query Data object of the \link[SingleCellExperiment]{SingleCellExperiment} data class for query experiment.
 #' See details in \code{\link[FRmatch]{sce.example}}.
-#' @param sce.ref Reference experiment object of \code{SingleCellExperiment} class with necessary information.
+#' @param sce.ref A Data object of the \link[SingleCellExperiment]{SingleCellExperiment} data class for reference experiment.
 #' See details in \code{\link[FRmatch]{sce.example}}.
-#' @param imputation Logical variable indicating if to impute dropout values in the reference experiment. Default: \code{FALSE}.
+#' @param imputation Logical variable indicating if to impute expression zero values for the reference experiment. Default: \code{FALSE}.
 #' See details in \code{\link[FRmatch]{impute_dropout}}.
-#' @param method TO BE COMPLETED!!! Default: \code{"subsampling"}.
-#' @param filter.size,filter.fscore Criteria for filtering clusters. Default: \code{filter.size=20}, which filters out clusters with
-#' less than 20 cells per cluster; \code{filter.fscore=NULL}, which means that filtering by f-measure is not applied by default.
-#' If \code{filter.fscore} is set to some numeric value, then clusters with lower f-measures are filtered.
+#' @param filter.size,filter.fscore Criteria for filtering small/poor clusters. Default: \code{filter.size=10}, filter based on the number
+#' of cells per cluster; \code{filter.fscore=NULL}, filter based on the f-measure associated with NS-Forest markers (\code{NULL} or numeric value).
+#' @param method Adapted methods of FR test. Default: \code{method="subsampling"} is to apply equal size subsampling of the comparing clusters for
+#' the FR test. Option: \code{method="none"} is the standard FR test without modification.
 #' @param subsamp.size,subsamp.iter,subsamp.seed Cluster size, number of iterations, and random seed for subsampling.
-#' Default: 20, 1001, 1, respectively.
-#' @param numCores \code{NULL} or an integer that specifies the number of cores to be used in parallel computing.
-#' Default: \code{NULL}, which sets \code{numCores = detectCores()}. See more in \code{\link[parallel]{detectCores}}.
-#' @param return.all Logical variable indicating if to return all results (such as number of subtrees, etc.).
-#' Default: \code{FALSE}.
+#' Default: \code{10, 1001, 1}, respectively.
+#' @param numCores \code{NULL} or an integer that specifies the number of cores for parallel computing.
+#' Default: \code{NULL}, is to set the maximum number of cores detected by \code{\link[parallel]{detectCores}} if not specified.
+#' @param return.all Logical variable indicating if to return all results (such as number of runs, etc.). Default: \code{FALSE}.
 #' @param ... Additional arguments passed to \code{\link[FRmatch]{FR.test}}.
 #'
 #' @return A list of FR test results:
-#' \item{pmat}{A matrix of all p-values for pairwise comparison. Rows are reference clusters, and columns are query clusters.}
-#' \item{statmat}{A matrix of all FR statistics for pairwise comparison. Rows are reference clusters, and columns are query clusters.}
-#' If \code{return.all = TRUE}, more results are returned in \code{all.restuls} element of the list.
+#' \item{pmat}{A matrix of p-values for pairwise comparisons. Rows are reference clusters, and columns are query clusters.}
+#' \item{statmat}{A matrix of FR statistics for pairwise comparisons. Rows are reference clusters, and columns are query clusters.}
+#' If \code{return.all = TRUE}, more FR test intermediate results are returned.
 #'
 #' @author Yun Zhang, \email{zhangy@jcvi.org};
 #' Brian Aevermann, \email{baeverma@jcvi.org};
 #' Richard Scheuermann, \email{RScheuermann@jcvi.org}.
 #'
-#' @seealso The \link[SingleCellExperiment]{SingleCellExperiment} class.
+#' @seealso The \link[SingleCellExperiment]{SingleCellExperiment} data class.
 #'
 #' @examples
 #' \dontrun{
@@ -48,9 +42,10 @@
 #' @export
 
 FRmatch <- function(sce.query, sce.ref, imputation=FALSE,
-                    filter.size=20, filter.fscore=NULL, #filtering clusters
-                    method="subsampling", subsamp.size=20, subsamp.iter=1001, subsamp.seed=1, #subsampling
+                    filter.size=10, filter.fscore=NULL, #filtering clusters
+                    method="subsampling", subsamp.size=10, subsamp.iter=1001, subsamp.seed=1, #subsampling
                     numCores=NULL, return.all=FALSE, ...){
+
   ## check data object
   cat("Check query data object: ")
   sce.query <- check_query_data(sce.query)

@@ -1,6 +1,5 @@
 
 #' @importFrom dplyr %>%
-#' @export
 
 filter.cluster <- function(sce.object, filter.size=10, filter.fscore=NULL){
   tab <- table(SingleCellExperiment::colData(sce.object)$cluster_membership)

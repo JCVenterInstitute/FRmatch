@@ -2,41 +2,38 @@
 % Please edit documentation in R/plot_FRmatch.R
 \name{plot_FRmatch}
 \alias{plot_FRmatch}
-\title{Visulization of FRmatch result}
+\title{Plot FR-Match results}
 \usage{
 plot_FRmatch(rst.FRmatch, type = "matches", p.adj.method = "BY",
   sig.level = 0.05, reorder = TRUE, return.value = FALSE,
   cellwidth = 10, cellheight = 10, main = NULL, filename = NA, ...)
 }
 \arguments{
-\item{rst.FRmatch}{The result object outputed from the \code{\link[FRmath]{FRmatch}} function.}
+\item{rst.FRmatch}{The \code{\link[FRmath]{FRmatch}} output.}
 
-\item{type}{Character variable that specifies which element from the output list to be ploted.
-Default: \code{"matches"}, which returns the recommended matches identified by FRmatch using \code{p.adj.method}
-and \code{sig.level}. Other options: \code{"pmat", "statmat"}.}
+\item{type}{If \code{type="matches"}, it plots the final matching results.
+If \code{type=="padj"}, it plots the distribution of adjusted p-values.}
 
 \item{p.adj.method}{P-value adjustment method for multiple comparison correction. Default: \code{"BY"}.
 Please see \code{\link[stats]{p.adjust.methods}}.}
 
-\item{sig.level}{Numeric variable that sets the significance level for the adjusted p-values, above which is a match.
+\item{sig.level}{Numeric variable that specifies the significance level of adjusted p-value, above which is a match.
 Default value: \code{0.05}.}
 
-\item{reorder}{Logical variable indicating if to reorder the columns of heatmap for better interpretability
-(aligning matches in the diagonal). This parameter only applies to \code{type="matches"}, default: \code{TRUE}.}
+\item{reorder}{Logical variable indicating if to reorder the columns of the heatmap of matching results, which may have
+better interpretability (aligning matches in the diagonal). Default: \code{TRUE}.}
 
-\item{return.value}{Logical variable indicating if to return the values correponding to the "matches" plot.
-This parameter only applies to \code{type="matches"}, default: \code{FALSE}.}
+\item{return.value}{Logical variable indicating if to return plotted values. Default: \code{FALSE}.}
 
-\item{cellwidth, cellheight, main, ...}{Additional plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.}
+\item{cellwidth, cellheight, main, ...}{Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.}
 }
 \value{
-Optionally, a numeric matrix corresponding to the values on the plot.
+If \code{return.value = TRUE}, a binary matrix of matching results and a matrix of adjusted p-values.
 }
 \description{
-This function plots results outputed from the \code{\link[FRmath]{FRmatch}} function. By default (\code{type="matches"}),
-it returns the recomended matches determined by adjusted p-values using \code{p.adj.method} on FRmatch p-values at the
-significant level of \code{sig.level}.
+This function takes in the \code{\link[FRmath]{FRmatch}} output and provides plots of the results. If \code{type="matches"},
+it plots the final matching results. If \code{type=="padj"}, it plots the distribution of adjusted p-values.
 }
 \seealso{
-\link[FRmatch]{FRmatch}.
+\code{\link[FRmatch]{plot_bilateral_FRmatch}}.
 }

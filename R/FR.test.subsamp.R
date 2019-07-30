@@ -1,28 +1,27 @@
-#' Friedman-Rafsky (FR) test with subsampling
+# #' Friedman-Rafsky (FR) test with subsampling
+# #'
+# #' FR test with subsampling, which is provided for comparing two samples with one or both large sample size(s).
+# #'
+# #' @param samp1 Numeric matrix or data frame for Sample 1.
+# #' @param samp2 Numeric matrix or data frame for Sample 2.
+# #' @param subsamp.size,subsamp.iter Cluster size and number of iterations for subsampling.
+# #' @param ... Additional parammeters passed to \code{\link[FRmatch]{FR.test}}.
+# #'
+# #' @return Median p-value from the subsampling itertations and its corresponding test statistics will be returned.
+# #' \item{runs}{Total number of subtrees.}
+# #' \item{runs.samp1}{Number of subtrees of Sample 1.}
+# #' \item{runs.samp2}{Number of subtrees of Sample 2.}
+# #' \item{stat}{The standardized FR statistic.}
+# #' \item{p.value}{P-value of the FR test.}
+# #'
+# #' @examples
+# #' \dontrun{
+# #' samp1 <- matrix(rnorm(1000),nrow=5)
+# #' samp2 <- matrix(rnorm(1000),nrow=5)
+# #' FR.test.subsamp.each(samp1, samp2)
+# #' }
 #'
-#' FR test with subsampling, which is provided for comparing two samples with one or both large sample size(s).
-#'
-#' @param samp1 Numeric matrix or data frame for Sample 1.
-#' @param samp2 Numeric matrix or data frame for Sample 2.
-#' @param subsamp.size,subsamp.iter Cluster size and number of iterations for subsampling.
-#' @param ... Additional parammeters passed to \code{\link[FRmatch]{FR.test}}.
-#'
-#' @return Median p-value from the subsampling itertations and its corresponding test statistics will be returned.
-#' \item{runs}{Total number of subtrees.}
-#' \item{runs.samp1}{Number of subtrees of Sample 1.}
-#' \item{runs.samp2}{Number of subtrees of Sample 2.}
-#' \item{stat}{The standardized FR statistic.}
-#' \item{p.value}{P-value of the FR test.}
-#'
-#'
-#' @examples
-#' \dontrun{
-#' samp1 <- matrix(rnorm(1000),nrow=5)
-#' samp2 <- matrix(rnorm(1000),nrow=5)
-#' FR.test.subsamp.each(samp1, samp2)
-#' }
 #' @importFrom dplyr %>%
-#' @export
 
 FR.test.subsamp.each <- function(samp1, samp2, subsamp.size, subsamp.iter, ...){
   out.all <- NULL

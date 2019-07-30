@@ -2,27 +2,26 @@
 % Please edit documentation in R/plot_nonzero.R
 \name{plot_nonzero}
 \alias{plot_nonzero}
-\title{Plot per-cluster percentage of non-zero expression for markers}
+\title{Non-zero expression plot}
 \usage{
 plot_nonzero(sce.object, return.plot = TRUE, return.value = FALSE,
   cellwidth = 15, cellheight = 10, main = NULL, ...)
 }
 \arguments{
-\item{sce.object}{A \code{SingleCellExperiment} object customized with necessary information for \code{FRmatch}.
-See details in \code{\link[FRmatch]{sce.example}}.}
+\item{sce.object}{A \code{FRmatch} input data object. See example in \code{\link[FRmatch]{sce.example}}.}
 
-\item{return.plot}{Logical variable indicating if to return a plot. Default: \code{TRUE}.}
+\item{return.plot}{Logical variable indicating if to return the plot. Default: \code{TRUE}.}
 
-\item{return.value}{Logical variable indicating if to return the values correponding to the plot. Default: \code{FALSE}.}
+\item{return.value}{Logical variable indicating if to return the plotted values. Default: \code{FALSE}.}
 
-\item{cellwidth, cellheight, main, ...}{Additional plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.}
+\item{cellwidth, cellheight, main, ...}{Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.}
 }
 \value{
-Optionally, a numeric matrix corresponding to the values on the plot.
+if \code{return.value = TRUE}, a matrix of plotted values.
 }
 \description{
-A function that calculates and plots percentage of non-zero expression for each marker gene per cluster
-for a \code{SingleCellExperiment} object customized with cluster membership and marker gene information.
+A function that calculates and plots "\% expressed per marker gene per cluster" for the \code{FRmatch} input data object.
+\% = number of cells that express the marker gene in the cluster / cluster size.
 }
 \examples{
 \dontrun{
@@ -30,7 +29,4 @@ data("sce.example")
 plot_nonzero(sce.example)
 }
 
-}
-\seealso{
-The \link[SingleCellExperiment]{SingleCellExperiment} class.
 }

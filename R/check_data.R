@@ -1,25 +1,25 @@
 
-#' Sanity check for input data object
+#' Sanity check of input data object
 #'
-#' For input data, we choose to summarize the gene expression data and metadata needed for \code{FRmatch} in
+#' For input data, we choose to summarize the gene expression data and metadata needed for \code{\link[FRmatch]{FRmatch}} in a data object of
 #' the \code{\link[SingleCellExperiment]{SingleCellExperiment}} class, which is a light-weighted container for single-cell genomics data.
-#' This function helps to check if users' data objects fit the \code{FRmatch} context.
+#' This function helps to check if users' data objects can be used in the \code{FRmatch} function.
 #'
-#' @param sce.object A \code{SingleCellExperiment} object filled with necessary information for \code{FRmatch}.
-#' See details in \code{\link[FRmatch]{sce.example}}.
+#' @param sce.object A \code{FRmatch} input data object. See details in \code{\link[FRmatch]{sce.example}}.
 #'
-#' @details For FRmatch, the following data items are essential:
+#' @details For the FR-Match method, the following data are essential:
 #' \itemize{
 #' \item a gene expression data matrix (gene by cell)
-#' \item cluster membership information for each cell
-#' \item NS-Forest (or your own) marker genes for the reference clusters
+#' \item cell cluster membership information
+#' \item NS-Forest (or your own) marker genes for the reference dataset
 #' }
-#' Additional items, such as F-meansure (i.e. a quality score associated with NS-Forest markers) and preferred cluster order,
-#' are not essential, but will facilitate graphical tools provided in this package.
+#' In addition, information such as F-meansure and cluster order are not essential, but will facilitate visualization and customized analysis
+#' provided in this package.
 #'
-#' @return A \code{SingleCellExperiment} object that passes this sanity check if no error occurs.
+#' @return A data object that passes this sanity check if no error occurs.
 #'
-#' @seealso The \link[SingleCellExperiment]{SingleCellExperiment} class.
+#' @seealso The \link[SingleCellExperiment]{SingleCellExperiment} data class.
+#'
 #' @export
 
 

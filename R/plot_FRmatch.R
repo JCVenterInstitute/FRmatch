@@ -1,27 +1,25 @@
 
-#' Visulization of FRmatch result
+#' Plot FR-Match results
 #'
-#' This function plots results outputed from the \code{\link[FRmath]{FRmatch}} function. By default (\code{type="matches"}),
-#' it returns the recomended matches determined by adjusted p-values using \code{p.adj.method} on FRmatch p-values at the
-#' significant level of \code{sig.level}.
+#' This function takes in the \code{\link[FRmath]{FRmatch}} output and provides plots of the results. If \code{type="matches"},
+#' it plots the final matching results. If \code{type=="padj"}, it plots the distribution of adjusted p-values.
 #'
-#' @param rst.FRmatch The result object outputed from the \code{\link[FRmath]{FRmatch}} function.
-#' @param type Character variable that specifies which element from the output list to be ploted.
-#' Default: \code{"matches"}, which returns the recommended matches identified by FRmatch using \code{p.adj.method}
-#' and \code{sig.level}. Other options: \code{"pmat", "statmat"}.
+#' @param rst.FRmatch The \code{\link[FRmath]{FRmatch}} output.
+#' @param type If \code{type="matches"}, it plots the final matching results.
+#' If \code{type=="padj"}, it plots the distribution of adjusted p-values.
 #' @param p.adj.method P-value adjustment method for multiple comparison correction. Default: \code{"BY"}.
 #' Please see \code{\link[stats]{p.adjust.methods}}.
-#' @param sig.level Numeric variable that sets the significance level for the adjusted p-values, above which is a match.
+#' @param sig.level Numeric variable that specifies the significance level of adjusted p-value, above which is a match.
 #' Default value: \code{0.05}.
-#' @param reorder Logical variable indicating if to reorder the columns of heatmap for better interpretability
-#' (aligning matches in the diagonal). This parameter only applies to \code{type="matches"}, default: \code{TRUE}.
-#' @param return.value Logical variable indicating if to return the values correponding to the "matches" plot.
-#' This parameter only applies to \code{type="matches"}, default: \code{FALSE}.
-#' @param cellwidth,cellheight,main,... Additional plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.
+#' @param reorder Logical variable indicating if to reorder the columns of the heatmap of matching results, which may have
+#' better interpretability (aligning matches in the diagonal). Default: \code{TRUE}.
+#' @param return.value Logical variable indicating if to return plotted values. Default: \code{FALSE}.
+#' @param cellwidth,cellheight,main,... Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.
 #'
-#' @return Optionally, a numeric matrix corresponding to the values on the plot.
+#' @return If \code{return.value = TRUE}, a binary matrix of matching results and a matrix of adjusted p-values.
 #'
-#' @seealso \link[FRmatch]{FRmatch}.
+#' @seealso \code{\link[FRmatch]{plot_bilateral_FRmatch}}.
+#'
 #' @importFrom dplyr %>%
 #' @export
 
@@ -32,14 +30,17 @@
 plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.level=0.05,
                          reorder=TRUE, return.value=FALSE,
                          cellwidth=10, cellheight=10, main=NULL, filename=NA, ...){
+
   pmat.adj <- padj.FRmatch(rst.FRmatch$pmat, p.adj.method=p.adj.method)
   pmat.cutoff <- cutoff.FRmatch(rst.FRmatch$pmat, p.adj.method=p.adj.method, sig.level=sig.level)
   if(reorder){
     pmat.cutoff <- reorder(pmat.cutoff)
     pmat.adj <- pmat.adj[,colnames(pmat.cutoff)]
   }
+
+  ## plot
   if(type=="matches"){
-    if(is.null(main)) main <- "Recommended matches"
+    if(is.null(main)) main <- "FR-Match"
     pheatmap::pheatmap(pmat.cutoff,
                        color = colorRampPalette(rev(RColorBrewer::brewer.pal(n=7, name="RdYlBu")[c(3,3,7)]))(3),
                        breaks = seq(0,1,length.out=3),
@@ -51,6 +52,8 @@ plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.lev
                        filename=filename,
                        ...)
   }
+
+  ## plot
   if(type=="padj"){
     # if(is.null(main)) main <- "Distribution of adjusted p-values"
     df <- tibble::tibble(padj=as.vector(pmat.adj),
@@ -63,9 +66,12 @@ plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.lev
     plot(g)
     if(!is.na(filename)) ggplot2::ggsave(filename, g, width=ncol(pmat.adj)*.2, height=5)
   }
+
+  ## output
   if(return.value){
     return(list("matches"=pmat.cutoff, "padj"=pmat.adj))
   }
+
   # if(type=="pmat"){
   #   if(is.null(main)) main <- "P-values"
   #   pheatmap::pheatmap(rst.FRmatch$pmat,
@@ -91,6 +97,7 @@ plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.lev
   #            ...)
   # }
 }
+
 
 ##------below are some utility function for the main function---------------------------------
 

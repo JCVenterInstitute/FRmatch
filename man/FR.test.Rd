@@ -9,8 +9,7 @@ FR.test(samp1, samp2, use.cosine = FALSE, binary = FALSE,
   label.names = c("Sample 1", "Sample 2"), ...)
 }
 \arguments{
-\item{samp1}{Numeric matrix or data frame for Sample 1. Rows are multivariate dimensions, and columns are samples.
-E.g. gene by cell.}
+\item{samp1}{Numeric matrix or data frame for Sample 1. Rows are multivariate dimensions, and columns are samples. E.g. gene by cell.}
 
 \item{samp2}{Numeric matrix or data frame for Sample 2.}
 
@@ -24,7 +23,7 @@ use \code{binary.cutoff} to dichotomize \code{samp1} and \code{samp2}.}
 
 \item{plot.MST}{Logical variable indicating if to plot the minimum spanning tree (MST). Default: \code{FALSE}.}
 
-\item{col}{Character vector of length two for customized colors of the nodes in MST. Default: \code{c("#E69F00", "#56B4E9")}.}
+\item{col}{Character vector of length two for customized colors of the nodes in MST. Default: \code{c("#F0E442", "#56B4E9")}.}
 
 \item{label.names}{Character vector of length two for customized names of the two samples. Default: \code{c("Sample 1","Sample 2")}.}
 

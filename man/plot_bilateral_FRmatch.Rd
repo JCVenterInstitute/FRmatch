@@ -2,39 +2,36 @@
 % Please edit documentation in R/plot_bilateral_FRmatch.R
 \name{plot_bilateral_FRmatch}
 \alias{plot_bilateral_FRmatch}
-\title{Visualization of bilateral matching restuls of FRmatch}
+\title{Bilateral matching plot of FR-Match results}
 \usage{
 plot_bilateral_FRmatch(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1,
-  prefix.E1 = "E1", prefix.E2 = "E2", p.adj.method = "BY",
+  name.E1 = "E1", name.E2 = "E2", p.adj.method = "BY",
   sig.level = 0.05, reorder = TRUE, return.value = FALSE,
   cellwidth = 10, cellheight = 10, main = NULL, ...)
 }
 \arguments{
-\item{rst.FRmatch.E1toE2, rst.FRmatch.E2toE1}{Retults outputed from the \code{\link[FRmath]{FRmatch}} function.}
+\item{rst.FRmatch.E1toE2, rst.FRmatch.E2toE1}{The \code{\link[FRmath]{FRmatch}} outputs.}
 
-\item{prefix.E1, prefix.E2}{Prefix names for E1 and E2. Default: \code{"E1"} and \code{"E2"}, respectively.}
+\item{name.E1, name.E2}{Customized names for E1 and E2. Default: \code{"E1"} and \code{"E2"}, respectively.}
 
-\item{p.adj.method}{P-value adjustment method for multiple comparison correction. Default: \code{"BY"}.
-Please see \code{\link[stats]{p.adjust.methods}}.}
+\item{p.adj.method}{See \code{\link[FRmath]{plot_FRmatch}}.}
 
-\item{sig.level}{Numeric variable that sets the significance level for the adjusted p-values, above which is a match.
-Default value: \code{0.05}.}
+\item{sig.level}{See \code{\link[FRmath]{plot_FRmatch}}.}
 
-\item{reorder}{Logical variable indicating if to reorder the columns of heatmap for better interpretability
-(aligning matches in the diagonal). Default: \code{TRUE}.}
+\item{reorder}{See \code{\link[FRmath]{plot_FRmatch}}.}
 
-\item{return.value}{Logical variable indicating if to return the values correponding to the plot. Default: \code{FALSE}.}
+\item{return.value}{Logical variable indicating if to return plotted values. Default: \code{FALSE}.}
 
-\item{cellwidth, cellheight, main, ...}{Additional plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.}
+\item{cellwidth, cellheight, main, ...}{Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.}
 }
 \value{
-Optionally, a numeric matrix corresponding to the values on the plot.
+If \code{return.value = TRUE}, a matrix of matching results. 2 = two-way match, 1 = one-way match, and 0 = no match.
 }
 \description{
-This function combines two reciprocal \code{FRmatch} result objects (i.e. experiment 1 (hereinafter, E1) as query
-mapping to E2 as reference, and E2 as query mapping to E1 as reference), and plots the matches that are identified
-in both ways or just in one way or no match.
+This function combines two sets of reciprocal \code{\link[FRmath]{FRmatch}} outputs (i.e. experiment 1 (hereinafter, E1) as the query
+dataset mapping to experiment 2 (hereinafter, E2) as the reference dataset, and E2 mapping to E1), and plots the two-way matches,
+one-way matches, and no matches determined by FR-Match.
 }
 \seealso{
-\link[FRmatch]{plot_FRmatch}.
+\code{\link[FRmatch]{plot_FRmatch}}.
 }

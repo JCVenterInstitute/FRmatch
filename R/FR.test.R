@@ -1,16 +1,10 @@
-## requires
-# lsa::cosine
-# ade4::neig2mat, ade4::mstree
-# igraph::graph.adjacency, igraph::components
-
 
 #' Friedman-Rafsky (FR) test
 #'
 #' FR test is a multivariate generalization of nonparametric two-sample test. This function is an implementation
 #' with customized options, including a visualization of the minimum spanning tree (MST).
 #'
-#' @param samp1 Numeric matrix or data frame for Sample 1. Rows are multivariate dimensions, and columns are samples.
-#' E.g. gene by cell.
+#' @param samp1 Numeric matrix or data frame for Sample 1. Rows are multivariate dimensions, and columns are samples. E.g. gene by cell.
 #' @param samp2 Numeric matrix or data frame for Sample 2.
 #' @param use.cosine An option if to use cosine distance. Logical variable. By default (\code{FALSE}),
 #' Euclidean distance is used.
@@ -18,7 +12,7 @@
 #' use \code{binary.cutoff} to dichotomize \code{samp1} and \code{samp2}.
 #' @param binary.cutoff Numeric value for binary cutoff. Binary value = 1 if greater than \code{binary.cutoff}, 0 otherwise. Default: \code{2}.
 #' @param plot.MST Logical variable indicating if to plot the minimum spanning tree (MST). Default: \code{FALSE}.
-#' @param col Character vector of length two for customized colors of the nodes in MST. Default: \code{c("#E69F00", "#56B4E9")}.
+#' @param col Character vector of length two for customized colors of the nodes in MST. Default: \code{c("#F0E442", "#56B4E9")}.
 #' @param label.names Character vector of length two for customized names of the two samples. Default: \code{c("Sample 1","Sample 2")}.
 #' @param ... Additional plotting parammeters passed to \code{\link[igraph]{plot.igraph}}.
 #'
