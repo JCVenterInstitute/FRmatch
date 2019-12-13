@@ -67,10 +67,10 @@ FRmatch <- function(sce.query, sce.ref, imputation=FALSE,
   ## extract info from sce.objects
   querydat <- logcounts(sce.query) #matrix
   refdat <- logcounts(sce.ref)
-  membership.query <- colData(sce.query)$cluster_membership
-  membership.ref <- colData(sce.ref)$cluster_membership
-  order.query <- metadata(sce.query)$cluster_order
-  order.ref <- metadata(sce.ref)$cluster_order
+  membership.query <- SingleCellExperiment::colData(sce.query)$cluster_membership
+  membership.ref <- SingleCellExperiment::colData(sce.ref)$cluster_membership
+  order.query <- sce.query@metadata$cluster_order
+  order.ref <- sce.ref@metadata$cluster_order
 
   ## dimension reduction by selecting only marker genes
   markergenes <- unique(metadata(sce.ref)$cluster_marker_info$markerGene)

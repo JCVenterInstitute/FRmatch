@@ -40,7 +40,9 @@ FR.test <- function(samp1, samp2,
                     ## two options: 1. cosine distance, 2. use binary values
                     use.cosine=FALSE, binary=FALSE, binary.cutoff=2,
                     ## plot minimum spanning tree
-                    plot.MST=FALSE, col=c("#F0E442", "#56B4E9"), label.names=c("Sample 1","Sample 2"), ...)
+                    plot.MST=FALSE, col=c("#F0E442", "#56B4E9"), label.names=c("Sample 1","Sample 2"),
+                    vertex.size=5, edge.width=1,
+                    ...)
 {
   ## data input matrices: rows = multivariate dimensions, columns = samples
   xx <- as.matrix(samp1)
@@ -109,7 +111,7 @@ FR.test <- function(samp1, samp2,
     # g <- igraph::graph.adjacency(adjmat, mode="upper", weighted=TRUE, diag=FALSE)
     g <- igraph::graph.adjacency(myMST, mode="upper", weighted=NULL, diag=FALSE)
     colors <- rep(col, c(m,n))
-    plot(g, vertex.size=5, vertex.label=NA, vertex.color=colors, frame=TRUE, ...)
+    plot(g, vertex.size=vertex.size, edge.width=edge.width, vertex.label=NA, vertex.color=colors, frame=TRUE, ...)
     legend("bottom", label.names, fill=col, horiz=TRUE, bty ="n", xpd=TRUE, inset=c(0, -.1))
   }
 

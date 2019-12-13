@@ -11,7 +11,7 @@
 #' @param sig.level See \code{\link[FRmath]{plot_FRmatch}}.
 #' @param reorder See \code{\link[FRmath]{plot_FRmatch}}.
 #' @param return.value Logical variable indicating if to return plotted values. Default: \code{FALSE}.
-#' @param cellwidth,cellheight,main,... Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.
+#' @param cellwidth,cellheight,main,filename,... Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.
 #'
 #' @return If \code{return.value = TRUE}, a matrix of matching results. 2 = two-way match, 1 = one-way match, and 0 = no match.
 #'
@@ -21,7 +21,7 @@
 plot_bilateral_FRmatch <- function(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1, name.E1="E1", name.E2="E2",
                                    p.adj.method="BY", sig.level=0.05,
                                    reorder=TRUE, return.value=FALSE,
-                                   cellwidth=10, cellheight=10, main=NULL, ...){
+                                   cellwidth=10, cellheight=10, main=NULL, filename=NA, ...){
 
   ## get binary matrices for plotting
   pmat.cutoff.E1toE2 <- FRmatch:::cutoff.FRmatch(rst.FRmatch.E1toE2$pmat, p.adj.method=p.adj.method, sig.level=sig.level)
@@ -48,6 +48,7 @@ plot_bilateral_FRmatch <- function(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1, name.
                      gaps_row=nrow(mat.bi)-1,
                      cellwidth=cellwidth, cellheight=cellheight,
                      main=main,
+                     filename=filename,
                      ...)
 
   ## output

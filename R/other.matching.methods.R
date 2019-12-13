@@ -1,7 +1,9 @@
 
 # #' Functions for other matching methods: scmap, Seurat
 
-
+######################################################################################################################
+### scmap ############################################################################################################
+######################################################################################################################
 
 ######################
 ## match_by_scmap() ##
@@ -50,7 +52,7 @@ match_by_scmap <- function(sce.query, sce.ref, imputation=FALSE,
   scmapCluster_results <- scmap::scmapCluster(
     projection = sce.query,
     index_list = list(
-      ref = metadata(sce.ref)$scmap_cluster_index
+      ref = sce.ref@metadata$scmap_cluster_index
     )
   )
 
@@ -97,12 +99,16 @@ match2mat.scmap <- function(match, oo.ref){
 
 plot_scmap <- function(rst.scmap, type="matches", pct.cutoff=0.5,
                        reorder=TRUE, return.value=FALSE,
-                       cellwidth=10, cellheight=10, main=NULL, ...){
+                       cellwidth=10, cellheight=10, main=NULL, filename=NA, ...){
   pctmat <- rst.scmap$pctmat
   pctmat.cutoff <- cutoff.pctmat(pctmat, pct.cutoff=pct.cutoff)
-  if(reorder) pctmat.cutoff <- FRmatch:::reorder(pctmat.cutoff)
+  if(reorder){
+    pctmat.cutoff <- FRmatch:::reorder(pctmat.cutoff)
+    pctmat <- pctmat[,colnames(pctmat.cutoff)]
+  }
   if(type=="matches"){
     if(is.null(main)) main <- "Cell-to-cluster matches"
+    ## heatmap
     pheatmap::pheatmap(pctmat.cutoff,
                        color = colorRampPalette(rev(RColorBrewer::brewer.pal(n=7, name="RdYlBu")[c(3,3,7)]))(3),
                        breaks = seq(0,1,length.out=3),
@@ -110,21 +116,28 @@ plot_scmap <- function(rst.scmap, type="matches", pct.cutoff=0.5,
                        cluster_rows=F, cluster_cols=F,
                        gaps_row=nrow(pctmat.cutoff)-1,
                        cellwidth=cellwidth, cellheight=cellheight,
-                       main=main,
+                       main=main, filename=filename,
                        ...)
+    ## output
     if(return.value) return(pctmat.cutoff)
   }
   if(type=="pctmat"){
-    if(reorder) pctmat <- pctmat[,colnames(pctmat.cutoff)]
-    if(is.null(main)) main <- "Percent of cells matched"
-    pheatmap::pheatmap(pctmat,
-                       color = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(101),
-                       breaks = seq(0,1,length.out=101),
-                       cluster_rows=F, cluster_cols=F,
-                       cellwidth=cellwidth, cellheight=cellheight,
-                       gaps_row=nrow(pctmat)-1,
-                       main=main,
-                       ...)
+    # if(is.null(main)) main <- "Distribution of % matched cells"
+    pctmat <- pctmat[-nrow(pctmat),]
+    df <- tibble::tibble(pct=as.vector(pctmat),
+                         query_cluster = rep(colnames(pctmat), each=nrow(pctmat))) %>%
+      dplyr::mutate(query_cluster = forcats::fct_relevel(query_cluster, colnames(pctmat)))
+    g <- ggplot2::ggplot(df, ggplot2::aes(x=query_cluster, y=pct)) +
+      ggplot2::geom_boxplot() +
+      ggplot2::theme_bw() +
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 270, hjust = 0)) +
+      ggplot2::geom_hline(linetype = "dashed", yintercept = pct.cutoff, color = "red") +
+      ggplot2::scale_y_continuous(breaks=seq(0,1,0.2), limits=c(0,1)) +
+      ggplot2::xlab("Query cluster") + ggplot2::ylab("% matched cells")
+    ## save plot or plot on device
+    if(!is.na(filename)) ggplot2::ggsave(filename, g, width=ncol(pctmat)*.2, height=5)
+    else plot(g)
+    ## output
     if(return.value) return(pctmat)
   }
 }
@@ -141,10 +154,10 @@ cutoff.pctmat <- function(pctmat, pct.cutoff){
 ## plot_bilateral_scmap() ##
 ############################
 
-plot_bilateral_scmap <- function(rst.scmap.E1toE2, rst.scmap.E2toE1, prefix.E1="E1", prefix.E2="E2",
+plot_bilateral_scmap <- function(rst.scmap.E1toE2, rst.scmap.E2toE1, name.E1="E1", name.E2="E2",
                                  pct.cutoff=0.5,
                                  reorder=TRUE, return.value=FALSE,
-                                 cellwidth=10, cellheight=10, main=NULL, ...){
+                                 cellwidth=10, cellheight=10, main=NULL, filename=NA, ...){
   ## get binary matrices for plotting
   pctmat.cutoff.E1toE2 <- cutoff.pctmat(rst.scmap.E1toE2$pctmat, pct.cutoff=pct.cutoff)
   pctmat.cutoff.E2toE1 <- cutoff.pctmat(rst.scmap.E2toE1$pctmat, pct.cutoff=pct.cutoff)
@@ -156,8 +169,8 @@ plot_bilateral_scmap <- function(rst.scmap.E1toE2, rst.scmap.E2toE1, prefix.E1="
   ## unassigned row
   mat.bi <- rbind(mat.bi, 2*as.numeric(colSums(mat.bi)==0))
   ## rename colnames and rownames
-  rownames(mat.bi) <- gsub("ref",prefix.E2,rownames(pctmat.cutoff.E1toE2))
-  colnames(mat.bi) <- gsub("query",prefix.E1,colnames(pctmat.cutoff.E1toE2))
+  rownames(mat.bi) <- gsub("ref",name.E2,rownames(pctmat.cutoff.E1toE2))
+  colnames(mat.bi) <- gsub("query",name.E1,colnames(pctmat.cutoff.E1toE2))
 
   ## plot
   if(is.null(main)) main <- "Bilatreral matches (cell-to-cluster)"
@@ -169,14 +182,14 @@ plot_bilateral_scmap <- function(rst.scmap.E1toE2, rst.scmap.E2toE1, prefix.E1="
                      cluster_rows=F, cluster_cols=F,
                      gaps_row=nrow(mat.bi)-1,
                      cellwidth=cellwidth, cellheight=cellheight,
-                     main=main,
+                     main=main, filename=filename,
                      ...)
   if(return.value) return(mat.bi)
 }
 
 
 ######################################################################################################################
-######################################################################################################################
+### Seurat ###########################################################################################################
 ######################################################################################################################
 
 
@@ -294,12 +307,16 @@ match2mat.seurat <- function(match, oo.ref, cluster.sizes.query){
 
 plot_seurat <- function(rst.seurat, type="matches", pct.cutoff=0.5,
                         reorder=TRUE, return.value=FALSE,
-                        cellwidth=10, cellheight=10, main=NULL, ...){
+                        cellwidth=10, cellheight=10, main=NULL, filename=NA, ...){
   pctmat <- rst.seurat$pctmat
   pctmat.cutoff <- FRmatch:::cutoff.pctmat(pctmat, pct.cutoff=pct.cutoff)
-  if(reorder) pctmat.cutoff <- FRmatch:::reorder(pctmat.cutoff)
+  if(reorder){
+    pctmat.cutoff <- FRmatch:::reorder(pctmat.cutoff)
+    pctmat <- pctmat[,colnames(pctmat.cutoff)]
+  }
   if(type=="matches"){
     if(is.null(main)) main <- "Cell-to-cell matches"
+    ## heatmap
     pheatmap::pheatmap(pctmat.cutoff,
                        color = colorRampPalette(rev(RColorBrewer::brewer.pal(n=7, name="RdYlBu")[c(3,3,7)]))(3),
                        breaks = seq(0,1,length.out=3),
@@ -307,21 +324,28 @@ plot_seurat <- function(rst.seurat, type="matches", pct.cutoff=0.5,
                        cluster_rows=F, cluster_cols=F,
                        gaps_row=nrow(pctmat.cutoff)-1,
                        cellwidth=cellwidth, cellheight=cellheight,
-                       main=main,
+                       main=main, filename=filename,
                        ...)
+    ## output
     if(return.value) return(pctmat.cutoff)
   }
   if(type=="pctmat"){
-    if(reorder) pctmat <- pctmat[,colnames(pctmat.cutoff)]
-    if(is.null(main)) main <- "Percent of cells matched"
-    pheatmap::pheatmap(pctmat,
-                       color = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(101),
-                       breaks = seq(0,1,length.out=101),
-                       cluster_rows=F, cluster_cols=F,
-                       cellwidth=cellwidth, cellheight=cellheight,
-                       gaps_row=nrow(pctmat)-1,
-                       main=main,
-                       ...)
+    # if(is.null(main)) main <- "Distribution of % matched cells"
+    pctmat <- pctmat[-nrow(pctmat),]
+    df <- tibble::tibble(pct=as.vector(pctmat),
+                         query_cluster = rep(colnames(pctmat), each=nrow(pctmat))) %>%
+      dplyr::mutate(query_cluster = forcats::fct_relevel(query_cluster, colnames(pctmat)))
+    g <- ggplot2::ggplot(df, ggplot2::aes(x=query_cluster, y=pct)) +
+      ggplot2::geom_boxplot() +
+      ggplot2::theme_bw() +
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 270, hjust = 0)) +
+      ggplot2::geom_hline(linetype = "dashed", yintercept = pct.cutoff, color = "red") +
+      ggplot2::scale_y_continuous(breaks=seq(0,1,0.2), limits=c(0,1)) +
+      ggplot2::xlab("Query cluster") + ggplot2::ylab("% matched cells")
+    ## save plot or plot on device
+    if(!is.na(filename)) ggplot2::ggsave(filename, g, width=ncol(pctmat)*.2, height=5)
+    else plot(g)
+    ## output
     if(return.value) return(pctmat)
   }
   if(type=="prediction.scores"){
@@ -333,7 +357,7 @@ plot_seurat <- function(rst.seurat, type="matches", pct.cutoff=0.5,
                        breaks = seq(0,1,length.out=101),
                        cluster_rows=F, cluster_cols=F,
                        cellwidth=cellwidth, cellheight=cellheight,
-                       main=main,
+                       main=main, filename=filename,
                        ...)
     if(return.value) return(prediction.scores)
   }
@@ -343,10 +367,10 @@ plot_seurat <- function(rst.seurat, type="matches", pct.cutoff=0.5,
 ## plot_bilateral_seurat() ##
 #############################
 
-plot_bilateral_seurat <- function(rst.seurat.E1toE2, rst.seurat.E2toE1, prefix.E1="E1", prefix.E2="E2",
+plot_bilateral_seurat <- function(rst.seurat.E1toE2, rst.seurat.E2toE1, name.E1="E1", name.E2="E2",
                                   pct.cutoff=0.5,
                                   reorder=TRUE, return.value=FALSE,
-                                  cellwidth=10, cellheight=10, main=NULL, ...){
+                                  cellwidth=10, cellheight=10, main=NULL, filename=NA, ...){
   ## get binary matrices for plotting
   pctmat.cutoff.E1toE2 <- cutoff.pctmat(rst.seurat.E1toE2$pctmat, pct.cutoff=pct.cutoff)
   pctmat.cutoff.E2toE1 <- cutoff.pctmat(rst.seurat.E2toE1$pctmat, pct.cutoff=pct.cutoff)
@@ -358,8 +382,8 @@ plot_bilateral_seurat <- function(rst.seurat.E1toE2, rst.seurat.E2toE1, prefix.E
   ## unassigned row
   mat.bi <- rbind(mat.bi, 2*as.numeric(colSums(mat.bi)==0))
   ## rename colnames and rownames
-  rownames(mat.bi) <- gsub("ref",prefix.E2,rownames(pctmat.cutoff.E1toE2))
-  colnames(mat.bi) <- gsub("query",prefix.E1,colnames(pctmat.cutoff.E1toE2))
+  rownames(mat.bi) <- gsub("ref",name.E2,rownames(pctmat.cutoff.E1toE2))
+  colnames(mat.bi) <- gsub("query",name.E1,colnames(pctmat.cutoff.E1toE2))
 
   ## plot
   if(is.null(main)) main <- "Bilatreral matches (cell-to-cell)"
@@ -371,7 +395,7 @@ plot_bilateral_seurat <- function(rst.seurat.E1toE2, rst.seurat.E2toE1, prefix.E
                      cluster_rows=F, cluster_cols=F,
                      gaps_row=nrow(mat.bi)-1,
                      cellwidth=cellwidth, cellheight=cellheight,
-                     main=main,
+                     main=main, filename=filename,
                      ...)
   if(return.value) return(mat.bi)
 }

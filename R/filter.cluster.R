@@ -24,7 +24,7 @@ filter.cluster <- function(sce.object, filter.size=10, filter.fscore=NULL){
   }
   sce.object.filt@metadata$cluster_order <- base::intersect(sce.object@metadata$cluster_order, cluster.keep)
   ## rowData
-  rowData(sce.object.filt)$NSF_markers <- rownames(sce.object.filt) %in% sce.object.filt@metadata$cluster_marker_info$markerGene
+  SummarizedExperiment::rowData(sce.object.filt)$NSF_markers <- rownames(sce.object.filt) %in% sce.object.filt@metadata$cluster_marker_info$markerGene
 
   return(sce.object.filt)
 }

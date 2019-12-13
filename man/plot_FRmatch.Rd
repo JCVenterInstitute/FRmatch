@@ -28,7 +28,7 @@ better interpretability (aligning matches in the diagonal). Default: \code{TRUE}
 \item{cellwidth, cellheight, main, ...}{Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.}
 }
 \value{
-If \code{return.value = TRUE}, a binary matrix of matching results and a matrix of adjusted p-values.
+If \code{return.value = TRUE}, a binary matrix of matching results or a matrix of adjusted p-values.
 }
 \description{
 This function takes in the \code{\link[FRmath]{FRmatch}} output and provides plots of the results. If \code{type="matches"},

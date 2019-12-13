@@ -46,7 +46,7 @@ plot_nonzero <- function(sce.object, return.plot=TRUE, return.value=FALSE,
       ann <- data.frame("f.score"=fscores$`f-measure`)
       rownames(ann) <- fscores$clusterName
       pheatmap::pheatmap(nonzero.pct,
-                         color=colorRampPalette(RColorBrewer::brewer.pal(n = 7, name = "Blues"))(101),
+                         color=colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(101),
                          breaks=seq(0,1,length.out=101),
                          cluster_rows = F, cluster_cols = F,
                          gaps_row = gaps[-length(gaps)], gaps_col = 1:(ncol(zero.pct)-1),
@@ -56,7 +56,7 @@ plot_nonzero <- function(sce.object, return.plot=TRUE, return.value=FALSE,
     }
     else
     pheatmap::pheatmap(nonzero.pct,
-                       color=colorRampPalette(RColorBrewer::brewer.pal(n = 7, name = "Blues"))(101),
+                       color=colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(101),
                        breaks=seq(0,1,length.out=101),
                        cluster_rows = F, cluster_cols = F,
                        gaps_row = gaps[-length(gaps)], gaps_col = 1:(ncol(zero.pct)-1),

@@ -25,9 +25,9 @@
 
 check_data <- function(sce.object){
 
-  ###############
-  ## metatdata ##
-  ###############
+  ##############
+  ## metadata ##
+  ##############
   ## cluster_marker_info
   if(is.null(sce.object@metadata$cluster_marker_info)){
     stop("@metadata$cluster_marker_info is not found. Please see example in help('sce.example'). \n
@@ -57,7 +57,7 @@ check_data <- function(sce.object){
   ## assays ##
   ############
   if(!"logcounts" %in% names(assays(sce.object))){
-    stop("'logcounts' not in names(assays(<SingleCellExperiment>)). Please see example in help('sce.example'). \n
+    stop("'logcounts' not in names(assays(sce.object)). Please see example in help('sce.example'). \n
          Data object check not complete. \n")
   }
 
@@ -121,7 +121,7 @@ check_query_data <- function(sce.object){
   ## assays ##
   ############
   if(!"logcounts" %in% names(assays(sce.object))){
-    stop("'logcounts' not in names(assays(<SingleCellExperiment>)). Please see example in help('sce.example'). \n
+    stop("'logcounts' not in names(assays(sce.object)). Please see example in help('sce.example'). \n
          Data object check not complete. \n")
   }
 

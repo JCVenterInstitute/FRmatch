@@ -6,7 +6,8 @@
 \usage{
 FR.test(samp1, samp2, use.cosine = FALSE, binary = FALSE,
   binary.cutoff = 2, plot.MST = FALSE, col = c("#F0E442", "#56B4E9"),
-  label.names = c("Sample 1", "Sample 2"), ...)
+  label.names = c("Sample 1", "Sample 2"), vertex.size = 5,
+  edge.width = 1, ...)
 }
 \arguments{
 \item{samp1}{Numeric matrix or data frame for Sample 1. Rows are multivariate dimensions, and columns are samples. E.g. gene by cell.}

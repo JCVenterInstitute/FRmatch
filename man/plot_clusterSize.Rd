@@ -5,7 +5,8 @@
 \title{Cluster size plot}
 \usage{
 plot_clusterSize(sce.E1, sce.E2, name.E1 = "E1", name.E2 = "E2",
-  col.E1 = "#F0E442", col.E2 = "#56B4E9", filename = NA)
+  col.E1 = "#F0E442", col.E2 = "#56B4E9", filename = NA,
+  width = NULL, height = 10)
 }
 \arguments{
 \item{sce.E1, sce.E2}{Two \code{FRmatch} input data objects, namely \code{E1} and \code{E2}. See example in \code{\link[FRmatch]{sce.example}}.}
@@ -17,5 +18,5 @@ plot_clusterSize(sce.E1, sce.E2, name.E1 = "E1", name.E2 = "E2",
 \item{filename}{File name to save the plot. Default: \code{NA}, not to save.}
 }
 \description{
-A function to plot cluster sizes for two datasets (e.g. query and reference).
+This is an auxilirary function that plots cluster sizes for two single cell clustered datasets (e.g. query and reference).
 }

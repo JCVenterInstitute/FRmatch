@@ -16,7 +16,7 @@
 #' @param return.value Logical variable indicating if to return plotted values. Default: \code{FALSE}.
 #' @param cellwidth,cellheight,main,... Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.
 #'
-#' @return If \code{return.value = TRUE}, a binary matrix of matching results and a matrix of adjusted p-values.
+#' @return If \code{return.value = TRUE}, a binary matrix of matching results or a matrix of adjusted p-values.
 #'
 #' @seealso \code{\link[FRmatch]{plot_bilateral_FRmatch}}.
 #'
@@ -41,6 +41,7 @@ plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.lev
   ## plot
   if(type=="matches"){
     if(is.null(main)) main <- "FR-Match"
+    ## heatmap
     pheatmap::pheatmap(pmat.cutoff,
                        color = colorRampPalette(rev(RColorBrewer::brewer.pal(n=7, name="RdYlBu")[c(3,3,7)]))(3),
                        breaks = seq(0,1,length.out=3),
@@ -51,6 +52,8 @@ plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.lev
                        main=main,
                        filename=filename,
                        ...)
+    ## output
+    if(return.value) return(pmat.cutoff)
   }
 
   ## plot
@@ -61,46 +64,21 @@ plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.lev
       dplyr::mutate(query_cluster = forcats::fct_relevel(query_cluster, colnames(pmat.adj)))
     g <- ggplot2::ggplot(df, ggplot2::aes(x=query_cluster, y=padj)) +
       ggplot2::geom_boxplot() +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
+      ggplot2::theme_bw() +
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 270, hjust = 0)) +
       ggplot2::geom_hline(linetype = "dashed", yintercept = sig.level, color = "red") +
+      ggplot2::scale_y_continuous(breaks=seq(0,1,0.2), limits=c(0,1)) +
       ggplot2::xlab("Query cluster") + ggplot2::ylab("Adjusted p-value")
-    plot(g)
+    ## save plot or plot on device
     if(!is.na(filename)) ggplot2::ggsave(filename, g, width=ncol(pmat.adj)*.2, height=5)
+    else plot(g)
+    ## output
+    if(return.value) return(pmat.adj)
   }
-
-  ## output
-  if(return.value){
-    return(list("matches"=pmat.cutoff, "padj"=pmat.adj))
-  }
-
-  # if(type=="pmat"){
-  #   if(is.null(main)) main <- "P-values"
-  #   pheatmap::pheatmap(rst.FRmatch$pmat,
-  #            cluster_rows=F, cluster_cols=F,
-  #            cellwidth=cellwidth, cellheight=cellheight,
-  #            main=main,
-  #            ...)
-  # }
-  # if(type=="pmat.rk"){
-  #   if(is.null(main)) main <- "Rank of p-values"
-  #   pheatmap::pheatmap(apply(rst.FRmatch$pmat, 2, rank),
-  #                      cluster_rows=F, cluster_cols=F,
-  #                      cellwidth=cellwidth, cellheight=cellheight,
-  #                      main=main,
-  #                      ...)
-  # }
-  # if(type=="statmat"){
-  #   if(is.null(main)) main <- "FR statistics"
-  #   pheatmap::pheatmap(rst.FRmatch$statmat,
-  #            cluster_rows=F, cluster_cols=F,
-  #            cellwidth=cellwidth, cellheight=cellheight,
-  #            main=main,
-  #            ...)
-  # }
 }
 
 
-##------below are some utility function for the main function---------------------------------
+##------below are some utility functions for the main function---------------------------------
 
 
 ######################

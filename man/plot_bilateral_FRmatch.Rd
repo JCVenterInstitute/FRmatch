@@ -7,7 +7,7 @@
 plot_bilateral_FRmatch(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1,
   name.E1 = "E1", name.E2 = "E2", p.adj.method = "BY",
   sig.level = 0.05, reorder = TRUE, return.value = FALSE,
-  cellwidth = 10, cellheight = 10, main = NULL, ...)
+  cellwidth = 10, cellheight = 10, main = NULL, filename = NA, ...)
 }
 \arguments{
 \item{rst.FRmatch.E1toE2, rst.FRmatch.E2toE1}{The \code{\link[FRmath]{FRmatch}} outputs.}
@@ -22,7 +22,7 @@ plot_bilateral_FRmatch(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1,
 
 \item{return.value}{Logical variable indicating if to return plotted values. Default: \code{FALSE}.}
 
-\item{cellwidth, cellheight, main, ...}{Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.}
+\item{cellwidth, cellheight, main, filename, ...}{Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.}
 }
 \value{
 If \code{return.value = TRUE}, a matrix of matching results. 2 = two-way match, 1 = one-way match, and 0 = no match.
