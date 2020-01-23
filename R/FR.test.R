@@ -14,7 +14,7 @@
 #' @param plot.MST Logical variable indicating if to plot the minimum spanning tree (MST). Default: \code{FALSE}.
 #' @param col Character vector of length two for customized colors of the nodes in MST. Default: \code{c("#F0E442", "#56B4E9")}.
 #' @param label.names Character vector of length two for customized names of the two samples. Default: \code{c("Sample 1","Sample 2")}.
-#' @param ... Additional plotting parammeters passed to \code{\link[igraph]{plot.igraph}}.
+#' @param vertex.size,edge.width,... Additional plotting parammeters passed to \code{\link[igraph]{plot.igraph}}. Default: \code{vertex.size=5, edge.width=1}.
 #'
 #' @return Test statistics and p-value.
 #' \item{runs}{Total number of subtrees.}
@@ -112,7 +112,8 @@ FR.test <- function(samp1, samp2,
     g <- igraph::graph.adjacency(myMST, mode="upper", weighted=NULL, diag=FALSE)
     colors <- rep(col, c(m,n))
     plot(g, vertex.size=vertex.size, edge.width=edge.width, vertex.label=NA, vertex.color=colors, frame=TRUE, ...)
-    legend("bottom", label.names, fill=col, horiz=TRUE, bty ="n", xpd=TRUE, inset=c(0, -.1))
+    legend("bottom", paste0(label.names, " (",c(m,n),")"),
+                            fill=col, bty ="n", xpd=TRUE, inset=c(0, -.15))
   }
 
   ## output

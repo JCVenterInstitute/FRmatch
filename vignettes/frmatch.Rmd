@@ -30,7 +30,7 @@ General steps of FR-Match include:
 2.	Construct minimum spanning trees for each pair of query and reference clusters.
 3.	Calculate FR statistics and p-values by counting the number of edges that connect nodes from different clusters (different colors) in the minimum spanning tree plots.
 
-![Overview of `FR-Match` for cross-comparison between two scRNA-seq experiments.](FRmatch-scheme.png){width=100%}
+![Overview of `FR-Match` for cross-comparison between two scRNA-seq experiments.](FRmatch-scheme-v2.png){width=100%}
 
 ## Installing `FRmatch`
 

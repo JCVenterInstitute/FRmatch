@@ -20,12 +20,9 @@
 #'
 #' @seealso \code{\link[FRmatch]{plot_bilateral_FRmatch}}.
 #'
-#' @importFrom dplyr %>%
+#' @importFrom forcats fct_relevel
+#'
 #' @export
-
-####################
-## plot_FRmatch() ##
-####################
 
 plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.level=0.05,
                          reorder=TRUE, return.value=FALSE,
@@ -42,16 +39,16 @@ plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.lev
   if(type=="matches"){
     if(is.null(main)) main <- "FR-Match"
     ## heatmap
-    pheatmap::pheatmap(pmat.cutoff,
-                       color = colorRampPalette(rev(RColorBrewer::brewer.pal(n=7, name="RdYlBu")[c(3,3,7)]))(3),
-                       breaks = seq(0,1,length.out=3),
-                       legend_breaks=c(0,1), legend_labels=c("No match", "Match"),
-                       cluster_rows=F, cluster_cols=F,
-                       gaps_row=nrow(pmat.cutoff)-1,
-                       cellwidth=cellwidth, cellheight=cellheight,
-                       main=main,
-                       filename=filename,
-                       ...)
+    pheatmap(pmat.cutoff,
+             color = colorRampPalette(rev(brewer.pal(n=7, name="RdYlBu")[c(3,3,7)]))(3),
+             breaks = seq(0,1,length.out=3),
+             legend_breaks=c(0,1), legend_labels=c("No match", "Match"),
+             cluster_rows=F, cluster_cols=F,
+             gaps_row=nrow(pmat.cutoff)-1,
+             cellwidth=cellwidth, cellheight=cellheight,
+             main=main,
+             filename=filename,
+             ...)
     ## output
     if(return.value) return(pmat.cutoff)
   }
@@ -59,18 +56,18 @@ plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.lev
   ## plot
   if(type=="padj"){
     # if(is.null(main)) main <- "Distribution of adjusted p-values"
-    df <- tibble::tibble(padj=as.vector(pmat.adj),
-                         query_cluster = rep(colnames(pmat.adj), each=nrow(pmat.adj))) %>%
-      dplyr::mutate(query_cluster = forcats::fct_relevel(query_cluster, colnames(pmat.adj)))
-    g <- ggplot2::ggplot(df, ggplot2::aes(x=query_cluster, y=padj)) +
-      ggplot2::geom_boxplot() +
-      ggplot2::theme_bw() +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 270, hjust = 0)) +
-      ggplot2::geom_hline(linetype = "dashed", yintercept = sig.level, color = "red") +
-      ggplot2::scale_y_continuous(breaks=seq(0,1,0.2), limits=c(0,1)) +
-      ggplot2::xlab("Query cluster") + ggplot2::ylab("Adjusted p-value")
+    df <- tibble(padj=as.vector(pmat.adj),
+                 query_cluster = rep(colnames(pmat.adj), each=nrow(pmat.adj))) %>%
+      mutate(query_cluster = fct_relevel(query_cluster, colnames(pmat.adj)))
+    g <- ggplot(df, aes(x=query_cluster, y=padj)) +
+      geom_boxplot() +
+      theme_bw() +
+      theme(axis.text.x = element_text(angle = 270, hjust = 0)) +
+      geom_hline(linetype = "dashed", yintercept = sig.level, color = "red") +
+      scale_y_continuous(breaks=seq(0,1,0.2), limits=c(0,1)) +
+      xlab("Query cluster") + ylab("Adjusted p-value")
     ## save plot or plot on device
-    if(!is.na(filename)) ggplot2::ggsave(filename, g, width=ncol(pmat.adj)*.2, height=5)
+    if(!is.na(filename)) ggsave(filename, g, width=ncol(pmat.adj)*.2, height=5)
     else plot(g)
     ## output
     if(return.value) return(pmat.adj)

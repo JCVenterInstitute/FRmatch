@@ -28,7 +28,7 @@ use \code{binary.cutoff} to dichotomize \code{samp1} and \code{samp2}.}
 
 \item{label.names}{Character vector of length two for customized names of the two samples. Default: \code{c("Sample 1","Sample 2")}.}
 
-\item{...}{Additional plotting parammeters passed to \code{\link[igraph]{plot.igraph}}.}
+\item{vertex.size, edge.width, ...}{Additional plotting parammeters passed to \code{\link[igraph]{plot.igraph}}. Default: \code{vertex.size=5, edge.width=1}.}
 }
 \value{
 Test statistics and p-value.

@@ -4,7 +4,7 @@
 \name{sce.example}
 \alias{sce.example}
 \title{FRmatch input data}
-\format{Please follow the nomenclature and data format of this example.
+\format{Please follow the names and data formats of this example data object when constructing your own data.
 \describe{
 \item{\code{metadata}}{List of 3.
 \itemize{
@@ -12,7 +12,7 @@
   \item \code{fsocres} are F-measures associated with the NS-Forest marker genes for each cluster.
   \item \code{cluster_order} is some specific order of the clusters to be used for plotting.
 }}
-\item{\code{assays}}{Data assay \code{logcounts} is the expression data matrix (gene by cell).}
+\item{\code{assays}}{Data assay \code{counts} is the expression data matrix (gene by cell).}
 \item{\code{rownames}}{Gene names.}
 \item{\code{rowData}}{Column \code{NSF_markers} is a logical vector indicating if a gene is an NS-Forest marker gene.}
 \item{\code{colnames}}{Cell IDs.}
@@ -22,10 +22,8 @@
 sce.example
 }
 \description{
-This page describes the \link[SingleCellExperiment]{SingleCellExperiment} data object needed for the \code{\link[FRmatch]{FRmatch}}
-and other functions in this package.
-DESCRIPTION OF MTG DATA.
-This example dataset contain 865 cells with 16497 genes.
+This page describes the \link[SingleCellExperiment]{SingleCellExperiment} data object that can be used
+as input data to \code{\link[FRmatch]{FRmatch}}. This example dataset contains 16497 genes and 865 cells.
 }
 \seealso{
 The \link[SingleCellExperiment]{SingleCellExperiment} data class.

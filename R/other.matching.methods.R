@@ -1,5 +1,17 @@
 
 # #' Functions for other matching methods: scmap, Seurat
+#' @import methods
+#' @importClassesFrom SingleCellExperiment SingleCellExperiment
+#' @importMethodsFrom SingleCellExperiment colData rowData
+#' @importMethodsFrom SummarizedExperiment assay
+#' @import tibble
+#' @import dplyr
+#' @importFrom tidyr replace_na
+#' @importFrom forcats fct_relevel
+#' @import ggplot2
+#' @import pheatmap
+#' @importFrom RColorBrewer brewer.pal
+
 
 ######################################################################################################################
 ### scmap ############################################################################################################
@@ -30,15 +42,15 @@ match_by_scmap <- function(sce.query, sce.ref, imputation=FALSE,
 
   ## modify the sce.objects for scmap
   cat("Preparing data for scmap... \n")
-  SummarizedExperiment::rowData(sce.query)$feature_symbol <- rownames(sce.query)
-  SummarizedExperiment::colData(sce.query)$cell_type1 <- SummarizedExperiment::colData(sce.query)$cluster_membership
-  SummarizedExperiment::rowData(sce.ref)$feature_symbol <- rownames(sce.ref)
-  SummarizedExperiment::colData(sce.ref)$cell_type1 <- SummarizedExperiment::colData(sce.ref)$cluster_membership
+  rowData(sce.query)$feature_symbol <- rownames(sce.query)
+  colData(sce.query)$cell_type1 <- colData(sce.query)$cluster_membership
+  rowData(sce.ref)$feature_symbol <- rownames(sce.ref)
+  colData(sce.ref)$cell_type1 <- colData(sce.ref)$cluster_membership
 
   ## --------feature selection--------
   ## manually select features of NS-Forest marker genes
   if(use.markers){
-    SummarizedExperiment::rowData(sce.ref)$scmap_features <- SummarizedExperiment::rowData(sce.ref)$NSF_markers
+    rowData(sce.ref)$scmap_features <- rowData(sce.ref)$NSF_markers
     cat("Customized markers are used. \n")
   }
   ## scmap selects 500 features
@@ -58,7 +70,7 @@ match_by_scmap <- function(sce.query, sce.ref, imputation=FALSE,
 
   ## matches
   prediction.match <- cbind(scmapCluster_results$scmap_cluster_labs[,'ref'],
-                            SingleCellExperiment::colData(sce.query)$cell_type1)
+                            colData(sce.query)$cell_type1)
   colnames(prediction.match) <- c("prediction", "celltype")
 
   celltypes <- unique(prediction.match[,"celltype"])
@@ -75,16 +87,16 @@ match_by_scmap <- function(sce.query, sce.ref, imputation=FALSE,
   return(list("method"="scmapCluster", "matched.list"=match, "pctmat"=pctmat))
 }
 
-#######################
+##-------------------##
 ## match2mat.scmap() ##
-#######################
+##-------------------##
 
 match2mat.scmap <- function(match, oo.ref){
-  df.match <- tibble::rownames_to_column(data.frame("freq"=unlist(match)))
+  df.match <- rownames_to_column(data.frame("freq"=unlist(match)))
   df.all <- merge(names(match), c(oo.ref,"unassigned"), all=TRUE) %>%
-    dplyr::mutate(query.ref=paste0(x,".",y)) %>%
-    dplyr::left_join(df.match, by=c("query.ref"="rowname")) %>%
-    dplyr::mutate(freq=tidyr::replace_na(freq,0))
+    mutate(query.ref=paste0(x,".",y)) %>%
+    left_join(df.match, by=c("query.ref"="rowname")) %>%
+    mutate(freq=replace_na(freq,0))
   mat <- matrix(df.all$freq, ncol=length(match), byrow=TRUE)
   rownames(mat) <- c(paste0("ref.",oo.ref), "unassigned") #row=ref
   colnames(mat) <- paste0("query.",names(match)) #col=query
@@ -97,20 +109,20 @@ match2mat.scmap <- function(match, oo.ref){
 ## plot_scmap() ##
 ##################
 
-plot_scmap <- function(rst.scmap, type="matches", pct.cutoff=0.5,
+plot_scmap <- function(rst.scmap, type="matches", pct.cutoff=0.3,
                        reorder=TRUE, return.value=FALSE,
                        cellwidth=10, cellheight=10, main=NULL, filename=NA, ...){
   pctmat <- rst.scmap$pctmat
   pctmat.cutoff <- cutoff.pctmat(pctmat, pct.cutoff=pct.cutoff)
   if(reorder){
-    pctmat.cutoff <- FRmatch:::reorder(pctmat.cutoff)
+    pctmat.cutoff <- reorder(pctmat.cutoff)
     pctmat <- pctmat[,colnames(pctmat.cutoff)]
   }
   if(type=="matches"){
     if(is.null(main)) main <- "Cell-to-cluster matches"
     ## heatmap
-    pheatmap::pheatmap(pctmat.cutoff,
-                       color = colorRampPalette(rev(RColorBrewer::brewer.pal(n=7, name="RdYlBu")[c(3,3,7)]))(3),
+    pheatmap(pctmat.cutoff,
+                       color = colorRampPalette(rev(brewer.pal(n=7, name="RdYlBu")[c(3,3,7)]))(3),
                        breaks = seq(0,1,length.out=3),
                        legend_breaks=c(0,1), legend_labels=c("No match", "Match"),
                        cluster_rows=F, cluster_cols=F,
@@ -118,30 +130,35 @@ plot_scmap <- function(rst.scmap, type="matches", pct.cutoff=0.5,
                        cellwidth=cellwidth, cellheight=cellheight,
                        main=main, filename=filename,
                        ...)
+    cat("pct.cutoff = ", pct.cutoff, "\n")
     ## output
     if(return.value) return(pctmat.cutoff)
   }
   if(type=="pctmat"){
     # if(is.null(main)) main <- "Distribution of % matched cells"
     pctmat <- pctmat[-nrow(pctmat),]
-    df <- tibble::tibble(pct=as.vector(pctmat),
+    df <- tibble(pct=as.vector(pctmat),
                          query_cluster = rep(colnames(pctmat), each=nrow(pctmat))) %>%
-      dplyr::mutate(query_cluster = forcats::fct_relevel(query_cluster, colnames(pctmat)))
-    g <- ggplot2::ggplot(df, ggplot2::aes(x=query_cluster, y=pct)) +
-      ggplot2::geom_boxplot() +
-      ggplot2::theme_bw() +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 270, hjust = 0)) +
-      ggplot2::geom_hline(linetype = "dashed", yintercept = pct.cutoff, color = "red") +
-      ggplot2::scale_y_continuous(breaks=seq(0,1,0.2), limits=c(0,1)) +
-      ggplot2::xlab("Query cluster") + ggplot2::ylab("% matched cells")
+      mutate(query_cluster = fct_relevel(query_cluster, colnames(pctmat)))
+    g <- ggplot(df, aes(x=query_cluster, y=pct)) +
+      geom_boxplot() +
+      theme_bw() +
+      theme(axis.text.x = element_text(angle = 270, hjust = 0)) +
+      geom_hline(linetype = "dashed", yintercept = pct.cutoff, color = "red") +
+      scale_y_continuous(breaks=seq(0,1,0.2), limits=c(0,1)) +
+      xlab("Query cluster") + ylab("% matched cells")
     ## save plot or plot on device
-    if(!is.na(filename)) ggplot2::ggsave(filename, g, width=ncol(pctmat)*.2, height=5)
+    if(!is.na(filename)) ggsave(filename, g, width=ncol(pctmat)*.2, height=5)
     else plot(g)
+    cat("pct.cutoff = ", pct.cutoff, "\n")
     ## output
     if(return.value) return(pctmat)
   }
 }
 
+##-----------------##
+## cutoff.pctmat() ##
+##-----------------##
 cutoff.pctmat <- function(pctmat, pct.cutoff){
   pctmat.cutoff <- matrix(as.numeric(pctmat>=pct.cutoff), nrow=nrow(pctmat))
   pctmat.cutoff[nrow(pctmat.cutoff),] <- as.numeric(colSums(pctmat.cutoff[-nrow(pctmat.cutoff),])==0)
@@ -155,7 +172,7 @@ cutoff.pctmat <- function(pctmat, pct.cutoff){
 ############################
 
 plot_bilateral_scmap <- function(rst.scmap.E1toE2, rst.scmap.E2toE1, name.E1="E1", name.E2="E2",
-                                 pct.cutoff=0.5,
+                                 pct.cutoff=0.3,
                                  reorder=TRUE, return.value=FALSE,
                                  cellwidth=10, cellheight=10, main=NULL, filename=NA, ...){
   ## get binary matrices for plotting
@@ -174,9 +191,9 @@ plot_bilateral_scmap <- function(rst.scmap.E1toE2, rst.scmap.E2toE1, name.E1="E1
 
   ## plot
   if(is.null(main)) main <- "Bilatreral matches (cell-to-cluster)"
-  if(reorder) mat.bi <- FRmatch:::reorder(mat.bi)
-  pheatmap::pheatmap(mat.bi,
-                     color = colorRampPalette(rev(RColorBrewer::brewer.pal(n=7, name="RdYlBu")[c(1,1,3,7)]))(4),
+  if(reorder) mat.bi <- reorder(mat.bi)
+  pheatmap(mat.bi,
+                     color = colorRampPalette(rev(brewer.pal(n=7, name="RdYlBu")[c(1,1,3,7)]))(4),
                      breaks = seq(0,2,length.out=4),
                      legend_breaks=0:2, legend_labels=c("No match", "One-way match", "Two-way Match"),
                      cluster_rows=F, cluster_cols=F,
@@ -184,6 +201,7 @@ plot_bilateral_scmap <- function(rst.scmap.E1toE2, rst.scmap.E2toE1, name.E1="E1
                      cellwidth=cellwidth, cellheight=cellheight,
                      main=main, filename=filename,
                      ...)
+  cat("pct.cutoff = ", pct.cutoff, "\n")
   if(return.value) return(mat.bi)
 }
 
@@ -219,14 +237,14 @@ match_by_seurat <- function(sce.query, sce.ref, imputation=FALSE,
 
   ## make data into seurat objects in a list
   cat("Preparing data for Seurat... \n")
-  mat <- merge(SummarizedExperiment::assay(sce.query), SummarizedExperiment::assay(sce.ref), by="row.names")
+  mat <- merge(assay(sce.query), assay(sce.ref), by="row.names")
   rownames(mat) <- mat$Row.names
   mat <- as.matrix(mat[,-1])
   data <- as(mat, "dgCMatrix")
 
   metadata <- data.frame("subsample"=rep(c("query","ref"), c(ncol(sce.query),ncol(sce.ref))),
-                         "celltype"=c(as.character(SingleCellExperiment::colData(sce.query)$cluster_membership),
-                                      as.character(SingleCellExperiment::colData(sce.ref)$cluster_membership)),
+                         "celltype"=c(as.character(colData(sce.query)$cluster_membership),
+                                      as.character(colData(sce.ref)$cluster_membership)),
                          stringsAsFactors=FALSE)
   rownames(metadata) <- colnames(mat)
 
@@ -248,13 +266,13 @@ match_by_seurat <- function(sce.query, sce.ref, imputation=FALSE,
   predictions <- Seurat::TransferData(anchorset=anchors, refdata=object.ref$celltype, dims=1:30)
 
   ## calculate Seurat scores averaged by cluster
-  df.predictions <- predictions %>% tibble::rownames_to_column()
+  df.predictions <- predictions %>% rownames_to_column()
   df.predictions$rowname <- gsub(".x","",df.predictions$rowname)
-  df.membership <- SingleCellExperiment::colData(sce.query) %>% as.data.frame() %>% tibble::rownames_to_column()
-  df.scores <- df.predictions %>% dplyr::left_join(df.membership) %>% dplyr::group_by(cluster_membership) %>%
-    dplyr::select(-c(rowname, predicted.id, prediction.score.max)) %>%
-    dplyr::summarise_all(mean) # average scores by cluster
-  mymat.scores <- df.scores %>% dplyr::select(dplyr::starts_with("prediction")) %>% as.matrix() %>% t()
+  df.membership <- colData(sce.query) %>% as.data.frame() %>% rownames_to_column()
+  df.scores <- df.predictions %>% left_join(df.membership) %>% group_by(cluster_membership) %>%
+    select(-c(rowname, predicted.id, prediction.score.max)) %>%
+    summarise_all(mean) # average scores by cluster
+  mymat.scores <- df.scores %>% select(starts_with("prediction")) %>% as.matrix() %>% t()
   colnames(mymat.scores) <- paste0("query.", df.scores$cluster_membership)
   scores <- mymat.scores[paste0("prediction.score.",oo.ref),paste0("query.",oo.query)]
 
@@ -271,26 +289,26 @@ match_by_seurat <- function(sce.query, sce.ref, imputation=FALSE,
   }
   match <- match[oo.query]
 
-  cluster.sizes.query <- table(SingleCellExperiment::colData(sce.query)$cluster_membership)[names(match)]
+  cluster.sizes.query <- table(colData(sce.query)$cluster_membership)[names(match)]
   pctmat <- match2mat.seurat(match, oo.ref, cluster.sizes.query)
 
   ## return
   return(list("pctmat"=pctmat, "prediction.scores"=scores))
 }
 
-########################
+##--------------------##
 ## match2mat.seurat() ##
-########################
+##--------------------##
 
 match2mat.seurat <- function(match, oo.ref, cluster.sizes.query){
-  df.match <- tibble::rownames_to_column(data.frame("freq"=unlist(match)))
+  df.match <- rownames_to_column(data.frame("freq"=unlist(match)))
   df.all <- merge(names(match), oo.ref, all=TRUE) %>%
-    dplyr::mutate(query.ref=paste0(x,".",y)) %>%
-    dplyr::left_join(df.match, by=c("query.ref"="rowname")) %>%
-    dplyr::mutate(freq=tidyr::replace_na(freq,0))
+    mutate(query.ref=paste0(x,".",y)) %>%
+    left_join(df.match, by=c("query.ref"="rowname")) %>%
+    mutate(freq=replace_na(freq,0))
   mat <- matrix(df.all$freq, nrow=length(oo.ref), byrow=TRUE)
 
-  # cluster.sizes.query <- table(SingleCellExperiment::colData(sce.query)$cluster_membership)[names(match)]
+  # cluster.sizes.query <- table(colData(sce.query)$cluster_membership)[names(match)]
   unassigned <- cluster.sizes.query - colSums(mat)
   mat <- rbind(mat,unassigned)
 
@@ -305,20 +323,20 @@ match2mat.seurat <- function(match, oo.ref, cluster.sizes.query){
 ## plot_seurat() ##
 ###################
 
-plot_seurat <- function(rst.seurat, type="matches", pct.cutoff=0.5,
+plot_seurat <- function(rst.seurat, type="matches", pct.cutoff=0.3,
                         reorder=TRUE, return.value=FALSE,
                         cellwidth=10, cellheight=10, main=NULL, filename=NA, ...){
   pctmat <- rst.seurat$pctmat
-  pctmat.cutoff <- FRmatch:::cutoff.pctmat(pctmat, pct.cutoff=pct.cutoff)
+  pctmat.cutoff <- cutoff.pctmat(pctmat, pct.cutoff=pct.cutoff)
   if(reorder){
-    pctmat.cutoff <- FRmatch:::reorder(pctmat.cutoff)
+    pctmat.cutoff <- reorder(pctmat.cutoff)
     pctmat <- pctmat[,colnames(pctmat.cutoff)]
   }
   if(type=="matches"){
     if(is.null(main)) main <- "Cell-to-cell matches"
     ## heatmap
-    pheatmap::pheatmap(pctmat.cutoff,
-                       color = colorRampPalette(rev(RColorBrewer::brewer.pal(n=7, name="RdYlBu")[c(3,3,7)]))(3),
+    pheatmap(pctmat.cutoff,
+                       color = colorRampPalette(rev(brewer.pal(n=7, name="RdYlBu")[c(3,3,7)]))(3),
                        breaks = seq(0,1,length.out=3),
                        legend_breaks=c(0,1), legend_labels=c("No match", "Match"),
                        cluster_rows=F, cluster_cols=F,
@@ -326,25 +344,27 @@ plot_seurat <- function(rst.seurat, type="matches", pct.cutoff=0.5,
                        cellwidth=cellwidth, cellheight=cellheight,
                        main=main, filename=filename,
                        ...)
+    cat("pct.cutoff = ", pct.cutoff, "\n")
     ## output
     if(return.value) return(pctmat.cutoff)
   }
   if(type=="pctmat"){
     # if(is.null(main)) main <- "Distribution of % matched cells"
     pctmat <- pctmat[-nrow(pctmat),]
-    df <- tibble::tibble(pct=as.vector(pctmat),
+    df <- tibble(pct=as.vector(pctmat),
                          query_cluster = rep(colnames(pctmat), each=nrow(pctmat))) %>%
-      dplyr::mutate(query_cluster = forcats::fct_relevel(query_cluster, colnames(pctmat)))
-    g <- ggplot2::ggplot(df, ggplot2::aes(x=query_cluster, y=pct)) +
-      ggplot2::geom_boxplot() +
-      ggplot2::theme_bw() +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 270, hjust = 0)) +
-      ggplot2::geom_hline(linetype = "dashed", yintercept = pct.cutoff, color = "red") +
-      ggplot2::scale_y_continuous(breaks=seq(0,1,0.2), limits=c(0,1)) +
-      ggplot2::xlab("Query cluster") + ggplot2::ylab("% matched cells")
+      mutate(query_cluster = fct_relevel(query_cluster, colnames(pctmat)))
+    g <- ggplot(df, aes(x=query_cluster, y=pct)) +
+      geom_boxplot() +
+      theme_bw() +
+      theme(axis.text.x = element_text(angle = 270, hjust = 0)) +
+      geom_hline(linetype = "dashed", yintercept = pct.cutoff, color = "red") +
+      scale_y_continuous(breaks=seq(0,1,0.2), limits=c(0,1)) +
+      xlab("Query cluster") + ylab("% matched cells")
     ## save plot or plot on device
-    if(!is.na(filename)) ggplot2::ggsave(filename, g, width=ncol(pctmat)*.2, height=5)
+    if(!is.na(filename)) ggsave(filename, g, width=ncol(pctmat)*.2, height=5)
     else plot(g)
+    cat("pct.cutoff = ", pct.cutoff, "\n")
     ## output
     if(return.value) return(pctmat)
   }
@@ -352,8 +372,8 @@ plot_seurat <- function(rst.seurat, type="matches", pct.cutoff=0.5,
     prediction.scores <- rst.seurat$prediction.scores
     if(reorder) prediction.scores <- prediction.scores[,colnames(pctmat.cutoff)]
     if(is.null(main)) main <- "Prediction score"
-    pheatmap::pheatmap(prediction.scores,
-                       color = colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(101),
+    pheatmap(prediction.scores,
+                       color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(101),
                        breaks = seq(0,1,length.out=101),
                        cluster_rows=F, cluster_cols=F,
                        cellwidth=cellwidth, cellheight=cellheight,
@@ -368,7 +388,7 @@ plot_seurat <- function(rst.seurat, type="matches", pct.cutoff=0.5,
 #############################
 
 plot_bilateral_seurat <- function(rst.seurat.E1toE2, rst.seurat.E2toE1, name.E1="E1", name.E2="E2",
-                                  pct.cutoff=0.5,
+                                  pct.cutoff=0.3,
                                   reorder=TRUE, return.value=FALSE,
                                   cellwidth=10, cellheight=10, main=NULL, filename=NA, ...){
   ## get binary matrices for plotting
@@ -387,9 +407,9 @@ plot_bilateral_seurat <- function(rst.seurat.E1toE2, rst.seurat.E2toE1, name.E1=
 
   ## plot
   if(is.null(main)) main <- "Bilatreral matches (cell-to-cell)"
-  if(reorder) mat.bi <- FRmatch:::reorder(mat.bi)
-  pheatmap::pheatmap(mat.bi,
-                     color = colorRampPalette(rev(RColorBrewer::brewer.pal(n=7, name="RdYlBu")[c(1,1,3,7)]))(4),
+  if(reorder) mat.bi <- reorder(mat.bi)
+  pheatmap(mat.bi,
+                     color = colorRampPalette(rev(brewer.pal(n=7, name="RdYlBu")[c(1,1,3,7)]))(4),
                      breaks = seq(0,2,length.out=4),
                      legend_breaks=0:2, legend_labels=c("No match", "One-way match", "Two-way Match"),
                      cluster_rows=F, cluster_cols=F,
@@ -397,5 +417,6 @@ plot_bilateral_seurat <- function(rst.seurat.E1toE2, rst.seurat.E2toE1, name.E1=
                      cellwidth=cellwidth, cellheight=cellheight,
                      main=main, filename=filename,
                      ...)
+  cat("pct.cutoff = ", pct.cutoff, "\n")
   if(return.value) return(mat.bi)
 }

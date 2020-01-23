@@ -17,18 +17,17 @@
 #' plot_nonzero(sce.example)
 #' }
 #'
-#' @importFrom dplyr %>%
 #' @export
 
 plot_nonzero <- function(sce.object, return.plot=TRUE, return.value=FALSE,
                          cellwidth=15, cellheight=10, main=NULL, ...){
   ## data
-  dat <- logcounts(sce.object)
+  dat <- counts(sce.object)
   fscores <- sce.object@metadata$fscores
 
   ## cluster info
   cluster_order <- sce.object@metadata$cluster_order
-  cluster_marker_info <- metadata(sce.object)$cluster_marker_info %>% dplyr::arrange(match(cluster, cluster_order))
+  cluster_marker_info <- sce.object@metadata$cluster_marker_info %>% arrange(match(cluster, cluster_order))
   cluster_membership <- colData(sce.object)$cluster_membership
 
   ## pct of zeros per marker gene per cluster
@@ -45,23 +44,23 @@ plot_nonzero <- function(sce.object, return.plot=TRUE, return.value=FALSE,
     if(!is.null(fscores)){
       ann <- data.frame("f.score"=fscores$`f-measure`)
       rownames(ann) <- fscores$clusterName
-      pheatmap::pheatmap(nonzero.pct,
-                         color=colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(101),
-                         breaks=seq(0,1,length.out=101),
-                         cluster_rows = F, cluster_cols = F,
-                         gaps_row = gaps[-length(gaps)], gaps_col = 1:(ncol(zero.pct)-1),
-                         annotation_col=ann,
-                         cellwidth=cellwidth, cellheight=cellheight,
-                         main=main, ...)
+      pheatmap(nonzero.pct,
+               color=colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(101),
+               breaks=seq(0,1,length.out=101),
+               cluster_rows = F, cluster_cols = F,
+               gaps_row = gaps[-length(gaps)], gaps_col = 1:(ncol(zero.pct)-1),
+               annotation_col=ann,
+               cellwidth=cellwidth, cellheight=cellheight,
+               main=main, ...)
     }
     else
-    pheatmap::pheatmap(nonzero.pct,
-                       color=colorRampPalette(rev(RColorBrewer::brewer.pal(n = 7, name = "RdYlBu")))(101),
-                       breaks=seq(0,1,length.out=101),
-                       cluster_rows = F, cluster_cols = F,
-                       gaps_row = gaps[-length(gaps)], gaps_col = 1:(ncol(zero.pct)-1),
-                       cellwidth=cellwidth, cellheight=cellheight,
-                       main=main, ...)
+      pheatmap(nonzero.pct,
+               color=colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(101),
+               breaks=seq(0,1,length.out=101),
+               cluster_rows = F, cluster_cols = F,
+               gaps_row = gaps[-length(gaps)], gaps_col = 1:(ncol(zero.pct)-1),
+               cellwidth=cellwidth, cellheight=cellheight,
+               main=main, ...)
   }
 
   ## output

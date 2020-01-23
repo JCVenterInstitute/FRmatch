@@ -20,6 +20,12 @@
 #'
 #' @seealso The \link[SingleCellExperiment]{SingleCellExperiment} data class.
 #'
+#' @import dplyr
+#' @import methods
+#' @importClassesFrom SingleCellExperiment SingleCellExperiment
+#' @importMethodsFrom SingleCellExperiment colData rowData
+#' @importMethodsFrom SummarizedExperiment assays
+#'
 #' @export
 
 
@@ -30,17 +36,14 @@ check_data <- function(sce.object){
   ##############
   ## cluster_marker_info
   if(is.null(sce.object@metadata$cluster_marker_info)){
-    stop("@metadata$cluster_marker_info is not found. Please see example in help('sce.example'). \n
-         Data object check not complete. \n")
+    stop("@metadata$cluster_marker_info is not found. Please see example in help('sce.example').")
   }
   if(!is.null(sce.object@metadata$cluster_marker_info)){
     if(is.null(sce.object@metadata$cluster_marker_info$cluster)){
-      stop("@metadata$cluster_marker_info$cluster is not found. Please see example in help('sce.example'). \n
-           Data object check not complete. \n")
+      stop("@metadata$cluster_marker_info$cluster is not found. Please see example in help('sce.example').")
     }
     if(is.null(sce.object@metadata$cluster_marker_info$markerGene)){
-      stop("@metadata$cluster_marker_info$markerGene is not found. Please see example in help('sce.example'). \n
-           Data object check not complete. \n")
+      stop("@metadata$cluster_marker_info$markerGene is not found. Please see example in help('sce.example').")
     }
   }
   ## fscores
@@ -56,9 +59,8 @@ check_data <- function(sce.object){
   ############
   ## assays ##
   ############
-  if(!"logcounts" %in% names(assays(sce.object))){
-    stop("'logcounts' not in names(assays(sce.object)). Please see example in help('sce.example'). \n
-         Data object check not complete. \n")
+  if(!"counts" %in% names(assays(sce.object))){
+    stop("'counts' not in names(assays(sce.object)). Please see example in help('sce.example').")
   }
 
   #############
@@ -66,8 +68,7 @@ check_data <- function(sce.object){
   #############
   ## rownames
   if(is.null(rownames(sce.object))){
-    stop("rownames of this data object is not found. Please see example in help('sce.example'). \n
-         Data object check not complete. \n")
+    stop("rownames of this data object is not found. Please see example in help('sce.example').")
   }
   ## check gene names
   if(length(base::setdiff(sce.object@metadata$cluster_marker_info$markerGene,rownames(sce.object)))>0){
@@ -89,20 +90,17 @@ check_data <- function(sce.object){
   #############
   ## colnames
   if(is.null(rownames(sce.object))){
-    stop("colnames of this data object is not found. Please see example in help('sce.example'). \n
-         Data object check not complete. \n")
+    stop("colnames of this data object is not found. Please see example in help('sce.example').")
   }
   ## colData
-  if(is.null(SingleCellExperiment::colData(sce.object)$cluster_membership)){
-    stop("'cluster_membership' is not found in colData. Please see example in help('sce.example'). \n
-         Data object check not complete. \n")
+  if(is.null(colData(sce.object)$cluster_membership)){
+    stop("'cluster_membership' is not found in colData. Please see example in help('sce.example').")
   }
 
   ## check cluster names
-  if(length(base::setdiff(unique(SingleCellExperiment::colData(sce.object)$cluster_membership), sce.object@metadata$cluster_order))>0 |
-     length(base::setdiff(sce.object@metadata$cluster_order, unique(SingleCellExperiment::colData(sce.object)$cluster_membership)))>0){
-    stop("Cluster names in colData and metadata do not match. Please use consistent cluster names. Please see example in help('sce.example'). \n
-         Data object check not complete. \n")
+  if(length(base::setdiff(unique(colData(sce.object)$cluster_membership), sce.object@metadata$cluster_order))>0 |
+     length(base::setdiff(sce.object@metadata$cluster_order, unique(colData(sce.object)$cluster_membership)))>0){
+    stop("Cluster names in colData and metadata do not match. Please use consistent cluster names. Please see example in help('sce.example').")
   }
 
   ######################
@@ -120,9 +118,8 @@ check_query_data <- function(sce.object){
   ############
   ## assays ##
   ############
-  if(!"logcounts" %in% names(assays(sce.object))){
-    stop("'logcounts' not in names(assays(sce.object)). Please see example in help('sce.example'). \n
-         Data object check not complete. \n")
+  if(!"counts" %in% names(assays(sce.object))){
+    stop("'counts' not in names(assays(sce.object)). Please see example in help('sce.example').")
   }
 
   #############
@@ -130,8 +127,7 @@ check_query_data <- function(sce.object){
   #############
   ## rownames
   if(is.null(rownames(sce.object))){
-    stop("rownames of this data object is not found. Please see example in help('sce.example'). \n
-         Data object check not complete. \n")
+    stop("rownames of this data object is not found. Please see example in help('sce.example').")
   }
 
   #############
@@ -139,13 +135,11 @@ check_query_data <- function(sce.object){
   #############
   ## colnames
   if(is.null(rownames(sce.object))){
-    stop("colnames of this data object is not found. Please see example in help('sce.example'). \n
-         Data object check not complete. \n")
+    stop("colnames of this data object is not found. Please see example in help('sce.example').")
   }
   ## colData
-  if(is.null(SingleCellExperiment::colData(sce.object)$cluster_membership)){
-    stop("'cluster_membership' is not found in colData. Please see example in help('sce.example'). \n
-         Data object check not complete. \n")
+  if(is.null(colData(sce.object)$cluster_membership)){
+    stop("'cluster_membership' is not found in colData. Please see example in help('sce.example').")
   }
 
   ###############
@@ -154,7 +148,7 @@ check_query_data <- function(sce.object){
 
   ## cluster_order
   if(is.null(sce.object@metadata$cluster_order)){
-    sce.object@metadata$cluster_order <- sort(unique(SingleCellExperiment::colData(sce.object)$cluster_membership))
+    sce.object@metadata$cluster_order <- sort(unique(colData(sce.object)$cluster_membership))
     cat("@metadata$cluster_order was not available originally. It is replaced by alphabetical order of unique cluster names. \n")
   }
 

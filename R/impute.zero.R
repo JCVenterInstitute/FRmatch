@@ -26,7 +26,7 @@
 
 
 impute.zero <- function(sce.object){
-  dat <- logcounts(sce.object)
+  dat <- counts(sce.object)
   cluster_membership <- colData(sce.object)$cluster_membership
   cluster_marker_info <- metadata(sce.object)$cluster_marker_info
   cluster_names <- unique(cluster_marker_info$cluster)
@@ -66,6 +66,6 @@ impute.zero <- function(sce.object){
   }
   dat.imputed <- my.merge(cluster_marker_info$cluster, cluster_marker_info$markerGene, dat, cluster_membership, out.imputed)
 
-  logcounts(sce.object) <- dat.imputed
+  counts(sce.object) <- dat.imputed
   return(sce.object)
 }

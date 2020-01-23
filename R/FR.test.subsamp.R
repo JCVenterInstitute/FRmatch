@@ -20,8 +20,6 @@
 # #' samp2 <- matrix(rnorm(1000),nrow=5)
 # #' FR.test.subsamp.each(samp1, samp2)
 # #' }
-#'
-#' @importFrom dplyr %>%
 
 FR.test.subsamp.each <- function(samp1, samp2, subsamp.size, subsamp.iter, ...){
   out.all <- NULL
@@ -41,7 +39,7 @@ FR.test.subsamp.each <- function(samp1, samp2, subsamp.size, subsamp.iter, ...){
     out.B <- FR.test(xx.B, yy.B, ...)
     out.all <- rbind(out.all, out.B)
   }
-  out.all.sort <- out.all %>% as.data.frame() %>% dplyr::arrange(p.value)
+  out.all.sort <- out.all %>% as.data.frame() %>% arrange(p.value)
   output <- out.all.sort[round(subsamp.iter/2),]
   output <- as.numeric(output)
   names(output) <- names(out.all.sort)

@@ -13,7 +13,6 @@
 #' @param name.E1,name.E2 Customized names for E1 and E2. Default: \code{"E1"} and \code{"E2"}, respectively.
 #' @param cellwidth,cellheight,main,filename,... Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.
 #'
-#' @importFrom dplyr %>%
 #' @export
 
 plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
@@ -32,8 +31,8 @@ plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
   markergenes.common <- base::intersect(markergenes, rownames(sce.query))
 
   ## query cluster
-  col.query <- SingleCellExperiment::colData(sce.query)$cluster_membership==cluster.name
-  mat.query <- logcounts(sce.query[markergenes.common, col.query])
+  col.query <- colData(sce.query)$cluster_membership==cluster.name
+  mat.query <- counts(sce.query[markergenes.common, col.query])
 
   ## randomly select nsamp number of cells
   if(ncol(mat.query)>nsamp) mat.query <- mat.query[,sample(1:ncol(mat.query), nsamp, replace=FALSE)]
@@ -44,20 +43,20 @@ plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
     if(is.null(main)) main <- paste0(name.E1,".",cluster.name)
     ## indicator for markers
     temp <- rep(0, nrow(mat.query))
-    markers.i <- sce.query@metadata$cluster_marker_info %>% dplyr::filter(cluster==cluster.name) %>% pull(markerGene)
+    markers.i <- sce.query@metadata$cluster_marker_info %>% filter(cluster==cluster.name) %>% pull(markerGene)
     temp[rownames(mat.query) %in% markers.i] <- 1
     ann <- data.frame("Marker"=as.factor(temp))
     rownames(ann) <- rownames(mat.query)
     ## plot
-    pheatmap::pheatmap(mat.query,
-                       cluster_rows = F, cluster_cols = F,
-                       cellheight = cellheight, cellwidth = cellwidth,
-                       show_colnames = TRUE,
-                       annotation_row = ann,
-                       labels_col = "Cells", angle_col = "0",
-                       main=main,
-                       filename=filename,
-                       ...)
+    pheatmap(mat.query,
+             cluster_rows = F, cluster_cols = F,
+             cellheight = cellheight, cellwidth = cellwidth,
+             show_colnames = TRUE,
+             annotation_row = ann,
+             labels_col = "Cells", angle_col = "0",
+             main=main,
+             filename=filename,
+             ...)
   }
 
   ### cross-experiment plot ###
@@ -65,14 +64,14 @@ plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
     ## main
     if(is.null(main)) main <- paste0(name.E2,".",cluster.name)
     ## plot
-    pheatmap::pheatmap(mat.query,
-                       cluster_rows = F, cluster_cols = F,
-                       cellheight = cellheight, cellwidth = cellwidth,
-                       show_colnames = TRUE,
-                       labels_col = "Cells", angle_col = "0",
-                       main=main,
-                       filename=filename,
-                       ...)
+    pheatmap(mat.query,
+             cluster_rows = F, cluster_cols = F,
+             cellheight = cellheight, cellwidth = cellwidth,
+             show_colnames = TRUE,
+             labels_col = "Cells", angle_col = "0",
+             main=main,
+             filename=filename,
+             ...)
   }
 }
 

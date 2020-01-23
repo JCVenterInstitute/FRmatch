@@ -16,6 +16,10 @@
 #' @return If \code{return.value = TRUE}, a matrix of matching results. 2 = two-way match, 1 = one-way match, and 0 = no match.
 #'
 #' @seealso \code{\link[FRmatch]{plot_FRmatch}}.
+#'
+#' @import pheatmap
+#' @importFrom RColorBrewer brewer.pal
+#'
 #' @export
 
 plot_bilateral_FRmatch <- function(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1, name.E1="E1", name.E2="E2",
@@ -24,8 +28,8 @@ plot_bilateral_FRmatch <- function(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1, name.
                                    cellwidth=10, cellheight=10, main=NULL, filename=NA, ...){
 
   ## get binary matrices for plotting
-  pmat.cutoff.E1toE2 <- FRmatch:::cutoff.FRmatch(rst.FRmatch.E1toE2$pmat, p.adj.method=p.adj.method, sig.level=sig.level)
-  pmat.cutoff.E2toE1 <- FRmatch:::cutoff.FRmatch(rst.FRmatch.E2toE1$pmat, p.adj.method=p.adj.method, sig.level=sig.level)
+  pmat.cutoff.E1toE2 <- cutoff.FRmatch(rst.FRmatch.E1toE2$pmat, p.adj.method=p.adj.method, sig.level=sig.level)
+  pmat.cutoff.E2toE1 <- cutoff.FRmatch(rst.FRmatch.E2toE1$pmat, p.adj.method=p.adj.method, sig.level=sig.level)
 
   ## combine two matrices to one bilateral matrix
   mat1 <- pmat.cutoff.E1toE2[-nrow(pmat.cutoff.E1toE2),] #use E1toE2 as the framework for final plot
@@ -39,17 +43,17 @@ plot_bilateral_FRmatch <- function(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1, name.
 
   ## plot
   if(is.null(main)) main <- "Bilatreral matches"
-  if(reorder) mat.bi <- FRmatch:::reorder(mat.bi)
-  pheatmap::pheatmap(mat.bi,
-                     color = colorRampPalette(rev(RColorBrewer::brewer.pal(n=7, name="RdYlBu")[c(1,1,3,7)]))(4),
-                     breaks = seq(0,2,length.out=4),
-                     legend_breaks=0:2, legend_labels=c("No match", "One-way match", "Two-way Match"),
-                     cluster_rows=F, cluster_cols=F,
-                     gaps_row=nrow(mat.bi)-1,
-                     cellwidth=cellwidth, cellheight=cellheight,
-                     main=main,
-                     filename=filename,
-                     ...)
+  if(reorder) mat.bi <- reorder(mat.bi)
+  pheatmap(mat.bi,
+           color = colorRampPalette(rev(brewer.pal(n=7, name="RdYlBu")[c(1,1,3,7)]))(4),
+           breaks = seq(0,2,length.out=4),
+           legend_breaks=0:2, legend_labels=c("No match", "One-way match", "Two-way Match"),
+           cluster_rows=F, cluster_cols=F,
+           gaps_row=nrow(mat.bi)-1,
+           cellwidth=cellwidth, cellheight=cellheight,
+           main=main,
+           filename=filename,
+           ...)
 
   ## output
   if(return.value) return(mat.bi)

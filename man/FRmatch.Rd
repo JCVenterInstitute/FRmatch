@@ -52,9 +52,10 @@ and outputs the FR statistics, p-values, and optional intermediated restuls from
 data("sce.example")
 FRmatch(sce.example, sce.example)
 }
+
 }
 \seealso{
-The \link[SingleCellExperiment]{SingleCellExperiment} data class.
+Visualization of matching results using \code{\link[FRmatch]{plot_FRmatch}}, \code{\link[FRmatch]{plot_bilateral_FRmatch}}.
 }
 \author{
 Yun Zhang, \email{zhangy@jcvi.org};

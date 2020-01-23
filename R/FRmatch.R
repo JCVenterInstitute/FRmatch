@@ -32,13 +32,14 @@
 #' Brian Aevermann, \email{baeverma@jcvi.org};
 #' Richard Scheuermann, \email{RScheuermann@jcvi.org}.
 #'
-#' @seealso The \link[SingleCellExperiment]{SingleCellExperiment} data class.
+#' @seealso Visualization of matching results using \code{\link[FRmatch]{plot_FRmatch}}, \code{\link[FRmatch]{plot_bilateral_FRmatch}}.
 #'
 #' @examples
 #' \dontrun{
 #' data("sce.example")
 #' FRmatch(sce.example, sce.example)
 #' }
+#'
 #' @export
 
 FRmatch <- function(sce.query, sce.ref, imputation=FALSE,
@@ -53,22 +54,22 @@ FRmatch <- function(sce.query, sce.ref, imputation=FALSE,
   sce.ref <- check_data(sce.ref)
 
   ## filtering small or low fscore clusters
-  cat("Filtering small clusters: clusters with less than", filter.size, "cells are not considered. \n")
-  if(!is.null(filter.fscore)) cat("Filtering low f-measure clusters in the reference experiment only. \n")
-  sce.ref <- filter.cluster(sce.ref, filter.size=filter.size, filter.fscore=filter.fscore)
+  cat("Filtering small clusters: query and reference clusters with less than", filter.size, "cells are not considered. \n")
+  if(!is.null(filter.fscore)) cat("Filtering low f-score clusters: reference cluster with f-score <", filter.fscore, " are not considered. \n")
   sce.query <- filter.cluster(sce.query, filter.size=filter.size, filter.fscore=NULL)
+  sce.ref <- filter.cluster(sce.ref, filter.size=filter.size, filter.fscore=filter.fscore)
 
   ## imputation
   if(imputation){
     sce.ref <- impute.zero(sce.ref)
-    cat("Imputation done. \n")
+    cat("Imputation is applied. \n")
   }
 
   ## extract info from sce.objects
-  querydat <- logcounts(sce.query) #matrix
-  refdat <- logcounts(sce.ref)
-  membership.query <- SingleCellExperiment::colData(sce.query)$cluster_membership
-  membership.ref <- SingleCellExperiment::colData(sce.ref)$cluster_membership
+  querydat <- counts(sce.query) #matrix
+  refdat <- counts(sce.ref)
+  membership.query <- colData(sce.query)$cluster_membership
+  membership.ref <- colData(sce.ref)$cluster_membership
   order.query <- sce.query@metadata$cluster_order
   order.ref <- sce.ref@metadata$cluster_order
 
@@ -77,8 +78,8 @@ FRmatch <- function(sce.query, sce.ref, imputation=FALSE,
   markergenes.common <- intersect(markergenes, rownames(sce.query))
   querydat.reduced <- querydat[markergenes.common,]
   refdat.reduced <- refdat[markergenes.common,]
-  cat("Dimension reduction done:", length(markergenes.common), "out of", length(markergenes),
-      "unique marker genes in the reference experiment are presented in the query experiment. \n")
+  cat("Feature selection:", length(markergenes.common), "out of", length(markergenes),
+      "unique marker genes of the reference experiment are common in the query experiment. \n")
   if(length(markergenes.common)!=length(markergenes)){
     warning(paste(setdiff(markergenes,markergenes.common),collapse = ", ")," not found in sce.query.")
   }
@@ -106,7 +107,7 @@ FRmatch <- function(sce.query, sce.ref, imputation=FALSE,
   ## use all available cores if not specified
   if(is.null(numCores)) numCores <- detectCores()
 
-  ## prepare data for each combination of pairs between query and ref clusters
+  ## prepare data for each combination of query cluster and ref cluster pair
   paired.datlst.query <- rep(datlst.query, each=ncluster.ref)
   paired.datlst.ref <- rep(datlst.ref, times=ncluster.query)
   ##------------##
@@ -120,7 +121,7 @@ FRmatch <- function(sce.query, sce.ref, imputation=FALSE,
     set.seed(subsamp.seed)
     results <- mcmapply(
       function(samp1,samp2){
-        FRmatch:::FR.test.subsamp(samp1, samp2, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter)
+        FR.test.subsamp(samp1, samp2, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, ...)
       },
       paired.datlst.query, paired.datlst.ref,
       mc.cores = numCores)
@@ -137,9 +138,9 @@ FRmatch <- function(sce.query, sce.ref, imputation=FALSE,
   if(return.all){
     ## all results
     all.results <- as.data.frame(t(results)) %>%
-      dplyr::mutate(query.cluster=rep(clusterNames.query, each=ncluster.ref),
-                    ref.cluster=rep(clusterNames.ref, times=ncluster.query)) %>%
-      dplyr::select(query.cluster, ref.cluster, p.value, stat, runs, runs.query=runs.samp1, runs.ref=runs.samp2)
+      mutate(query.cluster=rep(clusterNames.query, each=ncluster.ref),
+             ref.cluster=rep(clusterNames.ref, times=ncluster.query)) %>%
+      select(query.cluster, ref.cluster, p.value, stat, runs, runs.query=runs.samp1, runs.ref=runs.samp2)
     return(list("pmat"=pmat, "statmat"=statmat, "all.results"=all.results))
   }
   else return(list("pmat"=pmat, "statmat"=statmat))
