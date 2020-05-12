@@ -2,18 +2,18 @@
 % Please edit documentation in R/plot_cluster_by_markers.R
 \name{plot_cluster_by_markers}
 \alias{plot_cluster_by_markers}
-\title{Plot a cluster in the dimension of reference markers (barcoding plot)}
+\title{"Barcoding" plot}
 \usage{
 plot_cluster_by_markers(sce.E1, sce.E2 = NULL, cluster.name,
-  nsamp = 30, name.E1 = "E1", name.E2 = "E2", cellheight = 10,
-  cellwidth = 5, main = NULL, filename = NA, ...)
+  nsamp = 30, name.E1 = "E1", name.E2 = "E2",
+  use.common.markergenes = TRUE, cellheight = 10, cellwidth = 5,
+  main = NULL, filename = NA, ...)
 }
 \arguments{
-\item{sce.E1, sce.E2}{Data objects of the \link[SingleCellExperiment]{SingleCellExperiment} data class. If only \code{sce.E1} is provided,
-it serves as both the query and reference dataset, which means that \code{cluster.name} should be one of the clusters in \code{sce.E1}
-and it should also have marker genes. If both \code{sce.E1} and \code{sce.E2} are provided, then \code{sce.E1} will serve as the
-reference dataset and \code{sce.E2} as the query dataset, which means that \code{cluster.name} should be one of the clusters in
-\code{sce.E2} and the cluster will be plotted using marker genes from \code{sce.E1}.}
+\item{sce.E1, sce.E2}{Data objects of the \link[SingleCellExperiment]{SingleCellExperiment} data class. If only \code{sce.E1},
+then the "barcode" is a self plot, i.e. both cluster (\code{cluster.name}) and marker genes are from the same experiment.
+If both \code{sce.E1} and \code{sce.E2} are provided, then the "barcode" is a cross-experiment plot, i.e. marker genes are from
+\code{sce.E1} (reference) andcluster (\code{cluster.name}) is from \code{sce.E2} (query).}
 
 \item{cluster.name}{Name of the cluster to be plotted.}
 
@@ -21,8 +21,10 @@ reference dataset and \code{sce.E2} as the query dataset, which means that \code
 
 \item{name.E1, name.E2}{Customized names for E1 and E2. Default: \code{"E1"} and \code{"E2"}, respectively.}
 
+\item{use.common.markergenes}{Boolean variable indicating if to plot only common marker genes in a cross-experiment plot.}
+
 \item{cellwidth, cellheight, main, filename, ...}{Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.}
 }
 \description{
-This is an auxilirary function that plots the expression levels of a (query) cluster by reference marker genes, a.k.a. barcoding plot.
+This function plots expression pattern of a cluster by marker genes, a.k.a. barcoding plot.
 }

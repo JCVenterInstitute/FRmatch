@@ -3,20 +3,20 @@
 \docType{data}
 \name{sce.example}
 \alias{sce.example}
-\title{FRmatch input data}
-\format{Please follow the names and data formats of this example data object when constructing your own data.
+\title{FR-Match input data}
+\format{Please follow the names and data formats of this example when constructing your own data.
 \describe{
+\item{\code{assays}}{Data assay \code{logcounts} is the gene expression matrix to be used.}
+\item{\code{rownames}}{Gene names.}
+\item{\code{rowData}}{Column \code{marker_gene} is a boolean vector indicating if a gene is a marker gene (1) or not (0).}
+\item{\code{colnames}}{Cell names.}
+\item{\code{colData}}{Column \code{cluster_membership} is a character vector of cell cluster membership.}
 \item{\code{metadata}}{List of 3.
 \itemize{
-  \item \code{cluster_marker_info} are the cluster-specific NS-Forest marker genes.
-  \item \code{fsocres} are F-measures associated with the NS-Forest marker genes for each cluster.
-  \item \code{cluster_order} is some specific order of the clusters to be used for plotting.
+  \item \code{cluster_marker_info} is a data frame of maker genes for each cluster.
+  \item \code{fsocres} is a data frame of F-scores for each cluster.
+  \item \code{cluster_order} is a vector of ordered cluster names, which will be used in the final output and plots.
 }}
-\item{\code{assays}}{Data assay \code{counts} is the expression data matrix (gene by cell).}
-\item{\code{rownames}}{Gene names.}
-\item{\code{rowData}}{Column \code{NSF_markers} is a logical vector indicating if a gene is an NS-Forest marker gene.}
-\item{\code{colnames}}{Cell IDs.}
-\item{\code{colData}}{Column \code{cluster_membership} is a character vector of cell cluster membership.}
 }}
 \usage{
 sce.example

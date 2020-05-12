@@ -1,24 +1,24 @@
 
-#' Plot FR-Match results
+#' One-way matching plots for FR-Match results
 #'
-#' This function takes in the \code{\link[FRmath]{FRmatch}} output and provides plots of the results. If \code{type="matches"},
-#' it plots the final matching results. If \code{type=="padj"}, it plots the distribution of adjusted p-values.
+#' This function takes in the \code{\link[FRmath]{FRmatch}} output and generates plots for the matching results.
+#' If \code{type="matches"}, it plots the one-way matches. If \code{type=="padj"}, it plots the distribution of adjusted p-values.
 #'
 #' @param rst.FRmatch The \code{\link[FRmath]{FRmatch}} output.
-#' @param type If \code{type="matches"}, it plots the final matching results.
+#' @param type If \code{type="matches"} (default), it plots the one-way matches.
 #' If \code{type=="padj"}, it plots the distribution of adjusted p-values.
-#' @param p.adj.method P-value adjustment method for multiple comparison correction. Default: \code{"BY"}.
-#' Please see \code{\link[stats]{p.adjust.methods}}.
-#' @param sig.level Numeric variable that specifies the significance level of adjusted p-value, above which is a match.
-#' Default value: \code{0.05}.
-#' @param reorder Logical variable indicating if to reorder the columns of the heatmap of matching results, which may have
-#' better interpretability (aligning matches in the diagonal). Default: \code{TRUE}.
-#' @param return.value Logical variable indicating if to return plotted values. Default: \code{FALSE}.
+#' @param p.adj.method P-value adjustment method for multiple hypothesis testing correction. Default: \code{"BY"}.
+#' For more options, please see \code{\link[stats]{p.adjust.methods}}.
+#' @param sig.level Numeric variable that specifies the significance level of adjusted p-value. A MATCH is >\code{sig.level}.
+#' Default: \code{0.05}.
+#' @param reorder Boolean variable indicating if to reorder the columns so that matches are aligned along the diagonal.
+#' It improves the interpretability of the one-way match plot. Default: \code{TRUE}.
+#' @param return.value Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.
 #' @param cellwidth,cellheight,main,... Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.
 #'
-#' @return If \code{return.value = TRUE}, a binary matrix of matching results or a matrix of adjusted p-values.
+#' @return If \code{return.value = TRUE}, a matrix of one-way matching values 1 = match, and 0 = no match, or a matrix of adjusted p-values.
 #'
-#' @seealso \code{\link[FRmatch]{plot_bilateral_FRmatch}}.
+#' @seealso \code{\link[FRmatch]{plot_bi_FRmatch}}.
 #'
 #' @importFrom forcats fct_relevel
 #'

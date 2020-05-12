@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_FRmatch.R
 \name{plot_FRmatch}
 \alias{plot_FRmatch}
-\title{Plot FR-Match results}
+\title{One-way matching plots for FR-Match results}
 \usage{
 plot_FRmatch(rst.FRmatch, type = "matches", p.adj.method = "BY",
   sig.level = 0.05, reorder = TRUE, return.value = FALSE,
@@ -11,29 +11,29 @@ plot_FRmatch(rst.FRmatch, type = "matches", p.adj.method = "BY",
 \arguments{
 \item{rst.FRmatch}{The \code{\link[FRmath]{FRmatch}} output.}
 
-\item{type}{If \code{type="matches"}, it plots the final matching results.
+\item{type}{If \code{type="matches"} (default), it plots the one-way matches.
 If \code{type=="padj"}, it plots the distribution of adjusted p-values.}
 
-\item{p.adj.method}{P-value adjustment method for multiple comparison correction. Default: \code{"BY"}.
-Please see \code{\link[stats]{p.adjust.methods}}.}
+\item{p.adj.method}{P-value adjustment method for multiple hypothesis testing correction. Default: \code{"BY"}.
+For more options, please see \code{\link[stats]{p.adjust.methods}}.}
 
-\item{sig.level}{Numeric variable that specifies the significance level of adjusted p-value, above which is a match.
-Default value: \code{0.05}.}
+\item{sig.level}{Numeric variable that specifies the significance level of adjusted p-value. A MATCH is >\code{sig.level}.
+Default: \code{0.05}.}
 
-\item{reorder}{Logical variable indicating if to reorder the columns of the heatmap of matching results, which may have
-better interpretability (aligning matches in the diagonal). Default: \code{TRUE}.}
+\item{reorder}{Boolean variable indicating if to reorder the columns so that matches are aligned along the diagonal.
+It improves the interpretability of the one-way match plot. Default: \code{TRUE}.}
 
-\item{return.value}{Logical variable indicating if to return plotted values. Default: \code{FALSE}.}
+\item{return.value}{Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.}
 
 \item{cellwidth, cellheight, main, ...}{Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.}
 }
 \value{
-If \code{return.value = TRUE}, a binary matrix of matching results or a matrix of adjusted p-values.
+If \code{return.value = TRUE}, a matrix of one-way matching values 1 = match, and 0 = no match, or a matrix of adjusted p-values.
 }
 \description{
-This function takes in the \code{\link[FRmath]{FRmatch}} output and provides plots of the results. If \code{type="matches"},
-it plots the final matching results. If \code{type=="padj"}, it plots the distribution of adjusted p-values.
+This function takes in the \code{\link[FRmath]{FRmatch}} output and generates plots for the matching results.
+If \code{type="matches"}, it plots the one-way matches. If \code{type=="padj"}, it plots the distribution of adjusted p-values.
 }
 \seealso{
-\code{\link[FRmatch]{plot_bilateral_FRmatch}}.
+\code{\link[FRmatch]{plot_bi_FRmatch}}.
 }

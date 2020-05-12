@@ -4,19 +4,23 @@
 \alias{plot_clusterSize}
 \title{Cluster size plot}
 \usage{
-plot_clusterSize(sce.E1, sce.E2, name.E1 = "E1", name.E2 = "E2",
-  col.E1 = "#F0E442", col.E2 = "#56B4E9", filename = NA,
-  width = NULL, height = 10)
+plot_clusterSize(sce.E1, sce.E2, decreasing = TRUE, name.E1 = "E1",
+  name.E2 = "E2", col.E1 = "#F0E442", col.E2 = "#56B4E9",
+  filename = NA, width = NULL, height = 10)
 }
 \arguments{
-\item{sce.E1, sce.E2}{Two \code{FRmatch} input data objects, namely \code{E1} and \code{E2}. See example in \code{\link[FRmatch]{sce.example}}.}
+\item{sce.E1, sce.E2}{Data objects, namely E1 and E2.}
+
+\item{decreasing}{Boolean variable if the cluster sizes should be sorted in decreasing order. Default: \code{TRUE}.}
 
 \item{name.E1, name.E2}{Customized names for E1 and E2. Default: \code{"E1"} and \code{"E2"}, respectively.}
 
 \item{col.E1, col.E2}{Customized colors for E1 and E2. Default: \code{"#F0E442"} and \code{"#56B4E9"}, respectively.}
 
-\item{filename}{File name to save the plot. Default: \code{NA}, not to save.}
+\item{filename}{File name if to save the plot. Default: \code{NA}, not to save the plot.}
+
+\item{width, height}{Width and height for saved plot.}
 }
 \description{
-This is an auxilirary function that plots cluster sizes for two single cell clustered datasets (e.g. query and reference).
+This function plots the cluster sizes of the two single cell datasets (e.g. query and reference) to be compared.
 }

@@ -22,7 +22,7 @@ use \code{binary.cutoff} to dichotomize \code{samp1} and \code{samp2}.}
 
 \item{binary.cutoff}{Numeric value for binary cutoff. Binary value = 1 if greater than \code{binary.cutoff}, 0 otherwise. Default: \code{2}.}
 
-\item{plot.MST}{Logical variable indicating if to plot the minimum spanning tree (MST). Default: \code{FALSE}.}
+\item{plot.MST}{Boolean variable indicating if to plot the minimum spanning tree (MST). Default: \code{FALSE}.}
 
 \item{col}{Character vector of length two for customized colors of the nodes in MST. Default: \code{c("#F0E442", "#56B4E9")}.}
 
@@ -31,7 +31,7 @@ use \code{binary.cutoff} to dichotomize \code{samp1} and \code{samp2}.}
 \item{vertex.size, edge.width, ...}{Additional plotting parammeters passed to \code{\link[igraph]{plot.igraph}}. Default: \code{vertex.size=5, edge.width=1}.}
 }
 \value{
-Test statistics and p-value.
+Test statistics and p-values.
 \item{runs}{Total number of subtrees.}
 \item{runs.samp1}{Number of subtrees of Sample 1.}
 \item{runs.samp2}{Number of subtrees of Sample 2.}
@@ -51,7 +51,4 @@ FR.test(samp1, samp2, use.cosine=TRUE)
 FR.test(samp1, samp2, plot.MST=TRUE, main="Minimum spanning tree plot")
 FR.test(samp1, samp2, binary=TRUE, binary.cutoff=1)
 }
-}
-\author{
-Yun Zhang, \email{zhangy@jcvi.org}; Brian Aevermann, \email{baeverma@jcvi.org}; Richard Scheuermann, \email{RScheuermann@jcvi.org}.
 }

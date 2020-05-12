@@ -11,19 +11,17 @@
 #' @param binary An option if to use binary values. Logical variable. Default: \code{FALSE}. If \code{TRUE},
 #' use \code{binary.cutoff} to dichotomize \code{samp1} and \code{samp2}.
 #' @param binary.cutoff Numeric value for binary cutoff. Binary value = 1 if greater than \code{binary.cutoff}, 0 otherwise. Default: \code{2}.
-#' @param plot.MST Logical variable indicating if to plot the minimum spanning tree (MST). Default: \code{FALSE}.
+#' @param plot.MST Boolean variable indicating if to plot the minimum spanning tree (MST). Default: \code{FALSE}.
 #' @param col Character vector of length two for customized colors of the nodes in MST. Default: \code{c("#F0E442", "#56B4E9")}.
 #' @param label.names Character vector of length two for customized names of the two samples. Default: \code{c("Sample 1","Sample 2")}.
 #' @param vertex.size,edge.width,... Additional plotting parammeters passed to \code{\link[igraph]{plot.igraph}}. Default: \code{vertex.size=5, edge.width=1}.
 #'
-#' @return Test statistics and p-value.
+#' @return Test statistics and p-values.
 #' \item{runs}{Total number of subtrees.}
 #' \item{runs.samp1}{Number of subtrees of Sample 1.}
 #' \item{runs.samp2}{Number of subtrees of Sample 2.}
 #' \item{stat}{The standardized FR statistic.}
 #' \item{p.value}{P-value of the FR test.}
-#'
-#' @author Yun Zhang, \email{zhangy@jcvi.org}; Brian Aevermann, \email{baeverma@jcvi.org}; Richard Scheuermann, \email{RScheuermann@jcvi.org}.
 #'
 #' @examples
 #' \dontrun{
@@ -80,11 +78,6 @@ FR.test <- function(samp1, samp2,
   bottomleft <- myMST[(m+1):N,1:m]
   runs <- sum(bottomleft)+1
 
-  ## check with Joyce's codes
-  # leftbottom <- myMST[(m+1):(m+n),1:m]
-  # rightup <- myMST[1:m,(m+1):(m+n)]
-  # runs <- sum(rightup)+1
-
   ## count subgraphs for each sample
   bottomright <- myMST[(m+1):N,(m+1):N]
   g.samp2 <- igraph::graph.adjacency(bottomright, mode="upper", weighted=NULL, diag=FALSE)
@@ -113,7 +106,7 @@ FR.test <- function(samp1, samp2,
     colors <- rep(col, c(m,n))
     plot(g, vertex.size=vertex.size, edge.width=edge.width, vertex.label=NA, vertex.color=colors, frame=TRUE, ...)
     legend("bottom", paste0(label.names, " (",c(m,n),")"),
-                            fill=col, bty ="n", xpd=TRUE, inset=c(0, -.15))
+                            fill=col, bty ="n", xpd=TRUE, inset=c(0, -.18))
   }
 
   ## output

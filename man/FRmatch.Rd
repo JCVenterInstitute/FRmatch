@@ -2,50 +2,57 @@
 % Please edit documentation in R/FRmatch.R
 \name{FRmatch}
 \alias{FRmatch}
-\title{Cell type cluster matching of single-cell RNA-seq data using Friedman-Rafsky test}
+\title{Cluster-to-cluster cell type matching algorithm for single-cell RNA-seq data}
 \usage{
-FRmatch(sce.query, sce.ref, imputation = FALSE, filter.size = 10,
-  filter.fscore = NULL, method = "subsampling", subsamp.size = 10,
-  subsamp.iter = 1001, subsamp.seed = 1, numCores = NULL,
-  return.all = FALSE, ...)
+FRmatch(sce.query, sce.ref, filter.size = 10, filter.fscore = NULL,
+  method = "subsampling", subsamp.size = 10, subsamp.iter = 1001,
+  subsamp.seed = 1, numCores = NULL, prefix = c("query.", "ref."),
+  verbose = 1, return.all = FALSE, ...)
 }
 \arguments{
-\item{sce.query}{Data object of the \link[SingleCellExperiment]{SingleCellExperiment} data class for query experiment.
+\item{sce.query}{Data object of the \link[SingleCellExperiment]{SingleCellExperiment} class for query experiment.
 See details in \code{\link[FRmatch]{sce.example}}.}
 
-\item{sce.ref}{A Data object of the \link[SingleCellExperiment]{SingleCellExperiment} data class for reference experiment.
+\item{sce.ref}{Data object of the \link[SingleCellExperiment]{SingleCellExperiment} class for reference experiment.
 See details in \code{\link[FRmatch]{sce.example}}.}
 
-\item{imputation}{Logical variable indicating if to impute expression zero values for the reference experiment. Default: \code{FALSE}.
-See details in \code{\link[FRmatch]{impute_dropout}}.}
+\item{filter.size, filter.fscore}{Filtering small/poor-quality clusters. Default: \code{filter.size=10}, filter based on the number
+of cells per cluster; \code{filter.fscore=NULL}, filter based on the f-score associated with the cell cluster if available (numeric value).}
 
-\item{filter.size, filter.fscore}{Criteria for filtering small/poor clusters. Default: \code{filter.size=10}, filter based on the number
-of cells per cluster; \code{filter.fscore=NULL}, filter based on the f-measure associated with NS-Forest markers (\code{NULL} or numeric value).}
+\item{method}{Methods for the FR test. Default: \code{method="subsampling"} is to iteratively subsample equal number of cells (i.e. cluster size)
+from the query and reference clusters, and then perform the FR test. Option: \code{method="none"} is the FR test with no modification.}
 
-\item{method}{Adapted methods of FR test. Default: \code{method="subsampling"} is to apply equal size subsampling of the comparing clusters for
-the FR test. Option: \code{method="none"} is the standard FR test without modification.}
-
-\item{subsamp.size, subsamp.iter, subsamp.seed}{Cluster size, number of iterations, and random seed for subsampling.
+\item{subsamp.size, subsamp.iter, subsamp.seed}{Cluster size, number of iterations, and random seed for \code{method="subsampling"}.
 Default: \code{10, 1001, 1}, respectively.}
 
-\item{numCores}{\code{NULL} or an integer that specifies the number of cores for parallel computing.
-Default: \code{NULL}, is to set the maximum number of cores detected by \code{\link[parallel]{detectCores}} if not specified.}
+\item{numCores}{Number of cores for parallel computing.
+Default: \code{NULL}, use the maximum number of cores detected by \code{\link[parallel]{detectCores}} if not specified (an integer).}
 
-\item{return.all}{Logical variable indicating if to return all results (such as number of runs, etc.). Default: \code{FALSE}.}
+\item{prefix}{Prefix names for query and reference clusters. Default: \code{prefix=c("query.", "ref.")}.}
+
+\item{verbose}{Numeric value indicating levels of details to be printed. Default: \code{1}, only print major steps.
+If \code{0}, no verbose; if \code{2}, print all.}
+
+\item{return.all}{Logical variable indicating if to return all results (such as runs, etc.). Default: \code{FALSE}.}
 
 \item{...}{Additional arguments passed to \code{\link[FRmatch]{FR.test}}.}
+
+\item{imputation}{INACTIVE. Logical variable indicating if to impute expression zero values for the reference experiment. Default: \code{FALSE}.
+See details in \code{\link[FRmatch]{impute_dropout}}.}
 }
 \value{
-A list of FR test results:
-\item{pmat}{A matrix of p-values for pairwise comparisons. Rows are reference clusters, and columns are query clusters.}
-\item{statmat}{A matrix of FR statistics for pairwise comparisons. Rows are reference clusters, and columns are query clusters.}
-If \code{return.all = TRUE}, more FR test intermediate results are returned.
+A list of:
+\item{parameters}{Call of key parameters used in the analysis.}
+\item{pmat}{A matrix of p-values. Rows are reference clusters, and columns are query clusters.}
+\item{statmat}{A matrix of FR statistics. Rows are reference clusters, and columns are query clusters.}
+If \code{return.all = TRUE}, more intermediate results are returned.
 }
 \description{
-This is a user-end function that wraps the steps of matching cell type clusters between two single-cell RNA-seq experiments
-(namely, \code{query} and \code{reference}) with clustered expression data and NS-Forest marker genes using Friedman-Rafsky (FR) test.
-This function inputs two data objects of the \link[SingleCellExperiment]{SingleCellExperiment} data class,
-and outputs the FR statistics, p-values, and optional intermediated restuls from the FR test.
+This is a user-end function that wraps up the steps of matching cell type clusters between two single-cell RNA-seq experiments
+(namely, \code{query} and \code{reference}) with \emph{clustered} expression data and \emph{informative} marker genes
+using the Friedman-Rafsky (FR) statistical test.
+This function inputs two data objects of the \link[SingleCellExperiment]{SingleCellExperiment} class,
+and outputs the FR statistics, p-values, and optionally, all intermediate restuls from the FR test.
 }
 \examples{
 \dontrun{

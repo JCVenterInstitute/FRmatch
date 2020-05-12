@@ -22,7 +22,7 @@
 plot_nonzero <- function(sce.object, return.plot=TRUE, return.value=FALSE,
                          cellwidth=15, cellheight=10, main=NULL, ...){
   ## data
-  dat <- counts(sce.object)
+  dat <- assay(sce.object)
   fscores <- sce.object@metadata$fscores
 
   ## cluster info
