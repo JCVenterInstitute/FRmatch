@@ -22,14 +22,6 @@
 #'
 #' @seealso The \link[SingleCellExperiment]{SingleCellExperiment} data class.
 #'
-#' @import dplyr
-#' @import methods
-#' @importClassesFrom SingleCellExperiment SingleCellExperiment
-#' @importFrom SingleCellExperiment SingleCellExperiment
-#' @importMethodsFrom SingleCellExperiment colData rowData
-#' @importMethodsFrom SummarizedExperiment assays
-#' @importFrom S4Vectors metadata metadata<-
-#'
 #' @export
 
 
@@ -48,10 +40,8 @@ check_data_object <- function(sce.object, verbose=TRUE){
   ## rownames
   if(is.null(rownames(sce.object))){
     stop("rownames of this data object is not found. Please see example in help('sce.example').")
-  } else {
-    if(verbose) cat("Replace any special character in rownames by '_'. \n")
-    rownames(sce.object) <- gsub("-| |\\.|/", "_", rownames(sce.object))
   }
+
   ## rowData
   if(is.null(rowData(sce.object)$marker_gene)){
     stop("'marker_gene' is not found in the rowData of this data object. Please see example in help('sce.example').")
@@ -75,9 +65,6 @@ check_data_object <- function(sce.object, verbose=TRUE){
   ## colnames
   if(is.null(colnames(sce.object))){
     stop("colnames of this data object is not found. Please see example in help('sce.example').")
-  } else {
-    if(verbose) cat("Replace any special character in colnames by '_'. \n")
-    colnames(sce.object) <- gsub("-| |\\.|/", "_", colnames(sce.object))
   }
   ## colData
   if(is.null(colData(sce.object)$cluster_membership)){

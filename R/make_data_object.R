@@ -12,6 +12,14 @@
 #'
 #' @return A data object of the \link[SingleCellExperiment]{SingleCellExperiment} class
 #'
+#' @import dplyr
+#' @importFrom magrittr %<>%
+#' @import methods
+#' @importClassesFrom SingleCellExperiment SingleCellExperiment
+#' @importFrom SingleCellExperiment SingleCellExperiment
+#' @importMethodsFrom SingleCellExperiment colData rowData
+#' @importMethodsFrom SummarizedExperiment assays
+#' @importFrom S4Vectors metadata metadata<-
 #' @export
 
 make_data_object <- function(dat, tab, markers,
@@ -21,6 +29,11 @@ make_data_object <- function(dat, tab, markers,
   ## rename key columns
   names(dat)[1] <- "Sample"
   names(tab) <- c("Sample", "Cluster")
+
+  ## replace special symbols by "_"
+  cat("Replace any special symbol in sample and cluster names by '_'. \n")
+  dat %<>% mutate(Sample=gsub("-| |\\.|/", "_", Sample))
+  tab %<>% mutate(Sample=gsub("-| |\\.|/", "_", Sample), Cluster=gsub("-| |\\.|/", "_", Cluster))
 
   ## datatable with "Sample", "Cluster", and gene probe columns for constructing sce.object
   dt <- dat %>% inner_join(tab, by="Sample") %>% #inner_join: make sure that cells are in the SAME order!!!
