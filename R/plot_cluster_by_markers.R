@@ -49,11 +49,16 @@ plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
     ## main
     if(is.null(main)) main <- paste0(name.E1,".",cluster.name)
     ## indicator for markers
-    temp <- rep(0, nrow(mat.query))
-    markers.i <- sce.query@metadata$cluster_marker_info %>% filter(cluster==cluster.name) %>% pull(markerGene)
-    temp[rownames(mat.query) %in% markers.i] <- 1
-    ann <- data.frame("Marker"=as.factor(temp))
-    rownames(ann) <- rownames(mat.query)
+    if(!is.null(sce.query@metadata$cluster_marker_info)){
+      mat.query %<>% mat.query[unique(sce.query@metadata$cluster_marker_info$markerGene),]
+      temp <- rep(0, nrow(mat.query))
+      markers.i <- sce.query@metadata$cluster_marker_info %>% filter(cluster==cluster.name) %>% pull(markerGene)
+      temp[rownames(mat.query) %in% markers.i] <- 1
+      ann <- data.frame("Marker"=as.factor(temp))
+      rownames(ann) <- rownames(mat.query)
+    } else {
+      ann <- NA
+    }
     ## plot
     pheatmap(mat.query,
              cluster_rows = FALSE, cluster_cols = FALSE,
