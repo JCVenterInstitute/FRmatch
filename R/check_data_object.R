@@ -90,7 +90,7 @@ check_data_object <- function(sce.object, verbose=TRUE){
   }
   ## cluster_order
   if(is.null(sce.object@metadata$cluster_order)){
-    sce.object@metadata$cluster_order <- sort(unique(sce.object@metadata$cluster_marker_info$cluster))
+    sce.object@metadata$cluster_order <- sort(unique(colData(sce.object)$cluster_membership))
     if(verbose) cat("'cluster_order' (alphabetical order) is added to the metadata of this data object. \n")
   }
 
