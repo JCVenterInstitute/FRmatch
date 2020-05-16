@@ -25,7 +25,7 @@ Default: \code{0.05}.}
 It improves the interpretability of the one-way match plot. Default: \code{TRUE}.}
 
 \item{ignore.unassigned}{Boolean variable indicating if to skip the columns of unassigned query clusters
-in the \code{type="matches"} plot. Default: \code{FALSE}. If \code{TRUE}, number of ignored columns reported in ().}
+in the \code{type="matches"} plot. Default: \code{FALSE}. If \code{TRUE}, number of ignored columns reported in the unassigned row.}
 
 \item{return.value}{Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.}
 

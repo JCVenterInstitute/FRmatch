@@ -14,7 +14,7 @@
 #' @param reorder Boolean variable indicating if to reorder the columns so that matches are aligned along the diagonal.
 #' It improves the interpretability of the one-way match plot. Default: \code{TRUE}.
 #' @param ignore.unassigned Boolean variable indicating if to skip the columns of unassigned query clusters
-#' in the \code{type="matches"} plot. Default: \code{FALSE}. If \code{TRUE}, number of ignored columns reported in ().
+#' in the \code{type="matches"} plot. Default: \code{FALSE}. If \code{TRUE}, number of ignored columns reported in the unassigned row.
 #' @param return.value Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.
 #' @param cellwidth,cellheight,main,... Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.
 #'
