@@ -13,6 +13,8 @@
 #' Default: \code{0.05}.
 #' @param reorder Boolean variable indicating if to reorder the columns so that matches are aligned along the diagonal.
 #' It improves the interpretability of the one-way match plot. Default: \code{TRUE}.
+#' @param ignore.unassigned Boolean variable indicating if to skip the columns of unassigned query clusters
+#' in the \code{type="matches"} plot. Default: \code{FALSE}. If \code{TRUE}, number of ignored columns reported in ().
 #' @param return.value Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.
 #' @param cellwidth,cellheight,main,... Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.
 #'
@@ -25,7 +27,7 @@
 #' @export
 
 plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.level=0.05,
-                         reorder=TRUE, return.value=FALSE,
+                         reorder=TRUE, ignore.unassigned=FALSE, return.value=FALSE,
                          cellwidth=10, cellheight=10, main=NULL, filename=NA, ...){
 
   pmat.adj <- padj.FRmatch(rst.FRmatch$pmat, p.adj.method=p.adj.method)
@@ -38,6 +40,11 @@ plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.lev
   ## plot
   if(type=="matches"){
     if(is.null(main)) main <- "FR-Match"
+    if(ignore.unassigned){
+      ind <- pmat.cutoff["unassigned",]==1 #unassigned columns
+      pmat.cutoff <- pmat.cutoff[,!ind]
+      rownames(pmat.cutoff)[nrow(pmat.cutoff)] <- paste0("unassigned (", sum(ind),")")
+    }
     ## heatmap
     pheatmap(pmat.cutoff,
              color = colorRampPalette(rev(brewer.pal(n=7, name="RdYlBu")[c(3,3,7)]))(3),
