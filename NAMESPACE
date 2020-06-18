@@ -2,6 +2,7 @@
 
 export(FR.test)
 export(FRmatch)
+export(FRmatch_cell2cluster)
 export(check_data_object)
 export(make_data_object)
 export(plot_FRmatch)

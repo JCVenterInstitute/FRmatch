@@ -49,7 +49,7 @@ plot_clusterSize <- function(sce.E1, sce.E2, decreasing=TRUE,
     ggtitle(paste0(name.E2, " (", length(tab.E2)," clusters, ",sum(tab.E2)," cells)"))
 
   g <- grid.arrange(g.E1, g.E2)
-  plot(g)
+  # if(is.na(filename)) plot(g)
 
   ## save plot
   if(!is.na(filename)){

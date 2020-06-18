@@ -52,7 +52,7 @@ plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
     if(is.null(main)) main <- paste0(name.E1,".",cluster.name)
     ## indicator for markers
     if(!is.null(sce.query@metadata$cluster_marker_info)){
-      mat.query %<>% mat.query[unique(sce.query@metadata$cluster_marker_info$markerGene),]
+      mat.query <- mat.query[unique(sce.query@metadata$cluster_marker_info$markerGene),]
       temp <- rep(0, nrow(mat.query))
       markers.i <- sce.query@metadata$cluster_marker_info %>% filter(cluster==cluster.name) %>% pull(markerGene)
       temp[rownames(mat.query) %in% markers.i] <- 1

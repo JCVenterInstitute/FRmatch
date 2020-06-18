@@ -1,5 +1,5 @@
 
-#' Cluster-to-cluster cell type matching algorithm for single-cell RNA-seq data
+#' Cell-to-cluster cell type matching algorithm for single-cell RNA-seq data
 #'
 #' This is a user-end function that wraps up the steps of matching cell type clusters between two single-cell RNA-seq experiments
 #' (namely, \code{query} and \code{reference}) with \emph{clustered} expression data and \emph{informative} marker genes
@@ -15,23 +15,17 @@
 #' See details in \code{\link[FRmatch]{impute_dropout}}.
 #' @param filter.size,filter.fscore Filtering small/poor-quality clusters. Default: \code{filter.size=10}, filter based on the number
 #' of cells per cluster; \code{filter.fscore=NULL}, filter based on the f-score associated with the cell cluster if available (numeric value).
-#' @param method Methods for the FR test. Default: \code{method="subsampling"} is to iteratively subsample equal number of cells (i.e. cluster size)
-#' from the query and reference clusters, and then perform the FR test. Option: \code{method="none"} is the FR test with no modification.
-#' @param subsamp.size,subsamp.iter,subsamp.seed Cluster size, number of iterations, and random seed for \code{method="subsampling"}.
+#' @param subsamp.size,subsamp.iter,subsamp.seed Cluster size, number of iterations, and random seed.
 #' Default: \code{10, 1001, 1}, respectively.
 #' @param numCores Number of cores for parallel computing.
 #' Default: \code{NULL}, use the maximum number of cores detected by \code{\link[parallel]{detectCores}} if not specified (an integer).
 #' @param prefix Prefix names for query and reference clusters. Default: \code{prefix=c("query.", "ref.")}.
 #' @param verbose Numeric value indicating levels of details to be printed. Default: \code{1}, only print major steps.
 #' If \code{0}, no verbose; if \code{2}, print all.
-#' @param return.all Logical variable indicating if to return all results (such as runs, etc.). Default: \code{FALSE}.
 #' @param ... Additional arguments passed to \code{\link[FRmatch]{FR.test}}.
 #'
-#' @return A list of:
-#' \item{parameters}{Call of key parameters used in the analysis.}
-#' \item{pmat}{A matrix of p-values. Rows are reference clusters, and columns are query clusters.}
-#' \item{statmat}{A matrix of FR statistics. Rows are reference clusters, and columns are query clusters.}
-#' If \code{return.all = TRUE}, more intermediate results are returned.
+#' @return A matrix with columns:
+#' \item{match.cell2cluster}{}
 #'
 #' @author Yun Zhang, \email{zhangy@jcvi.org};
 #' Brian Aevermann, \email{baeverma@jcvi.org};
@@ -42,16 +36,16 @@
 #' @examples
 #' \dontrun{
 #' data("sce.example")
-#' FRmatch(sce.example, sce.example)
+#' FRmatch_cell2cluster(sce.example, sce.example)
 #' }
 #'
 #' @export
 
-FRmatch <- function(sce.query, sce.ref, #imputation=FALSE,
-                    filter.size=10, filter.fscore=NULL, #filtering clusters
-                    method="subsampling", subsamp.size=10, subsamp.iter=1001, subsamp.seed=1, #subsampling
-                    numCores=NULL, prefix=c("query.", "ref."),
-                    verbose=1, return.all=FALSE, ...){
+FRmatch_cell2cluster <- function(sce.query, sce.ref, #imputation=FALSE,
+                                 filter.size=10, filter.fscore=NULL, #filtering clusters
+                                 subsamp.size=10, subsamp.iter=1001, subsamp.seed=1, #subsampling
+                                 numCores=NULL, prefix=c("query.", "ref."),
+                                 verbose=1, ...){
 
   ## check data object
   if(verbose>0) cat("* Check query data object. \n")
@@ -121,42 +115,40 @@ FRmatch <- function(sce.query, sce.ref, #imputation=FALSE,
   paired.datlst.ref <- rep(datlst.ref, times=ncluster.query)
   ##---------------------------------------##
 
-  if(method=="none"){
-    if(verbose>0) cat("** method =", method, "\n")
-    results <- mcmapply(function(samp1,samp2){FR.test(samp1, samp2, ...)},
-                        paired.datlst.query, paired.datlst.ref,
-                        mc.cores = numCores)
-  }
-  if(method=="subsampling"){
-    if(verbose>0) cat("** method =", method, "| subsamp.size =", subsamp.size, "| subsamp.iter =", subsamp.iter, "\n")
-    set.seed(subsamp.seed)
-    results <- mcmapply(
-      function(samp1,samp2){
-        FR.test.subsamp(samp1, samp2, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, ...)
-      },
-      paired.datlst.query, paired.datlst.ref,
-      mc.cores = numCores)
-  }
+  if(verbose>0) cat("** method = cell2cluster", "| subsamp.size =", subsamp.size, "| subsamp.iter =", subsamp.iter, "\n")
+
+  set.seed(subsamp.seed)
+  results <- mcmapply(
+    function(samp1,samp2){
+      # FR.test.cell2cluster(samp1, samp2, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, ...)
+      FR.test.cell2cluster(samp1, samp2, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter)
+    },
+    paired.datlst.query, paired.datlst.ref,
+    mc.cores = numCores)
+
   if(verbose>0) cat("* Done parallel and returning results. \n")
 
-  ## outputs
-  pmat <- matrix(results["p.value",], nrow=ncluster.ref)
-  statmat <- matrix(results["stat",], nrow=ncluster.ref)
-  rownames(statmat) <- rownames(pmat) <- clusterNames.ref
-  colnames(statmat) <- colnames(pmat) <- clusterNames.query
-
-  ## return
-  parameters <- list(filter.size=filter.size, filter.fscore=filter.fscore, method=method, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter)
-  if(return.all){
-    ## all results
-    all.results <- as.data.frame(t(results)) %>%
-      mutate(query.cluster=rep(clusterNames.query, each=ncluster.ref),
-             ref.cluster=rep(clusterNames.ref, times=ncluster.query)) %>%
-      select(query.cluster, ref.cluster, p.value, stat, runs, runs.query=runs.samp1, runs.ref=runs.samp2)
-    return(list("parameters"=parameters, "pmat"=pmat, "statmat"=statmat, "all.results"=all.results))
-  } else {
-    return(list("parameters"=parameters, "pmat"=pmat, "statmat"=statmat))
+  ## reformating results from mcmapply
+  names(results) <- rep(clusterNames.ref, times=ncluster.query) #for colnames in pmat.cell2cluster
+  f <- rep(names(datlst.query), each=ncluster.ref)
+  rstlst.query <- split(results, f)[clusterNames.query] #make sure the list is ordered by query cluster order
+  rstlst.query.pmat <- lapply(rstlst.query, function(z) do.call("cbind",z))
+  pmat.cell2cluster <- do.call("rbind", rstlst.query.pmat)
+  if(sum(is.na(pmat.cell2cluster))>1){
+    warning("Not all cells are randomly sampled. Consider increase the number of iterations specified in the 'subsamp.iter' argument.")
   }
+  pmat.cell2cluster[is.na(pmat.cell2cluster)] <- 0
+
+  ## all outputs
+  rmax.cell2cluster <- apply(pmat.cell2cluster,1,max)
+  match.cell2cluster <- clusterNames.ref[max.col(pmat.cell2cluster)]
+  tab.query <- sapply(rstlst.query.pmat,nrow)
+  query.cluster <- rep(names(tab.query),tab.query)
+  output <- data.frame(query.cluster, match.cell2cluster, rmax.cell2cluster, pmat.cell2cluster, stringsAsFactors=FALSE) %>%
+    rownames_to_column()
+  colnames(output)[1:2] <- paste0(prefix[1],c("cell","cluster"))
+
+  return(output)
 }
 
 
