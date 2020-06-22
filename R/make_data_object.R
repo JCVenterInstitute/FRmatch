@@ -1,7 +1,7 @@
 
 #' Make data object
 #'
-#' This function helps to create the data object that can be used in the \code{\link[FRmath]{FRmatch}} algorithm with input information.
+#' This function helps to create the data object that can be used in the \code{\link[FRmatch]{FRmatch}} algorithm with input information.
 #'
 #' @param dat Cell-by-gene expression data in a data frame or equivalent format. First column is cell names, followed by columns for each gene.
 #' @param tab Cluster membership of cells in a data frame or equivalent format. First column is cell names, and second column is cluster labels.
@@ -13,14 +13,19 @@
 #' @return A data object of the \link[SingleCellExperiment]{SingleCellExperiment} class
 #'
 #' @import dplyr
-#' @importFrom magrittr %<>%
+#' @import tibble
+#' @importFrom tidyr replace_na
+#' @importFrom forcats fct_relevel
+#'
 #' @import methods
 #' @importClassesFrom SingleCellExperiment SingleCellExperiment
 #' @importFrom SingleCellExperiment SingleCellExperiment
 #' @importMethodsFrom SingleCellExperiment colData rowData
-#' @importMethodsFrom SummarizedExperiment assays
-#' @importFrom S4Vectors metadata metadata<-
+#' @importMethodsFrom SummarizedExperiment assays assay
+# #' @importFrom S4Vectors metadata metadata<-
+#'
 #' @export
+#'
 
 make_data_object <- function(dat, tab, markers,
                              cluster_marker_info=NULL, fscores=NULL, cluster_order=NULL #metadata

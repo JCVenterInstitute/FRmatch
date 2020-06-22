@@ -3,7 +3,7 @@
 #'
 #' We choose to summarize the clustered gene expression data and metadata in a data object of
 #' the \code{\link[SingleCellExperiment]{SingleCellExperiment}} class.
-#' This function helps to check if the data object is compatible with \code{\link[FRmath]{FRmatch}}.
+#' This function helps to check if the data object is compatible with \code{\link[FRmatch]{FRmatch}}.
 #'
 #' @param sce.object Data object of the \link[SingleCellExperiment]{SingleCellExperiment} class.
 #' See details in \code{\link[FRmatch]{sce.example}}.

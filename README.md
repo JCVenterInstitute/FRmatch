@@ -40,7 +40,8 @@ Manuscript submitted.
 
 ## Versioning
 
-This is version 0.0009 (initial release).
+This is version 1.0.0. Please report issues [here](https://github.com/JCVenterInstitute/FRmatch/issues).
+
 FRmatch is undergoing active development. Latest version and version control are managed in GitHub.
 
 ## Authors

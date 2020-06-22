@@ -1,25 +1,14 @@
 
 # #' Functions for other matching methods: scmap, Seurat
-#'
-#' @return A list of:
-#' \item{method}{Call of matching method used.}
-#' \item{pctmat}{A matrix of % matched cells. Rows are reference clusters, and columns are query clusters.}
-#' \item{prediction.scores}{A matrix of Seurat prediction scores. Rows are reference clusters, and columns are query clusters.}
-#' \item{all.results}{A data frame with columns \code{query.cell, query.cluster, predicted.ref.cluster}}.
-#'
-#' @import methods
-#' @importClassesFrom SingleCellExperiment SingleCellExperiment
-#' @importMethodsFrom SingleCellExperiment colData rowData
-#' @importMethodsFrom SummarizedExperiment assay
-#' @import tibble
-#' @import dplyr
-#' @importFrom tidyr replace_na
-#' @importFrom forcats fct_relevel
-#' @import ggplot2
-#' @import pheatmap
-#' @importFrom RColorBrewer brewer.pal
-#'
+# #'
+# #' @return A list of:
+# #' \item{method}{Call of matching method used.}
+# #' \item{pctmat}{A matrix of % matched cells. Rows are reference clusters, and columns are query clusters.}
+# #' \item{prediction.scores}{A matrix of Seurat prediction scores. Rows are reference clusters, and columns are query clusters.}
+# #' \item{all.results}{A data frame with columns \code{query.cell, query.cluster, predicted.ref.cluster}}.
+# #'
 # #' @export match_by_scmap,match_by_seurat #how to export multiple functions???
+
 
 
 ######################################################################################################################

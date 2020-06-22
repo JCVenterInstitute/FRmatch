@@ -1,10 +1,10 @@
 
 #' One-way matching plots for FR-Match results
 #'
-#' This function takes in the \code{\link[FRmath]{FRmatch}} output and generates plots for the matching results.
+#' This function takes in the \code{\link[FRmatch]{FRmatch}} output and generates plots for the matching results.
 #' If \code{type="matches"}, it plots the one-way matches. If \code{type=="padj"}, it plots the distribution of adjusted p-values.
 #'
-#' @param rst.FRmatch The \code{\link[FRmath]{FRmatch}} output.
+#' @param rst.FRmatch The \code{\link[FRmatch]{FRmatch}} output.
 #' @param type If \code{type="matches"} (default), it plots the one-way matches.
 #' If \code{type=="padj"}, it plots the distribution of adjusted p-values.
 #' @param p.adj.method P-value adjustment method for multiple hypothesis testing correction. Default: \code{"BY"}.
@@ -16,7 +16,7 @@
 #' @param ignore.unassigned Boolean variable indicating if to skip the columns of unassigned query clusters
 #' in the \code{type="matches"} plot. Default: \code{FALSE}. If \code{TRUE}, number of ignored columns reported in the unassigned row.
 #' @param return.value Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.
-#' @param cellwidth,cellheight,main,... Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.
+#' @param cellwidth,cellheight,main,filename,... Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.
 #'
 #' @return If \code{return.value = TRUE}, a matrix of one-way matching values 1 = match, and 0 = no match, or a matrix of adjusted p-values.
 #'

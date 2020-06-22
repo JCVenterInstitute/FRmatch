@@ -36,9 +36,6 @@ If \code{0}, no verbose; if \code{2}, print all.}
 \item{return.all}{Logical variable indicating if to return all results (such as runs, etc.). Default: \code{FALSE}.}
 
 \item{...}{Additional arguments passed to \code{\link[FRmatch]{FR.test}}.}
-
-\item{imputation}{INACTIVE. Logical variable indicating if to impute expression zero values for the reference experiment. Default: \code{FALSE}.
-See details in \code{\link[FRmatch]{impute_dropout}}.}
 }
 \value{
 A list of:
@@ -62,7 +59,7 @@ FRmatch(sce.example, sce.example)
 
 }
 \seealso{
-Visualization of matching results using \code{\link[FRmatch]{plot_FRmatch}}, \code{\link[FRmatch]{plot_bilateral_FRmatch}}.
+Visualization of matching results using \code{\link[FRmatch]{plot_FRmatch}}, \code{\link[FRmatch]{plot_bi_FRmatch}}.
 }
 \author{
 Yun Zhang, \email{zhangy@jcvi.org};

@@ -3,6 +3,7 @@
 #'
 #' This function lauches the Shiny App for FRmatch Demo.
 #'
+#' @import shiny
 #' @export
 
 

@@ -11,17 +11,17 @@ plot_bi_FRmatch(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1,
   main = NULL, filename = NA, ...)
 }
 \arguments{
-\item{rst.FRmatch.E1toE2, rst.FRmatch.E2toE1}{The \code{\link[FRmath]{FRmatch}} outputs.}
+\item{rst.FRmatch.E1toE2, rst.FRmatch.E2toE1}{The \code{\link[FRmatch]{FRmatch}} outputs.}
 
-\item{prefix}{Prefix names for query and reference clusters used in \code{\link[FRmath]{FRmatch}}.}
+\item{prefix}{Prefix names for query and reference clusters used in \code{\link[FRmatch]{FRmatch}}.}
 
 \item{name.E1, name.E2}{Customized names with delimiter for E1 and E2. Default: \code{"E1."} and \code{"E2."}, respectively.}
 
-\item{p.adj.method}{See \code{\link[FRmath]{plot_FRmatch}}.}
+\item{p.adj.method}{See \code{\link[FRmatch]{plot_FRmatch}}.}
 
-\item{sig.level}{See \code{\link[FRmath]{plot_FRmatch}}.}
+\item{sig.level}{See \code{\link[FRmatch]{plot_FRmatch}}.}
 
-\item{reorder}{See \code{\link[FRmath]{plot_FRmatch}}.}
+\item{reorder}{See \code{\link[FRmatch]{plot_FRmatch}}.}
 
 \item{return.value}{Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.}
 
@@ -31,7 +31,7 @@ plot_bi_FRmatch(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1,
 If \code{return.value = TRUE}, a matrix of two-way matching values 2 = two-way match, 1 = one-way match, and 0 = no match.
 }
 \description{
-This function combines and plots two sets of reciprocal \code{\link[FRmath]{FRmatch}} results (i.e. experiment 1 (hereinafter, E1) query
+This function combines and plots two sets of reciprocal \code{\link[FRmatch]{FRmatch}} results (i.e. experiment 1 (hereinafter, E1) query
 to experiment 2 (hereinafter, E2) reference with E2 markers, and E2 query to E1 reference with E1 markers).
 }
 \seealso{

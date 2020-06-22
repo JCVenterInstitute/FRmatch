@@ -1,14 +1,27 @@
 Package: FRmatch
 Title: Matching single-cell RNA-seq data clusters using Friedman-Rafsky (FR) statistical test
-Version: 0.0.0.0009
-Authors@R: c(person("Yun", "Zhang", email = "zhangy@jcvi.org", role = c("aut", "cre")), person("Richard", "Scheuermann", email = "RScheuermann@jcvi.org", role = c("aut")), person("Brian", "Aevermann", email = "baeverma@jcvi.org", role = c("ctb")))
-Description: FR-match is a novel cell cluster mapping algorithm for single-cell RNA-seq (scRNA-seq) data. It is based on a statistical test called Friedman-Rafsky (FR) test, which is a multivariate generalization of nonparametric two-sample test. FR-match performs cluster-to-cluster matching for two scRNA-seq experiments. It utilizes gene expression data, cluster membership information, and marker genes found by the "NS-Forest" algorithm to cross-compare the cell type clusters found in two scRNA-seq experiments, namely query and reference. This pakcage also provides graphical tools for the implemented method.
+Version: 1.0.0
+Authors@R: c(
+    person(given = "Yun",
+           family = "Zhang",
+           role = c("aut", "cre"),
+           email = "zhangy@jcvi.org"),
+    person(given = "Brian",
+           family = "Aevermann",
+           role = c("ctb"),
+           email = "baeverma@jcvi.org"),
+    person(given = "Richard",
+           family = "Scheuermann",
+           role = c("ctb"),
+           email = "RScheuermann@jcvi.org")
+    )
+Description: FR-match is a novel cell cluster mapping algorithm for single-cell RNA-seq (scRNAseq) data. It is based on a statistical test called Friedman-Rafsky (FR) test, which is a multivariate generalization of nonparametric two-sample test. FR-match performs cluster-to-cluster matching for two scRNA-seq experiments. It utilizes gene expression data, cluster membership information, and marker genes found by the "NS-Forest" algorithm to cross-compare the cell type clusters found in two scRNAseq experiments, namely query and reference. This package also provides graphical tools for the implemented method.
 Depends: R (>= 3.5.0), shiny (>= 1.2.0)
-Imports: methods, SingleCellExperiment, SummarizedExperiment, lsa, igraph, ade4, tibble, dplyr, tidyr, forcats, pheatmap, RColorBrewer, ggplot2, gridExtra
+Imports: methods, SingleCellExperiment, SummarizedExperiment, lsa, igraph, ade4, tibble, dplyr, tidyr, forcats, pheatmap, RColorBrewer, ggplot2, gridExtra, viridis
 Suggests: 
     knitr,
     rmarkdown
-License: MIT
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1

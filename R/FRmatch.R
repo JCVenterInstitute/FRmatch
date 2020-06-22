@@ -11,8 +11,8 @@
 #' See details in \code{\link[FRmatch]{sce.example}}.
 #' @param sce.ref Data object of the \link[SingleCellExperiment]{SingleCellExperiment} class for reference experiment.
 #' See details in \code{\link[FRmatch]{sce.example}}.
-#' @param imputation INACTIVE. Logical variable indicating if to impute expression zero values for the reference experiment. Default: \code{FALSE}.
-#' See details in \code{\link[FRmatch]{impute_dropout}}.
+# #' @param imputation INACTIVE. Logical variable indicating if to impute expression zero values for the reference experiment. Default: \code{FALSE}.
+# #' See details in \code{\link[FRmatch]{impute_dropout}}.
 #' @param filter.size,filter.fscore Filtering small/poor-quality clusters. Default: \code{filter.size=10}, filter based on the number
 #' of cells per cluster; \code{filter.fscore=NULL}, filter based on the f-score associated with the cell cluster if available (numeric value).
 #' @param method Methods for the FR test. Default: \code{method="subsampling"} is to iteratively subsample equal number of cells (i.e. cluster size)
@@ -37,7 +37,7 @@
 #' Brian Aevermann, \email{baeverma@jcvi.org};
 #' Richard Scheuermann, \email{RScheuermann@jcvi.org}.
 #'
-#' @seealso Visualization of matching results using \code{\link[FRmatch]{plot_FRmatch}}, \code{\link[FRmatch]{plot_bilateral_FRmatch}}.
+#' @seealso Visualization of matching results using \code{\link[FRmatch]{plot_FRmatch}}, \code{\link[FRmatch]{plot_bi_FRmatch}}.
 #'
 #' @examples
 #' \dontrun{

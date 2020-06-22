@@ -24,5 +24,5 @@ make_data_object(dat, tab, markers, cluster_marker_info = NULL,
 A data object of the \link[SingleCellExperiment]{SingleCellExperiment} class
 }
 \description{
-This function helps to create the data object that can be used in the \code{\link[FRmath]{FRmatch}} algorithm with input information.
+This function helps to create the data object that can be used in the \code{\link[FRmatch]{FRmatch}} algorithm with input information.
 }

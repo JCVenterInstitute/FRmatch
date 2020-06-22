@@ -10,7 +10,7 @@ plot_FRmatch(rst.FRmatch, type = "matches", p.adj.method = "BY",
   main = NULL, filename = NA, ...)
 }
 \arguments{
-\item{rst.FRmatch}{The \code{\link[FRmath]{FRmatch}} output.}
+\item{rst.FRmatch}{The \code{\link[FRmatch]{FRmatch}} output.}
 
 \item{type}{If \code{type="matches"} (default), it plots the one-way matches.
 If \code{type=="padj"}, it plots the distribution of adjusted p-values.}
@@ -29,13 +29,13 @@ in the \code{type="matches"} plot. Default: \code{FALSE}. If \code{TRUE}, number
 
 \item{return.value}{Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.}
 
-\item{cellwidth, cellheight, main, ...}{Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.}
+\item{cellwidth, cellheight, main, filename, ...}{Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.}
 }
 \value{
 If \code{return.value = TRUE}, a matrix of one-way matching values 1 = match, and 0 = no match, or a matrix of adjusted p-values.
 }
 \description{
-This function takes in the \code{\link[FRmath]{FRmatch}} output and generates plots for the matching results.
+This function takes in the \code{\link[FRmatch]{FRmatch}} output and generates plots for the matching results.
 If \code{type="matches"}, it plots the one-way matches. If \code{type=="padj"}, it plots the distribution of adjusted p-values.
 }
 \seealso{
