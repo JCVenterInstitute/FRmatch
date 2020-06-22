@@ -9,13 +9,13 @@ install.packages("devtools")
 devtools::install_github("JCVenterInstitute/FRmatch", build_vignettes = TRUE)
 ```
 
-A demo Shiny App:
+To start with a demo Shiny App:
 
 ```R
 FRmatch::runShiny()
 ```
 
-Vignette:
+To start with vignette:
 
 ```R
 library(FRmatch)
