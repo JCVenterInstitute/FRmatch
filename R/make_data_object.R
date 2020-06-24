@@ -14,6 +14,7 @@
 #'
 #' @import dplyr
 #' @import tibble
+#' @importFrom magrittr %<>%
 #' @importFrom tidyr replace_na
 #' @importFrom forcats fct_relevel
 #'
@@ -22,7 +23,7 @@
 #' @importFrom SingleCellExperiment SingleCellExperiment
 #' @importMethodsFrom SingleCellExperiment colData rowData
 #' @importMethodsFrom SummarizedExperiment assays assay
-# #' @importFrom S4Vectors metadata metadata<-
+#' @importFrom S4Vectors metadata metadata<-
 #'
 #' @export
 #'
