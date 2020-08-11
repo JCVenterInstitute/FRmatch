@@ -4,10 +4,20 @@
 \alias{plot_FRmatch}
 \title{One-way matching plots for FR-Match results}
 \usage{
-plot_FRmatch(rst.FRmatch, type = "matches", p.adj.method = "BY",
-  sig.level = 0.05, reorder = TRUE, ignore.unassigned = FALSE,
-  return.value = FALSE, cellwidth = 10, cellheight = 10,
-  main = NULL, filename = NA, ...)
+plot_FRmatch(
+  rst.FRmatch,
+  type = "matches",
+  p.adj.method = "BY",
+  sig.level = 0.05,
+  reorder = TRUE,
+  ignore.unassigned = FALSE,
+  return.value = FALSE,
+  cellwidth = 10,
+  cellheight = 10,
+  main = NULL,
+  filename = NA,
+  ...
+)
 }
 \arguments{
 \item{rst.FRmatch}{The \code{\link[FRmatch]{FRmatch}} output.}

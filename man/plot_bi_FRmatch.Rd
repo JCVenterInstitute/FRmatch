@@ -4,11 +4,22 @@
 \alias{plot_bi_FRmatch}
 \title{Two-way matching plot for FR-Match results}
 \usage{
-plot_bi_FRmatch(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1,
-  prefix = c("query.", "ref."), name.E1 = "E1.", name.E2 = "E2.",
-  p.adj.method = "BY", sig.level = 0.05, reorder = TRUE,
-  return.value = FALSE, cellwidth = 10, cellheight = 10,
-  main = NULL, filename = NA, ...)
+plot_bi_FRmatch(
+  rst.FRmatch.E1toE2,
+  rst.FRmatch.E2toE1,
+  prefix = c("query.", "ref."),
+  name.E1 = "E1.",
+  name.E2 = "E2.",
+  p.adj.method = "BY",
+  sig.level = 0.05,
+  reorder = TRUE,
+  return.value = FALSE,
+  cellwidth = 10,
+  cellheight = 10,
+  main = NULL,
+  filename = NA,
+  ...
+)
 }
 \arguments{
 \item{rst.FRmatch.E1toE2, rst.FRmatch.E2toE1}{The \code{\link[FRmatch]{FRmatch}} outputs.}

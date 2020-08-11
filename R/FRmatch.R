@@ -123,9 +123,12 @@ FRmatch <- function(sce.query, sce.ref, #imputation=FALSE,
 
   if(method=="none"){
     if(verbose>0) cat("** method =", method, "\n")
-    results <- mcmapply(function(samp1,samp2){FR.test(samp1, samp2, ...)},
-                        paired.datlst.query, paired.datlst.ref,
-                        mc.cores = numCores)
+    results <- mcmapply(
+      function(samp1,samp2){
+        FR.test(samp1, samp2, ...)
+        },
+        paired.datlst.query, paired.datlst.ref,
+        mc.cores = numCores)
   }
   if(method=="subsampling"){
     if(verbose>0) cat("** method =", method, "| subsamp.size =", subsamp.size, "| subsamp.iter =", subsamp.iter, "\n")

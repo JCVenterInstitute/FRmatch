@@ -4,10 +4,21 @@
 \alias{FRmatch}
 \title{Cluster-to-cluster cell type matching algorithm for single-cell RNA-seq data}
 \usage{
-FRmatch(sce.query, sce.ref, filter.size = 10, filter.fscore = NULL,
-  method = "subsampling", subsamp.size = 10, subsamp.iter = 1001,
-  subsamp.seed = 1, numCores = NULL, prefix = c("query.", "ref."),
-  verbose = 1, return.all = FALSE, ...)
+FRmatch(
+  sce.query,
+  sce.ref,
+  filter.size = 10,
+  filter.fscore = NULL,
+  method = "subsampling",
+  subsamp.size = 10,
+  subsamp.iter = 1001,
+  subsamp.seed = 1,
+  numCores = NULL,
+  prefix = c("query.", "ref."),
+  verbose = 1,
+  return.all = FALSE,
+  ...
+)
 }
 \arguments{
 \item{sce.query}{Data object of the \link[SingleCellExperiment]{SingleCellExperiment} class for query experiment.

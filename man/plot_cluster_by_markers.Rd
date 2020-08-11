@@ -4,10 +4,20 @@
 \alias{plot_cluster_by_markers}
 \title{"Barcoding" plot}
 \usage{
-plot_cluster_by_markers(sce.E1, sce.E2 = NULL, cluster.name,
-  nsamp = 30, name.E1 = "E1", name.E2 = "E2",
-  use.common.markergenes = TRUE, cellheight = 10, cellwidth = 5,
-  main = NULL, filename = NA, ...)
+plot_cluster_by_markers(
+  sce.E1,
+  sce.E2 = NULL,
+  cluster.name,
+  nsamp = 30,
+  name.E1 = "E1",
+  name.E2 = "E2",
+  use.common.markergenes = TRUE,
+  cellheight = 10,
+  cellwidth = 5,
+  main = NULL,
+  filename = NA,
+  ...
+)
 }
 \arguments{
 \item{sce.E1, sce.E2}{Data objects of the \link[SingleCellExperiment]{SingleCellExperiment} data class. If only \code{sce.E1},

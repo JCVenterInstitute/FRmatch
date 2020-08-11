@@ -4,9 +4,18 @@
 \alias{plot_clusterSize}
 \title{Cluster size plot}
 \usage{
-plot_clusterSize(sce.E1, sce.E2, decreasing = TRUE, name.E1 = "E1",
-  name.E2 = "E2", col.E1 = "#F0E442", col.E2 = "#56B4E9",
-  filename = NA, width = NULL, height = 10)
+plot_clusterSize(
+  sce.E1,
+  sce.E2,
+  decreasing = TRUE,
+  name.E1 = "E1",
+  name.E2 = "E2",
+  col.E1 = "#F0E442",
+  col.E2 = "#56B4E9",
+  filename = NA,
+  width = NULL,
+  height = 10
+)
 }
 \arguments{
 \item{sce.E1, sce.E2}{Data objects, namely E1 and E2.}

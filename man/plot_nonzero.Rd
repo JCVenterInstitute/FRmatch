@@ -4,8 +4,15 @@
 \alias{plot_nonzero}
 \title{Non-zero expression plot}
 \usage{
-plot_nonzero(sce.object, return.plot = TRUE, return.value = FALSE,
-  cellwidth = 15, cellheight = 10, main = NULL, ...)
+plot_nonzero(
+  sce.object,
+  return.plot = TRUE,
+  return.value = FALSE,
+  cellwidth = 15,
+  cellheight = 10,
+  main = NULL,
+  ...
+)
 }
 \arguments{
 \item{sce.object}{A \code{FRmatch} input data object. See example in \code{\link[FRmatch]{sce.example}}.}

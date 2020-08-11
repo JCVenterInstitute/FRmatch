@@ -4,7 +4,8 @@
 \name{sce.example}
 \alias{sce.example}
 \title{FR-Match input data}
-\format{Please follow the names and data formats of this example when constructing your own data.
+\format{
+Please follow the names and data formats of this example when constructing your own data.
 \describe{
 \item{\code{assays}}{Data assay \code{logcounts} is the gene expression matrix to be used.}
 \item{\code{rownames}}{Gene names.}
@@ -17,7 +18,8 @@
   \item \code{fsocres} is a data frame of F-scores for each cluster.
   \item \code{cluster_order} is a vector of ordered cluster names, which will be used in the final output and plots.
 }}
-}}
+}
+}
 \usage{
 sce.example
 }

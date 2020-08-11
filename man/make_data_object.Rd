@@ -4,8 +4,14 @@
 \alias{make_data_object}
 \title{Make data object}
 \usage{
-make_data_object(dat, tab, markers, cluster_marker_info = NULL,
-  fscores = NULL, cluster_order = NULL)
+make_data_object(
+  dat,
+  tab,
+  markers,
+  cluster_marker_info = NULL,
+  fscores = NULL,
+  cluster_order = NULL
+)
 }
 \arguments{
 \item{dat}{Cell-by-gene expression data in a data frame or equivalent format. First column is cell names, followed by columns for each gene.}
