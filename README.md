@@ -1,6 +1,6 @@
 # FR-Match: A cluter-to-cluster cell type matching method for single cell RNA-seq experiments
 
-![ 20%](vignettes/FRmatch-sticker-2.png)
+![ ,20%](vignettes/FRmatch-sticker-2.png)
 
 ## Citation
 
