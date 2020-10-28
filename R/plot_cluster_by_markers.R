@@ -9,14 +9,14 @@
 #' \code{sce.E1} (reference) andcluster (\code{cluster.name}) is from \code{sce.E2} (query).
 #' @param cluster.name Name of the cluster to be plotted.
 #' @param nsamp Number of randomly selected cells to plot for a large cluster. Default: \code{30}.
-#' @param name.E1,name.E2 Customized names for E1 and E2. Default: \code{"E1"} and \code{"E2"}, respectively.
+#' @param name.E1,name.E2 Prefix names for E1 and E2. Default: \code{"E1."} and \code{"E2."}, respectively.
 #' @param use.common.markergenes Boolean variable indicating if to plot only common marker genes in a cross-experiment plot.
 #' @param cellwidth,cellheight,main,filename,... Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.
 #'
 #' @export
 
 plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
-                                    name.E1="E1", name.E2="E2", use.common.markergenes=TRUE,
+                                    name.E1="E1.", name.E2="E2.", use.common.markergenes=TRUE,
                                     cellheight=10, cellwidth=5, main=NULL, filename=NA, ...){
   sce.ref <- sce.E1
   if(is.null(sce.E2)) sce.query <- sce.E1 else sce.query <- sce.E2
@@ -47,7 +47,7 @@ plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
   ### self plot ###
   if(is.null(sce.E2)){
     ## main
-    if(is.null(main)) main <- paste0(name.E1,".",cluster.name)
+    if(is.null(main)) main <- paste0(name.E1,cluster.name)
     ## indicator for markers
     if(!is.null(sce.query@metadata$cluster_marker_info)){
       mat.query <- mat.query[unique(sce.query@metadata$cluster_marker_info$markerGene),]
@@ -75,7 +75,7 @@ plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
   ### cross-experiment plot ###
   if(!is.null(sce.E2)){
     ## main
-    if(is.null(main)) main <- paste0(name.E2,".",cluster.name)
+    if(is.null(main)) main <- paste0(name.E2,cluster.name)
     ## plot
     pheatmap(mat.query,
              color = viridis::inferno(10), border_color = NA,

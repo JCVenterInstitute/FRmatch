@@ -221,7 +221,7 @@ plot_bi_scmap <- function(rst.scmap.E1toE2, rst.scmap.E2toE1, name.E1="E1", name
 
 match_by_seurat <- function(sce.query, sce.ref, #imputation=FALSE,
                             filter.size=10, filter.fscore=NULL, #filter clusters
-                            use.markers=FALSE){
+                            use.markers=FALSE, dims=1:30){
 
   ## filtering small or low fscore clusters
   cat("Filtering small clusters: clusters with less than", filter.size, "cells are not considered. \n")
@@ -255,8 +255,14 @@ match_by_seurat <- function(sce.query, sce.ref, #imputation=FALSE,
   seurat.object <- Seurat::CreateSeuratObject(counts=data, meta.data=metadata)
   seurat.object.list <- Seurat::SplitObject(object=seurat.object, split.by="subsample")
 
+  ## manually select features of NS-Forest marker genes
+  if(use.markers){
+    seurat.object.list[["query"]]@assays$RNA@var.features <- unique(sce.query@metadata$cluster_marker_info$markerGene)
+    seurat.object.list[["ref"]]@assays$RNA@var.features <- unique(sce.ref@metadata$cluster_marker_info$markerGene)
+    cat("Customized markers are used. \n")
+  }
   ## select variable features
-  for (i in 1:length(x=seurat.object.list)) {
+  else for (i in 1:length(x=seurat.object.list)) {
     seurat.object.list[[i]] <- Seurat::FindVariableFeatures(object=seurat.object.list[[i]],
                                                             selection.method="vst", nfeatures=2000, verbose=FALSE)
   }
@@ -265,9 +271,9 @@ match_by_seurat <- function(sce.query, sce.ref, #imputation=FALSE,
   cat("Matching by Seurat... \n")
   object.ref <- seurat.object.list[[c("ref")]]
   object.query <- seurat.object.list[[c("query")]]
-  ## PCA used by defualt in the following step, which is recommended for scRNA-seq
-  anchors <- Seurat::FindTransferAnchors(reference=object.ref, query=object.query, dims=1:30)
-  predictions <- Seurat::TransferData(anchorset=anchors, refdata=object.ref$celltype, dims=1:30)
+  ## PCA used by default in the following step, which is recommended for scRNA-seq
+  anchors <- Seurat::FindTransferAnchors(reference=object.ref, query=object.query, dims=dims)
+  predictions <- Seurat::TransferData(anchorset=anchors, refdata=object.ref$celltype, dims=dims)
 
   ## calculate Seurat scores averaged by cluster
   df.predictions <- predictions %>% rownames_to_column()

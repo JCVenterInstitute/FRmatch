@@ -9,8 +9,8 @@ plot_cluster_by_markers(
   sce.E2 = NULL,
   cluster.name,
   nsamp = 30,
-  name.E1 = "E1",
-  name.E2 = "E2",
+  name.E1 = "E1.",
+  name.E2 = "E2.",
   use.common.markergenes = TRUE,
   cellheight = 10,
   cellwidth = 5,
@@ -29,7 +29,7 @@ If both \code{sce.E1} and \code{sce.E2} are provided, then the "barcode" is a cr
 
 \item{nsamp}{Number of randomly selected cells to plot for a large cluster. Default: \code{30}.}
 
-\item{name.E1, name.E2}{Customized names for E1 and E2. Default: \code{"E1"} and \code{"E2"}, respectively.}
+\item{name.E1, name.E2}{Prefix names for E1 and E2. Default: \code{"E1."} and \code{"E2."}, respectively.}
 
 \item{use.common.markergenes}{Boolean variable indicating if to plot only common marker genes in a cross-experiment plot.}
 
