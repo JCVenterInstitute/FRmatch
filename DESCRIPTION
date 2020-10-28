@@ -1,5 +1,5 @@
 Package: FRmatch
-Title: Matching single-cell RNA-seq data clusters using Friedman-Rafsky (FR) statistical test
+Title: Robust matching of cell type clusters from single cell RNA sequencing data using the Friedman-Rafsky non-parametric test
 Version: 1.0.0
 Authors@R: c(
     person(given = "Yun",
