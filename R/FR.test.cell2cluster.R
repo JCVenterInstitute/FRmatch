@@ -17,9 +17,9 @@ FR.test.cell2cluster <- function(samp1, samp2, subsamp.size, subsamp.iter, ...){
     xx.B <- samp1[,mm]
     yy.B <- samp2[,nn]
     ## FR test on subsampled samples
-    # out.B <- FR.test(xx.B, yy.B, ...)
-    out.B <- FR.test(xx.B, yy.B)
-    out.cell2cluster[mm] %<>% pmax(out.B["p.value"], na.rm=TRUE)
+    out.B <- FR.test(xx.B, yy.B, ...)
+    # out.B <- FR.test(xx.B, yy.B)
+    out.cell2cluster[mm] %<>% pmax(out.B["p.value"], na.rm=TRUE) #pmax: parallel maxima, meaning replace the original value in out.cell2cluster if out.B["p.value"] is larger
   }
   return(out.cell2cluster)
 }

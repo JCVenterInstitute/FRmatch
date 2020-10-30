@@ -1,11 +1,8 @@
 
-#' Cell-to-cluster cell type matching algorithm for single-cell RNA-seq data
+#' Cell-to-cluster extension of \code{FRmatch}
 #'
-#' This is a user-end function that wraps up the steps of matching cell type clusters between two single-cell RNA-seq experiments
-#' (namely, \code{query} and \code{reference}) with \emph{clustered} expression data and \emph{informative} marker genes
-#' using the Friedman-Rafsky (FR) statistical test.
-#' This function inputs two data objects of the \link[SingleCellExperiment]{SingleCellExperiment} class,
-#' and outputs the FR statistics, p-values, and optionally, all intermediate restuls from the FR test.
+#' This function is an extension of the original \code{\link[FRmatch]{FRmatch}} to assign each query cell with a reference cluster label.
+#' Please see Details for the extension.
 #'
 #' @param sce.query Data object of the \link[SingleCellExperiment]{SingleCellExperiment} class for query experiment.
 #' See details in \code{\link[FRmatch]{sce.example}}.
@@ -24,14 +21,28 @@
 #' If \code{0}, no verbose; if \code{2}, print all.
 #' @param ... Additional arguments passed to \code{\link[FRmatch]{FR.test}}.
 #'
-#' @return A matrix with columns:
-#' \item{match.cell2cluster}{}
+#' @return A data frame with columns:
+#' \item{cell}{Query cell ID.}
+#' \item{cluster}{Cluster membership of query cells.}
+#' \item{match.cell2cluster}{Matched reference cluster for the query cell by \code{FRmatch_cell2cluster}.}
+#' \item{rmax.cell2cluster}{Row maximum of \code{pmat.cell2cluster} (see below).}
+#' And concatenated by the columns from the matrix:
+#' \item{pmat.cell2cluster}{Cell-by-cluster (a.k.a. query cell by reference cluster) matrix of p-values by \code{FRmatch_cell2cluster}.}
+#'
+#' @details
+#' Apply \code{FRmatch} with its iterative subsampling scheme, which is a bootstrap-like approach to randomly select a smaller set of cells
+#' from a query cluster and quantify the confidence score of the selected cells belonging to certain reference cell type
+#' using the p-value outputted from \code{FRmatch} (i.e. a larger p-value indicates higher probability of a match, and vice versa).
+#'
+#' Assign the cluster-level p-value to each selected query cell, and updated the assigned p-value if the query cell is reselected
+#' from the iterative procedure and assigned a higher p-value. The output from the cell-to-cluster extension is a cell-by-cluster
+#' (a.k.a. query cell by reference cluster) matrix of p-values.
 #'
 #' @author Yun Zhang, \email{zhangy@jcvi.org};
 #' Brian Aevermann, \email{baeverma@jcvi.org};
 #' Richard Scheuermann, \email{RScheuermann@jcvi.org}.
 #'
-#' @seealso Visualization of matching results using \code{\link[FRmatch]{plot_FRmatch}}, \code{\link[FRmatch]{plot_bi_FRmatch}}.
+# @seealso Visualization of matching results using \code{\link[FRmatch]{plot_FRmatch}}, \code{\link[FRmatch]{plot_bi_FRmatch}}.
 #'
 #' @examples
 #' \dontrun{
@@ -128,7 +139,7 @@ FRmatch_cell2cluster <- function(sce.query, sce.ref, #imputation=FALSE,
 
   if(verbose>0) cat("* Done parallel and returning results. \n")
 
-  ## reformating results from mcmapply
+  ## reformatting results from mcmapply
   names(results) <- rep(clusterNames.ref, times=ncluster.query) #for colnames in pmat.cell2cluster
   f <- rep(names(datlst.query), each=ncluster.ref)
   rstlst.query <- split(results, f)[clusterNames.query] #make sure the list is ordered by query cluster order
