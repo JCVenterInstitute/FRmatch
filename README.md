@@ -15,13 +15,17 @@ install.packages("devtools")
 devtools::install_github("JCVenterInstitute/FRmatch")
 ```
 
+### Tutorial
+
+To start with a tutorial [here](https://jcventerinstitute.github.io/celligrate/FRmatch-vignette.html).
+
+### Shiny App
+
 To start with a demo Shiny App:
 
 ```R
 FRmatch::runShiny()
 ```
-
-To start with a tutorial [here](https://jcventerinstitute.github.io/celligrate/FRmatch-vignette.html).
 
 ### Prerequisites
 
