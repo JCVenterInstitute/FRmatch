@@ -12,7 +12,7 @@ Installation:
 
 ```R
 install.packages("devtools")
-devtools::install_github("JCVenterInstitute/FRmatch", build_vignettes = TRUE)
+devtools::install_github("JCVenterInstitute/FRmatch")
 ```
 
 To start with a demo Shiny App:
@@ -21,12 +21,7 @@ To start with a demo Shiny App:
 FRmatch::runShiny()
 ```
 
-To start with vignette:
-
-```R
-library(FRmatch)
-browseVignettes("FRmatch")
-```
+To start with a tutorial [here](https://jcventerinstitute.github.io/celligrate/FRmatch-vignette.html).
 
 ### Prerequisites
 
