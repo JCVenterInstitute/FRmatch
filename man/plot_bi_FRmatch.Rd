@@ -13,6 +13,7 @@ plot_bi_FRmatch(
   p.adj.method = "BY",
   sig.level = 0.05,
   reorder = TRUE,
+  two.way.only = FALSE,
   return.value = FALSE,
   cellwidth = 10,
   cellheight = 10,
@@ -33,6 +34,8 @@ plot_bi_FRmatch(
 \item{sig.level}{See \code{\link[FRmatch]{plot_FRmatch}}.}
 
 \item{reorder}{See \code{\link[FRmatch]{plot_FRmatch}}.}
+
+\item{two.way.only}{Boolean variable indicating if to plot two-way matches only. Default: \code{FALSE}.}
 
 \item{return.value}{Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.}
 

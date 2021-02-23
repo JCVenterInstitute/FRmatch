@@ -10,6 +10,7 @@
 #' @param p.adj.method See \code{\link[FRmatch]{plot_FRmatch}}.
 #' @param sig.level See \code{\link[FRmatch]{plot_FRmatch}}.
 #' @param reorder See \code{\link[FRmatch]{plot_FRmatch}}.
+#' @param two.way.only Boolean variable indicating if to plot two-way matches only. Default: \code{FALSE}.
 #' @param return.value Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.
 #' @param cellwidth,cellheight,main,filename,... Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.
 #'
@@ -25,7 +26,7 @@
 plot_bi_FRmatch <- function(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1,
                             prefix=c("query.","ref."), name.E1="E1.", name.E2="E2.",
                             p.adj.method="BY", sig.level=0.05,
-                            reorder=TRUE, return.value=FALSE,
+                            reorder=TRUE, two.way.only=FALSE, return.value=FALSE,
                             cellwidth=10, cellheight=10, main=NULL, filename=NA, ...){
 
   ## get binary matrices for plotting
@@ -36,6 +37,7 @@ plot_bi_FRmatch <- function(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1,
   mat1 <- pmat.cutoff.E1toE2[-nrow(pmat.cutoff.E1toE2),] #use E1toE2 as the framework for final plot
   mat2 <- t(pmat.cutoff.E2toE1[-nrow(pmat.cutoff.E2toE1),]) #so transpose E2toE1
   mat.bi <- mat1+mat2
+  if(two.way.only) mat.bi <- matrix(2*as.numeric(mat.bi==2), nrow(mat1), ncol(mat1))
   ## unassigned row
   mat.bi <- rbind(mat.bi, 2*as.numeric(colSums(mat.bi)==0))
   ## rename colnames and rownames
@@ -45,16 +47,29 @@ plot_bi_FRmatch <- function(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1,
   ## plot
   if(is.null(main)) main <- "FR-Match"
   if(reorder) mat.bi <- reorder(mat.bi)
-  pheatmap(mat.bi,
-           color=colorRampPalette(rev(brewer.pal(n=7, name="RdYlBu")[c(1,1,3,7)]))(4),
-           breaks=seq(0,2,length.out=4),
-           legend_breaks=0:2, legend_labels=c("No match", "One-way match", "Two-way Match"),
-           cluster_rows=F, cluster_cols=F,
-           gaps_row=nrow(mat.bi)-1,
-           cellwidth=cellwidth, cellheight=cellheight,
-           main=main,
-           filename=filename,
-           ...)
+  if(two.way.only){
+    pheatmap(mat.bi,
+             color=colorRampPalette(rev(brewer.pal(n=7, name="RdYlBu")[c(1,1,7)]))(3),
+             breaks=seq(0,2,length.out=3),
+             legend_breaks=c(0,2),
+             legend_labels=c("No match", "Two-way Match"),
+             cluster_rows=F, cluster_cols=F,
+             gaps_row=nrow(mat.bi)-1,
+             cellwidth=cellwidth, cellheight=cellheight,
+             main=main,
+             filename=filename,
+             ...)
+  } else
+    pheatmap(mat.bi,
+             color=colorRampPalette(rev(brewer.pal(n=7, name="RdYlBu")[c(1,1,3,7)]))(4),
+             breaks=seq(0,2,length.out=4),
+             legend_breaks=0:2, legend_labels=c("No match", "One-way match", "Two-way Match"),
+             cluster_rows=F, cluster_cols=F,
+             gaps_row=nrow(mat.bi)-1,
+             cellwidth=cellwidth, cellheight=cellheight,
+             main=main,
+             filename=filename,
+             ...)
 
   ## output
   if(return.value) return(mat.bi)
