@@ -59,13 +59,16 @@ plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
     } else {
       ann <- NA
     }
+    ann_colors = list(
+      Marker = c("0"="grey", "1"="firebrick")
+    )
     ## plot
     pheatmap(mat.query,
              color = viridis::inferno(10), border_color = NA,
              cluster_rows = FALSE, cluster_cols = FALSE,
              cellheight = cellheight, cellwidth = cellwidth,
              show_rownames = TRUE, show_colnames = FALSE,
-             annotation_row = ann,
+             annotation_row = ann, annotation_colors=ann_colors,
              labels_col = "Cells", angle_col = "0",
              main=main,
              filename=filename,
