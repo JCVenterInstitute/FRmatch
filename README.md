@@ -1,4 +1,4 @@
-# FR-Match: A cluster-to-cluster cell type matching method for single cell RNA-seq experiments
+# FR-Match: A cluster-to-cluster cell type matching method for single cell RNA sequencing experiments
 
 <img src="vignettes/FRmatch-sticker-2.png" width="110" height="125">
 
@@ -23,7 +23,7 @@ install.packages("devtools")
 devtools::install_github("JCVenterInstitute/FRmatch")
 ```
 
-## Tutorial
+### Tutorial
 
 To start with a tutorial [here](https://jcventerinstitute.github.io/celligrate/FRmatch-vignette.html).
 
