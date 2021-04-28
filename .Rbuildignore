@@ -1,2 +1,2 @@
-^FR\.Rproj$
-^\.Rproj\.user$
+^.*\.Rproj$         # Designates the directory as an RStudio Project
+^\.Rproj\.user$     # Used by RStudio for temporary files

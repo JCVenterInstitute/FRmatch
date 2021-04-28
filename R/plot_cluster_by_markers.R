@@ -1,7 +1,7 @@
 
-#' "Barcoding" plot
+#' "Barcode" plot
 #'
-#' This function plots expression pattern of a cluster by marker genes, a.k.a. barcoding plot.
+#' This function plots expression pattern of a cluster by marker genes, a.k.a. barcode plot.
 #'
 #' @param sce.E1,sce.E2 Data objects of the \link[SingleCellExperiment]{SingleCellExperiment} data class. If only \code{sce.E1},
 #' then the "barcode" is a self plot, i.e. both cluster (\code{cluster.name}) and marker genes are from the same experiment.
@@ -52,7 +52,7 @@ plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
     if(!is.null(sce.query@metadata$cluster_marker_info)){
       mat.query <- mat.query[unique(sce.query@metadata$cluster_marker_info$markerGene),]
       temp <- rep(0, nrow(mat.query))
-      markers.i <- sce.query@metadata$cluster_marker_info %>% filter(cluster==cluster.name) %>% pull(markerGene)
+      markers.i <- sce.query@metadata$cluster_marker_info %>% filter(clusterName==cluster.name) %>% pull(markerGene)
       temp[rownames(mat.query) %in% markers.i] <- 1
       ann <- data.frame("Marker"=as.factor(temp))
       rownames(ann) <- rownames(mat.query)
@@ -60,18 +60,21 @@ plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
       ann <- NA
     }
     ann_colors = list(
-      Marker = c("0"="grey", "1"="firebrick")
+      Marker = c("0"="lightgrey", "1"="#00BFC4")
     )
+    if(!is.null(sce.ref@metadata$f_score)){
+      fscore <- sce.ref@metadata$f_score %>% filter(clusterName==cluster.name) %>% pull(score)
+    }
+    else fscore <- NA
     ## plot
     pheatmap(mat.query,
              color = viridis::inferno(10), border_color = NA,
              cluster_rows = FALSE, cluster_cols = FALSE,
              cellheight = cellheight, cellwidth = cellwidth,
-             show_rownames = TRUE, show_colnames = FALSE,
+             show_rownames = TRUE, show_colnames = TRUE, angle_col = "0",
              annotation_row = ann, annotation_colors=ann_colors,
-             labels_col = "Cells", angle_col = "0",
-             main=main,
-             filename=filename,
+             labels_col = paste("F-beta:", round(fscore,3)), fontsize_col = 15,
+             main = main, filename = filename,
              ...)
   }
 

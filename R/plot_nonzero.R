@@ -23,11 +23,11 @@ plot_nonzero <- function(sce.object, return.plot=TRUE, return.value=FALSE,
                          cellwidth=15, cellheight=10, main=NULL, ...){
   ## data
   dat <- assay(sce.object)
-  fscores <- sce.object@metadata$fscores
+  f_score <- sce.object@metadata$f_score
 
   ## cluster info
   cluster_order <- sce.object@metadata$cluster_order
-  cluster_marker_info <- sce.object@metadata$cluster_marker_info %>% arrange(match(cluster, cluster_order))
+  cluster_marker_info <- sce.object@metadata$cluster_marker_info %>% arrange(match(clusterName, cluster_order))
   cluster_membership <- colData(sce.object)$cluster_membership
 
   ## pct of zeros per marker gene per cluster
@@ -40,10 +40,10 @@ plot_nonzero <- function(sce.object, return.plot=TRUE, return.value=FALSE,
   ## plot
   if(return.plot){
     if(is.null(main)) main <- "% expressed per marker gene per cluster"
-    gaps <- cumsum(table(cluster_marker_info$cluster)[cluster_order])
-    if(!is.null(fscores)){
-      ann <- data.frame("f.score"=fscores$`f-measure`)
-      rownames(ann) <- fscores$clusterName
+    gaps <- cumsum(table(cluster_marker_info$clusterName)[cluster_order])
+    if(!is.null(f_score)){
+      ann <- data.frame("f.score"=f_score$score)
+      rownames(ann) <- f_score$clusterName
       pheatmap(nonzero.pct,
                color=colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(101),
                breaks=seq(0,1,length.out=101),

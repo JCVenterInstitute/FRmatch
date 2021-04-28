@@ -1,6 +1,6 @@
 Package: FRmatch
 Title: Robust matching of cell type clusters from single cell RNA sequencing data using the Friedman-Rafsky non-parametric test
-Version: 1.0.0
+Version: 1.1.0
 Authors@R: c(
     person(given = "Yun",
            family = "Zhang",
@@ -15,9 +15,9 @@ Authors@R: c(
            role = c("ctb"),
            email = "RScheuermann@jcvi.org")
     )
-Description: FR-match is a novel cell cluster mapping algorithm for single-cell RNA-seq (scRNAseq) data. It is based on a statistical test called Friedman-Rafsky (FR) test, which is a multivariate generalization of nonparametric two-sample test. FR-match performs cluster-to-cluster matching for two scRNA-seq experiments. It utilizes gene expression data, cluster membership information, and marker genes found by the "NS-Forest" algorithm to cross-compare the cell type clusters found in two scRNAseq experiments, namely query and reference. This package also provides graphical tools for the implemented method.
-Depends: R (>= 3.5.0), shiny (>= 1.2.0)
-Imports: methods, SingleCellExperiment, SummarizedExperiment, lsa, igraph, ade4, tibble, dplyr, tidyr, forcats, pheatmap, RColorBrewer, ggplot2, gridExtra, viridis
+Description: FR-Match is a cell type cluster mapping algorithm for single cell RNA sequencing (scRNAseq) data. It is based on a statistical test called Friedman-Rafsky (FR) test, which is a multivariate generalization of nonparametric two-sample test. This package also provides visualization tools for the implemented method.
+Depends: R (>= 4.0.0), shiny (>= 1.2.0), SingleCellExperiment
+Imports: methods, S4Vectors, SummarizedExperiment, Seurat, scmap, lsa, igraph, ade4, tibble, dplyr, tidyr, forcats, magrittr, pheatmap, RColorBrewer, ggplot2, gridExtra, viridis
 Suggests: 
     knitr,
     rmarkdown

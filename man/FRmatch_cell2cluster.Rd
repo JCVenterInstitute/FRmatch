@@ -2,7 +2,7 @@
 % Please edit documentation in R/FRmatch_cell2cluster.R
 \name{FRmatch_cell2cluster}
 \alias{FRmatch_cell2cluster}
-\title{Cell-to-cluster extension of \code{FRmatch}}
+\title{\code{FRmatch} cell-to-cluster extension}
 \usage{
 FRmatch_cell2cluster(
   sce.query,
@@ -26,7 +26,7 @@ See details in \code{\link[FRmatch]{sce.example}}.}
 See details in \code{\link[FRmatch]{sce.example}}.}
 
 \item{filter.size, filter.fscore}{Filtering small/poor-quality clusters. Default: \code{filter.size=10}, filter based on the number
-of cells per cluster; \code{filter.fscore=NULL}, filter based on the f-score associated with the cell cluster if available (numeric value).}
+of cells per cluster; \code{filter.fscore=NULL}, filter based on the F-beta score associated with the cell cluster if available (numeric value).}
 
 \item{subsamp.size, subsamp.iter, subsamp.seed}{Cluster size, number of iterations, and random seed.
 Default: \code{10, 1001, 1}, respectively.}
@@ -39,7 +39,7 @@ Default: \code{NULL}, use the maximum number of cores detected by \code{\link[pa
 \item{verbose}{Numeric value indicating levels of details to be printed. Default: \code{1}, only print major steps.
 If \code{0}, no verbose; if \code{2}, print all.}
 
-\item{...}{Additional arguments passed to \code{\link[FRmatch]{FR.test}}.}
+\item{...}{Additional arguments passed to \code{\link[FRmatch]{FRtest}}.}
 }
 \value{
 A data frame with columns:

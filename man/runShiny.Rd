@@ -7,5 +7,5 @@
 runShiny()
 }
 \description{
-This function lauches the Shiny App for FRmatch Demo.
+This function launches the Shiny App for FRmatch Demo.
 }

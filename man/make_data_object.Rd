@@ -9,26 +9,27 @@ make_data_object(
   tab,
   markers,
   cluster_marker_info = NULL,
-  fscores = NULL,
+  f_score = NULL,
   cluster_order = NULL
 )
 }
 \arguments{
-\item{dat}{Cell-by-gene expression data in a data frame or equivalent format. First column is cell names, followed by columns for each gene.}
+\item{dat}{Cell-by-gene expression data in a data frame or equivalent format. The first column is cell names, followed by columns of each gene.}
 
-\item{tab}{Cluster membership of cells in a data frame or equivalent format. First column is cell names, and second column is cluster labels.}
+\item{tab}{Cluster membership of each cell in a data frame or equivalent format. The first column is cell names, and the second column is cluster labels.}
 
 \item{markers}{A vector of marker genes.}
 
-\item{cluster_marker_info}{Optionally, a data frame of maker genes for each cluster. See details in \code{\link[FRmatch]{sce.example}}.}
+\item{cluster_marker_info}{Optionally, a data frame of maker genes for each cluster. \code{marker} is the unique set of marker genes for all clusters.}
 
-\item{fscores}{Optionally, a data frame of F-scores for each cluster. See details in \code{\link[FRmatch]{sce.example}}.}
+\item{f_score}{Optionally, a data frame of F-beta scores for each cluster.}
 
-\item{cluster_order}{Optionally, a vector of ordered cluster names. See details in \code{\link[FRmatch]{sce.example}}.}
+\item{cluster_order}{Optionally, a vector of ordered cluster names, which may reflect the taxonomy of the cell type clusters.}
 }
 \value{
 A data object of the \link[SingleCellExperiment]{SingleCellExperiment} class
 }
 \description{
-This function helps to create the data object that can be used in the \code{\link[FRmatch]{FRmatch}} algorithm with input information.
+This function creates the data object used in \code{\link[FRmatch]{FRmatch}}.
+See an example of the data object in \code{\link[FRmatch]{sce.example}}.
 }

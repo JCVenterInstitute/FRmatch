@@ -1,14 +1,15 @@
 
 #' Make data object
 #'
-#' This function helps to create the data object that can be used in the \code{\link[FRmatch]{FRmatch}} algorithm with input information.
+#' This function creates the data object used in \code{\link[FRmatch]{FRmatch}}.
+#' See an example of the data object in \code{\link[FRmatch]{sce.example}}.
 #'
-#' @param dat Cell-by-gene expression data in a data frame or equivalent format. First column is cell names, followed by columns for each gene.
-#' @param tab Cluster membership of cells in a data frame or equivalent format. First column is cell names, and second column is cluster labels.
+#' @param dat Cell-by-gene expression data in a data frame or equivalent format. The first column is cell names, followed by columns of each gene.
+#' @param tab Cluster membership of each cell in a data frame or equivalent format. The first column is cell names, and the second column is cluster labels.
 #' @param markers A vector of marker genes.
-#' @param cluster_marker_info Optionally, a data frame of maker genes for each cluster. See details in \code{\link[FRmatch]{sce.example}}.
-#' @param fscores Optionally, a data frame of F-scores for each cluster. See details in \code{\link[FRmatch]{sce.example}}.
-#' @param cluster_order Optionally, a vector of ordered cluster names. See details in \code{\link[FRmatch]{sce.example}}.
+#' @param cluster_marker_info Optionally, a data frame of maker genes for each cluster. \code{marker} is the unique set of marker genes for all clusters.
+#' @param f_score Optionally, a data frame of F-beta scores for each cluster.
+#' @param cluster_order Optionally, a vector of ordered cluster names, which may reflect the taxonomy of the cell type clusters.
 #'
 #' @return A data object of the \link[SingleCellExperiment]{SingleCellExperiment} class
 #'
@@ -29,7 +30,7 @@
 #'
 
 make_data_object <- function(dat, tab, markers,
-                             cluster_marker_info=NULL, fscores=NULL, cluster_order=NULL #metadata
+                             cluster_marker_info=NULL, f_score=NULL, cluster_order=NULL #metadata
 ){
 
   ## rename key columns
@@ -41,7 +42,7 @@ make_data_object <- function(dat, tab, markers,
   dat %<>% mutate(Sample=gsub("-| |\\.|/", "_", Sample))
   tab %<>% mutate(Sample=gsub("-| |\\.|/", "_", Sample), Cluster=gsub("-| |\\.|/", "_", Cluster))
 
-  ## datatable with "Sample", "Cluster", and gene probe columns for constructing sce.object
+  ## data table with "Sample", "Cluster", and gene columns for constructing the sce.object
   dt <- dat %>% inner_join(tab, by="Sample") %>% #inner_join: make sure that cells are in the SAME order!!!
     select("Sample", "Cluster", everything())
 
@@ -67,8 +68,10 @@ make_data_object <- function(dat, tab, markers,
                                      rowData = df_marker_gene)
 
   ## metadata:
+  names(cluster_marker_info) <- c("clusterName", "markerGene")
+  names(f_score) <- c("clusterName", "score")
   metadata(sce.object)$cluster_marker_info <- cluster_marker_info
-  metadata(sce.object)$fscores <- fscores
+  metadata(sce.object)$f_score <- f_score
   metadata(sce.object)$cluster_order <- cluster_order
 
   ## output

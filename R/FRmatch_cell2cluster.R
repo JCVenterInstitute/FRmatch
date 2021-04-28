@@ -1,5 +1,5 @@
 
-#' Cell-to-cluster extension of \code{FRmatch}
+#' \code{FRmatch} cell-to-cluster extension
 #'
 #' This function is an extension of the original \code{\link[FRmatch]{FRmatch}} to assign each query cell with a reference cluster label.
 #' Please see Details for the extension.
@@ -11,7 +11,7 @@
 # #' @param imputation INACTIVE. Logical variable indicating if to impute expression zero values for the reference experiment. Default: \code{FALSE}.
 # #' See details in \code{\link[FRmatch]{impute_dropout}}.
 #' @param filter.size,filter.fscore Filtering small/poor-quality clusters. Default: \code{filter.size=10}, filter based on the number
-#' of cells per cluster; \code{filter.fscore=NULL}, filter based on the f-score associated with the cell cluster if available (numeric value).
+#' of cells per cluster; \code{filter.fscore=NULL}, filter based on the F-beta score associated with the cell cluster if available (numeric value).
 #' @param subsamp.size,subsamp.iter,subsamp.seed Cluster size, number of iterations, and random seed.
 #' Default: \code{10, 1001, 1}, respectively.
 #' @param numCores Number of cores for parallel computing.
@@ -19,7 +19,7 @@
 #' @param prefix Prefix names for query and reference clusters. Default: \code{prefix=c("query.", "ref.")}.
 #' @param verbose Numeric value indicating levels of details to be printed. Default: \code{1}, only print major steps.
 #' If \code{0}, no verbose; if \code{2}, print all.
-#' @param ... Additional arguments passed to \code{\link[FRmatch]{FR.test}}.
+#' @param ... Additional arguments passed to \code{\link[FRmatch]{FRtest}}.
 #'
 #' @return A data frame with columns:
 #' \item{cell}{Query cell ID.}
@@ -67,14 +67,14 @@ FRmatch_cell2cluster <- function(sce.query, sce.ref, #imputation=FALSE,
   ## filtering small or low fscore clusters
   if(verbose>0) cat("* Filtering small clusters: query and reference clusters with less than", filter.size, "cells are not considered. \n")
   if(!is.null(filter.fscore)){
-    if(verbose>0) cat("* Filtering low F-score clusters: reference cluster with f-score <", filter.fscore, " are not considered. \n")
+    if(verbose>0) cat("* Filtering low F-beta score clusters: reference cluster with F-beta score <", filter.fscore, " are not considered. \n")
   }
-  sce.query <- filter.cluster(sce.query, filter.size=filter.size, filter.fscore=NULL)
-  sce.ref <- filter.cluster(sce.ref, filter.size=filter.size, filter.fscore=filter.fscore)
+  sce.query <- filter_cluster(sce.query, filter.size=filter.size, filter.fscore=NULL)
+  sce.ref <- filter_cluster(sce.ref, filter.size=filter.size, filter.fscore=filter.fscore)
 
   ## imputation
   # if(imputation){
-  #   sce.ref <- impute.zero(sce.ref)
+  #   sce.ref <- impute_zero(sce.ref)
   #   cat("Imputation is applied. \n")
   # }
 
@@ -131,8 +131,8 @@ FRmatch_cell2cluster <- function(sce.query, sce.ref, #imputation=FALSE,
   set.seed(subsamp.seed)
   results <- mcmapply(
     function(samp1,samp2){
-      # FR.test.cell2cluster(samp1, samp2, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, ...)
-      FR.test.cell2cluster(samp1, samp2, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter)
+      # FRtest_cell2cluster(samp1, samp2, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, ...)
+      FRtest_cell2cluster(samp1, samp2, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter)
     },
     paired.datlst.query, paired.datlst.ref,
     mc.cores = numCores)

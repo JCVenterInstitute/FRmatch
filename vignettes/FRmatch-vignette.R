@@ -23,7 +23,7 @@ data(sce.example)
 sce.example
 
 ## ---- cluster-size, , warning=FALSE, message=FALSE----------------------------
-knitr::kable(table(colData(sce.example)), col.names=c("Cluster", "Size"), row.names=1:15)
+knitr::kable(table(colData(sce.example)$cluster_membership), col.names=c("Cluster", "Size"), row.names=1:15)
 
 ## ---- data-split, warning=FALSE, message=FALSE--------------------------------
 set.seed(999)
@@ -37,7 +37,7 @@ sce.sam2 <- sce.example[,sam2$rowname]
 ## ---- clusterSize, fig.height = 9, fig.width = 7------------------------------
 plot_clusterSize(sce.sam1, sce.sam2)
 
-## ---- barcod-plot, fig.height = 5, fig.width = 7------------------------------
+## ---- barcode-plot, fig.height = 5, fig.width = 7-----------------------------
 plot_cluster_by_markers(sce.sam1, cluster.name = "i1_i90_COL5A2_Ndnf_Car4")
 
 ## ---- FRmatch12, warning=FALSE, message=FALSE---------------------------------
@@ -56,11 +56,11 @@ plot_FRmatch(rst12, reorder = FALSE)
 plot_FRmatch(rst12, type = "padj", reorder = FALSE)
 
 ## ---- FR-test, fig.height = 7, fig.width = 7----------------------------------
-# simulate some simple data
-samp1 <- matrix(rnorm(200), nrow = 5) #a 5-by-40 matrix
-samp2 <- matrix(rnorm(100), nrow = 5) #a 5-by-20 matrix
+# simulate some synthetic data from the same distribution
+samp1 <- matrix(rnorm(1000), nrow = 50) #a 50-by-20 matrix: 50 dimensional, 20 data points
+samp2 <- matrix(rnorm(1000), nrow = 50) #a 50-by-20 matrix: 50 dimensional, 20 data points
 # FR test with MST plot
-FR.test(samp1, samp2, plot.MST = TRUE, main = "Minimum spanning tree")
+FRtest(samp1, samp2, plot.MST = TRUE, main = "Minimum spanning tree")
 
 ## ---- sessionInfo-------------------------------------------------------------
 sessionInfo()

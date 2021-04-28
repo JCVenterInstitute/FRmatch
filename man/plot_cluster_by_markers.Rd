@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_cluster_by_markers.R
 \name{plot_cluster_by_markers}
 \alias{plot_cluster_by_markers}
-\title{"Barcoding" plot}
+\title{"Barcode" plot}
 \usage{
 plot_cluster_by_markers(
   sce.E1,
@@ -36,5 +36,5 @@ If both \code{sce.E1} and \code{sce.E2} are provided, then the "barcode" is a cr
 \item{cellwidth, cellheight, main, filename, ...}{Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.}
 }
 \description{
-This function plots expression pattern of a cluster by marker genes, a.k.a. barcoding plot.
+This function plots expression pattern of a cluster by marker genes, a.k.a. barcode plot.
 }

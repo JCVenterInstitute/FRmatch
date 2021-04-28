@@ -1,5 +1,5 @@
 ---
-title: "FR-Match: A cluter-to-cluster cell type matching method for single cell RNA-seq experiments"
+title: "FR-Match: A cell type matching algorithm for single cell RNA sequencing (scRNAseq) data"
 author: 
 - "Yun (Renee) Zhang, zhangy@jcvi.org"
 # - "Brian Aevermann, baeverma@jcvi.org"
@@ -9,7 +9,7 @@ output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{FR-Match: A cell type matching algorithm for single cell RNA sequencing (scRNAseq) data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -26,15 +26,15 @@ knitr::opts_chunk$set(
 
 ## Input data
 
-FR-Match is a method to integrate scRNAseq cell type data from two independently conducted experiments: query and reference. For each experiment, FR-match takes in the following input data:
+FR-Match is a method to integrate scRNAseq cell type data from two independently conducted experiments: query and reference. For each experiment, FR-Match takes in the following input data:
 
 - Reference dataset
     + A cell-by-gene expression matrix
-    + Cell type cluster labels for each cell
+    + Cell type cluster membership for each cell
     + ***Informative* marker genes for the reference cell types**
 - Query dataset
     + A cell-by-gene expression matrix
-    + Cell type cluster labels for each cell
+    + Cell type cluster membership for each cell
 
 ## Workflow
 
@@ -44,17 +44,17 @@ General steps of FR-Match include:
 -	Construct minimum spanning trees for each pair of query and reference clusters.
 -	Calculate FR statistics and p-values based on the minimum spanning tree plots.
 
-![Overview of `FR-Match` for cross-comparison between two scRNAseq experiments.](FRmatch-scheme-v2.png){width=100%}
+![Overview of FR-Match for cross-comparison between two scRNAseq experiments.](FRmatch-scheme-v2.png){width=100%}
 
 ## Installation
 
-To install from GitHub repository, please use
+To install from GitHub repository,
 ```{r, install, eval=FALSE}
 install.packages("devtools")
 devtools::install_github("JCVenterInstitute/FRmatch")
 ```
 
-After successful installation, please load FR-Match and other useful pacakges to your R environment
+After successful installation, load FR-Match and other useful packages to your R environment.
 ```{r, package, message=FALSE}
 library(FRmatch)
 library(SingleCellExperiment)
@@ -64,7 +64,7 @@ library(tibble)
 
 ## Shiny App
 
-We complement this package with a Shiny App, which can be launched by
+We complement this package with a Shiny App, which can be launched by calling the following function.
 ```{r, shinyapp, eval=FALSE}
 runShiny()
 ```
@@ -72,19 +72,19 @@ runShiny()
 
 # Getting input data ready 
 
-There are many pieces of data information needed for conducting various scRNA-seq data analyses. We choose to use the `SingleCellExperiment` class, which is a convenient container for single-cell genomics data, to summarize gene expression data and metadata needed for FRmatch. For instructions on how to construct a `SingleCellExperiment` object, please see [An introduction to the SingleCellExperiment class](https://www.bioconductor.org/packages/devel/bioc/vignettes/SingleCellExperiment/inst/doc/intro.html).
+There are many pieces of data information needed for conducting various scRNAseq data analyses. We choose to use the `SingleCellExperiment` class, which is a convenient container for single cell genomics data. For instructions on how to construct a `SingleCellExperiment` object, please see [An introduction to the SingleCellExperiment class](https://www.bioconductor.org/packages/devel/bioc/vignettes/SingleCellExperiment/inst/doc/intro.html).
 
-For FR-Match data object, the following data items are essential:
+For FR-Match data object, the following data are essential:
 
 - a gene expression data matrix (`assay()`)
 - cell type cluster labels (`colData()`)
 - NS-Forest or your own marker genes for the reference dataset (`rowData()`)
 
-In addition, metadata (`@metadata`) such as F-meansure and cluster order are not essential for the core matching algorithm, but these information will facilitate visualization and other customized analysis tools provided in this package.
+In addition, metadata (`@metadata`) such as F-beta score and cluster order are not essential for the core matching algorithm, but these information will facilitate visualization and other customized analysis tools provided in this package.
 
 ## An example data object
 
-In this package, we include an example data object `sce.example`. More details please see `help("sce.example")`. A quick look of the data object.
+In this package, we include an example data object `sce.example`. More details please see `help("sce.example")`. A quick look at the data object is below.
 ```{r, data, warning=FALSE, message=FALSE}
 data(sce.example)
 sce.example
@@ -93,7 +93,7 @@ sce.example
 In this example data, there are 16487 genes (in rows) and 865 cells (in columns). A quick check of the 15 clusters and their sizes.
 
 ```{r, cluster-size, , warning=FALSE, message=FALSE}
-knitr::kable(table(colData(sce.example)), col.names=c("Cluster", "Size"), row.names=1:15)
+knitr::kable(table(colData(sce.example)$cluster_membership), col.names=c("Cluster", "Size"), row.names=1:15)
 ```
 
 # FR-Match
@@ -114,16 +114,16 @@ sce.sam1 <- sce.example[,sam1$rowname]
 sce.sam2 <- sce.example[,sam2$rowname]
 ```
 
-Now, look at the cluster sizes in these two datasets.
+Now, look at the cluster sizes in these two toy datasets.
 ```{r, clusterSize, fig.height = 9, fig.width = 7}
 plot_clusterSize(sce.sam1, sce.sam2)
 ```
 
-## Bracod plot with marker genes
+## Bracode plot with marker genes
 
 We utilize the informative marker genes for dimensionality reduction. Good marker genes display on-off binary expression pattern producing, in combination, a unique gene expression “barcode” for each cell cluster. We provide the `plot_cluster_by_markers()` function for plotting the marker gene expression patterns for a random set of cells in each cluster.
 
-```{r, barcod-plot, fig.height = 5, fig.width = 7}
+```{r, barcode-plot, fig.height = 5, fig.width = 7}
 plot_cluster_by_markers(sce.sam1, cluster.name = "i1_i90_COL5A2_Ndnf_Car4")
 ```
 
@@ -135,7 +135,7 @@ The `FRmatch()` function is a wrapper function that take in two input arguments,
 rst12 <- FRmatch(sce.query = sce.sam1, sce.ref = sce.sam2)
 ```
 
-Also, we may swap the query and reference datasets, and perform FR-Match from the other direction. This step may not make a big difference in this example, since our two datasets are indeed split from the same data object, i.e. same set of marker genes. In practice, if we want to match between two independently conducted experiments (for example, each of them might focus on a different specimen region and therefore inducing different cell type clusters with different marker genes), the direction of matching would lead to quiet different matching results. In the end, we recommend to perform both directions of matching, and conclude with a consensus matching results from both. 
+Also, we may swap the query and reference datasets, and perform FR-Match from the other direction. This step may not make a big difference in this example, since our two datasets are indeed split from the same data object, i.e. same set of marker genes. In practice, if we want to match between two independently conducted experiments (for example, each of them might focus on a different specimen region and therefore inducing different cell type clusters with different marker genes), the direction of matching would lead to quiet different matching results. In the end, we recommend to perform both directions of matching, and conclude with a consensus matching results from both directions. 
 
 ```{r, FRmatch21, warning=FALSE, message=FALSE}
 rst21 <- FRmatch(sce.query = sce.sam2, sce.ref = sce.sam1)
@@ -168,15 +168,15 @@ plot_FRmatch(rst12, reorder = FALSE)
 plot_FRmatch(rst12, type = "padj", reorder = FALSE)
 ```
 
-From the adjusted p-value plot, we see that the significance of the match of i6 and i9 clusters is very marginal. We may obtain the actual values from these plots using the `return.value = TRUE` in corresponding plotting functions.
+From the adjusted p-value plot, we see that the significance of the match of i6 and i9 clusters is very marginal. We may obtain the actual values from these plots using the `return.value = TRUE` in the corresponding plotting function.
 
 <!-- ## Non-zero expression plot -->
 
-<!-- We alos provide a supporting function that calculates and plots the "% expressed per marker gene per cluster" for the \code{FRmatch} input data object. The percentage is defined as -->
+<!-- We also provide a supporting function that calculates and plots the "% expressed per marker gene per cluster" for the \code{FRmatch} input data object. The percentage is defined as -->
 
 <!-- > number of cells that express the marker gene in the cluster / cluster size -->
 
-<!-- The NS-Forest algorithm is designed to select the minimum set of *binary* genes for each cluster, which has the "best" classfication score (measured by F-measure) differentiating the cluster from all other clusters pooling toghther. The *binaryness* is desirable because it is pragmatically important for many downstream use cases of marker genes. Therefore, we are looking for few dropouts of the marker genes in the cluster that they mark, which can be checked using -->
+<!-- The NS-Forest algorithm is designed to select the minimum set of *binary* genes for each cluster, which has the "best" classification score (measured by F-measure) differentiating the cluster from all other clusters pooling together. The *binaryness* is desirable because it is pragmatically important for many downstream use cases of marker genes. Therefore, we are looking for few dropouts of the marker genes in the cluster that they mark, which can be checked using -->
 
 <!-- ```{r, dropout, fig.height=8, fig.width=7} -->
 <!-- plot_nonzero(sce.example, return.value=FALSE, return.plot=TRUE) -->
@@ -186,14 +186,14 @@ From the adjusted p-value plot, we see that the significance of the match of i6 
 
 ## Friedman-Rafsky test 
 
-We also implemented our own function for Friedman-Rafsky (FR) test ([1979](https://projecteuclid.org/download/pdf_1/euclid.aos/1176344722)) with customized options in `FR.test()`. FR test is a multivariate generalization of non-parametric two-sample test. It is a graphical model based on the concept of the [minimum spanning tree](https://en.wikipedia.org/wiki/Minimum_spanning_tree) (MST). This natually provides a way to visualize high-dimensional clustered data in a low-dimensional plot. Below is a minimal working example with an MST plot.
+We also implemented our own function `FRtest()` for [Friedman-Rafsky (FR) test](https://projecteuclid.org/download/pdf_1/euclid.aos/1176344722) with customized options. FR test is a multivariate generalization of non-parametric two-sample test. It is a graphical model based on the concept of [minimum spanning tree](https://en.wikipedia.org/wiki/Minimum_spanning_tree) (MST). The MST provides a way to visualize high-dimensional clustered data in a low-dimensional visualization. A minimal working example of FR test and MST visualization is below.
 
 ```{r, FR-test, fig.height = 7, fig.width = 7}
-# simulate some simple data
-samp1 <- matrix(rnorm(200), nrow = 5) #a 5-by-40 matrix
-samp2 <- matrix(rnorm(100), nrow = 5) #a 5-by-20 matrix
+# simulate some synthetic data from the same distribution
+samp1 <- matrix(rnorm(1000), nrow = 50) #a 50-by-20 matrix: 50 dimensional, 20 data points
+samp2 <- matrix(rnorm(1000), nrow = 50) #a 50-by-20 matrix: 50 dimensional, 20 data points
 # FR test with MST plot
-FR.test(samp1, samp2, plot.MST = TRUE, main = "Minimum spanning tree")
+FRtest(samp1, samp2, plot.MST = TRUE, main = "Minimum spanning tree")
 ```
 
 In the above test, the p-value suggests that no difference between the two simulated samples. 

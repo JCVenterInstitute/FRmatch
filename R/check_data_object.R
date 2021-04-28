@@ -11,16 +11,16 @@
 #'
 #' @details For the FR-Match algorithm, the following data elements are essential:
 #' \itemize{
-#' \item a gene expression data matrix
+#' \item gene expression data matrix
 #' \item cell cluster membership
 #' \item \emph{informative} marker genes of the reference dataset
 #' }
-#' In addition, metadata such as \code{cluster_marker_info, fscores, cluster_order} are not essential,
+#' In addition, metadata such as \code{cluster_marker_info, f_score, cluster_order} are not essential,
 #' but will facilitate visualization and more customized analyses provided in this package.
 #'
 #' @return A data object that passes this sanity check if no error occurs.
 #'
-#' @seealso The \link[SingleCellExperiment]{SingleCellExperiment} data class.
+#' @seealso The \link[SingleCellExperiment]{SingleCellExperiment} class.
 #'
 #' @export
 
@@ -39,43 +39,25 @@ check_data_object <- function(sce.object, verbose=TRUE){
   #############
   ## rownames
   if(is.null(rownames(sce.object))){
-    stop("rownames of this data object is not found. Please see example in help('sce.example').")
+    stop("'rownames' of this data object is not found. Please see example in help('sce.example').")
   }
 
   ## rowData
   if(is.null(rowData(sce.object)$marker_gene)){
     stop("'marker_gene' is not found in the rowData of this data object. Please see example in help('sce.example').")
-    # rowData(sce.object)$marker_gene <- as.numeric(rownames(sce.object) %in% unique(sce.object@metadata$cluster_marker_info$markerGene))
-    # cat("'marker_gene' column is added to rowData of this data object. \n")
   }
-
-  # ## check gene names
-  # if(length(base::setdiff(sce.object@metadata$cluster_marker_info$markerGene,rownames(sce.object)))>0){
-  #   warning("At least 1 marker genes not presented in the rownames of this data object. Please make sure consistent names of genes are used. Pay attention to special symbols such as '-', '.', '_'. \n")
-  # }
-  # ## for updating after filter.cluster??
-  # if(!identical(rownames(sce.object)[rowData(sce.object)$NSF_markers], sce.object@metadata$cluster_marker_info$markerGene)){
-  #   rowData(sce.object)$NSF_markers <- rownames(sce.object) %in% unique(sce.object@metadata$cluster_marker_info$markerGene)
-  #   cat("'NSF_markers' column is updated according to metadata. \n")
-  # }
 
   #############
   ## colData ##
   #############
   ## colnames
   if(is.null(colnames(sce.object))){
-    stop("colnames of this data object is not found. Please see example in help('sce.example').")
+    stop("'colnames' of this data object is not found. Please see example in help('sce.example').")
   }
   ## colData
   if(is.null(colData(sce.object)$cluster_membership)){
     stop("'cluster_membership' is not found in the colData of this data object. Please see example in help('sce.example').")
   }
-
-  # ## check cluster names
-  # if(length(base::setdiff(unique(colData(sce.object)$cluster_membership), sce.object@metadata$cluster_order))>0 |
-  #    length(base::setdiff(sce.object@metadata$cluster_order, unique(colData(sce.object)$cluster_membership)))>0){
-  #   stop("Cluster names in colData and metadata do not match. Please use consistent cluster names. Please see example in help('sce.example').")
-  # }
 
   ##############
   ## metadata ##
@@ -84,9 +66,9 @@ check_data_object <- function(sce.object, verbose=TRUE){
   if(is.null(sce.object@metadata$cluster_marker_info)){
     if(verbose) cat("'cluster_marker_info' is not available. \n")
   }
-  ## fscores
-  if(is.null(sce.object@metadata$fscores)){
-    if(verbose) cat("'fscores' is not available. \n")
+  ## f_score
+  if(is.null(sce.object@metadata$f_score)){
+    if(verbose) cat("'f_score' is not available. \n")
   }
   ## cluster_order
   if(is.null(sce.object@metadata$cluster_order)){

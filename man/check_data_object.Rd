@@ -23,13 +23,13 @@ This function helps to check if the data object is compatible with \code{\link[F
 \details{
 For the FR-Match algorithm, the following data elements are essential:
 \itemize{
-\item a gene expression data matrix
+\item gene expression data matrix
 \item cell cluster membership
 \item \emph{informative} marker genes of the reference dataset
 }
-In addition, metadata such as \code{cluster_marker_info, fscores, cluster_order} are not essential,
+In addition, metadata such as \code{cluster_marker_info, f_score, cluster_order} are not essential,
 but will facilitate visualization and more customized analyses provided in this package.
 }
 \seealso{
-The \link[SingleCellExperiment]{SingleCellExperiment} data class.
+The \link[SingleCellExperiment]{SingleCellExperiment} class.
 }

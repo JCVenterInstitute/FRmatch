@@ -2,7 +2,7 @@
 % Please edit documentation in R/FRmatch.R
 \name{FRmatch}
 \alias{FRmatch}
-\title{Cluster-to-cluster cell type matching algorithm for single-cell RNA-seq data}
+\title{FR-Match for single cell RNA-seq data}
 \usage{
 FRmatch(
   sce.query,
@@ -28,7 +28,7 @@ See details in \code{\link[FRmatch]{sce.example}}.}
 See details in \code{\link[FRmatch]{sce.example}}.}
 
 \item{filter.size, filter.fscore}{Filtering small/poor-quality clusters. Default: \code{filter.size=10}, filter based on the number
-of cells per cluster; \code{filter.fscore=NULL}, filter based on the f-score associated with the cell cluster if available (numeric value).}
+of cells per cluster; \code{filter.fscore=NULL}, filter based on the F-beta score associated with the cell cluster if available (numeric value).}
 
 \item{method}{Methods for the FR test. Default: \code{method="subsampling"} is to iteratively subsample equal number of cells (i.e. cluster size)
 from the query and reference clusters, and then perform the FR test. Option: \code{method="none"} is the FR test with no modification.}
@@ -46,7 +46,7 @@ If \code{0}, no verbose; if \code{2}, print all.}
 
 \item{return.all}{Logical variable indicating if to return all results (such as runs, etc.). Default: \code{FALSE}.}
 
-\item{...}{Additional arguments passed to \code{\link[FRmatch]{FR.test}}.}
+\item{...}{Additional arguments passed to \code{\link[FRmatch]{FRtest}}.}
 }
 \value{
 A list of:
@@ -56,7 +56,7 @@ A list of:
 If \code{return.all = TRUE}, more intermediate results are returned.
 }
 \description{
-This is a user-end function that wraps up the steps of matching cell type clusters between two single-cell RNA-seq experiments
+This is a user-end function that wraps up the steps of matching cell type clusters between two single cell RNA-seq experiments
 (namely, \code{query} and \code{reference}) with \emph{clustered} expression data and \emph{informative} marker genes
 using the Friedman-Rafsky (FR) statistical test.
 This function inputs two data objects of the \link[SingleCellExperiment]{SingleCellExperiment} class,
