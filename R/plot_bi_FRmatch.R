@@ -1,12 +1,12 @@
 
-#' Two-way matching plot for FR-Match results
+#' Plotting function for bi-directional FR-Match results
 #'
-#' This function combines and plots two sets of reciprocal \code{\link[FRmatch]{FRmatch}} results (i.e. experiment 1 (hereinafter, E1) query
-#'to experiment 2 (hereinafter, E2) reference with E2 markers, and E2 query to E1 reference with E1 markers).
+#' This function combines and plots two sets of reciprocal \code{\link[FRmatch]{FRmatch}} results (i.e. experiment 1 (E1) query
+#' to experiment 2 (E2) reference with E2 markers, and E2 query to E1 reference with E1 markers).
 #'
 #' @param rst.FRmatch.E1toE2,rst.FRmatch.E2toE1 The \code{\link[FRmatch]{FRmatch}} outputs.
 #' @param prefix Prefix names for query and reference clusters used in \code{\link[FRmatch]{FRmatch}}.
-#' @param name.E1,name.E2 Customized names with delimiter for E1 and E2. Default: \code{"E1."} and \code{"E2."}, respectively.
+#' @param name.E1,name.E2 Customized names with delimiter for E1 and E2 to be used in this figure. Default: \code{"E1."} and \code{"E2."}, respectively.
 #' @param p.adj.method See \code{\link[FRmatch]{plot_FRmatch}}.
 #' @param sig.level See \code{\link[FRmatch]{plot_FRmatch}}.
 #' @param reorder See \code{\link[FRmatch]{plot_FRmatch}}.

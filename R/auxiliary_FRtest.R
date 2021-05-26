@@ -3,7 +3,7 @@
 ## FRtest_subsamp()
 ########################################################################################################
 
-FRtest_subsamp_each <- function(samp1, samp2, subsamp.size, subsamp.iter, ...){
+FRtest_subsamp <- function(samp1, samp2, subsamp.size, subsamp.iter, return.all=FALSE, ...){
   ## data input matrices: rows = multivariate dimensions, columns = samples
   xx <- as.matrix(samp1)
   yy <- as.matrix(samp2)
@@ -23,21 +23,24 @@ FRtest_subsamp_each <- function(samp1, samp2, subsamp.size, subsamp.iter, ...){
     out.all <- rbind(out.all, out.B)
   }
   out.all.sort <- out.all %>% as.data.frame() %>% arrange(p.value)
+  if(return.all){
+    return(out.all.sort)
+  } else
   output <- out.all.sort[round(subsamp.iter/2),]
   output <- as.numeric(output)
   names(output) <- names(out.all.sort)
   return(output)
 }
 
-FRtest_subsamp <- function(samp1, samp2, subsamp.size, subsamp.iter, ...){
-  ## first pass of FR test to check if it is a trivial seperation, i.e. one sample only forms one subtree
-  out0 <- FRtest(samp1, samp2, ...)
-  if(out0["runs.samp1"]==1 | out0["runs.samp2"]==1) output <- out0
-  ## if not the trivial case, do subsampling
-  else output <- FRtest_subsamp_each(samp1, samp2, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, ...)
-  ## output
-  return(output)
-}
+# FRtest_subsamp <- function(samp1, samp2, subsamp.size, subsamp.iter, return.all=FALSE, ...){
+#   ## first pass of FR test to check if it is a trivial separation, i.e. one sample only forms one subtree
+#   out0 <- FRtest(samp1, samp2, ...)
+#   if(out0["runs.samp1"]==1 | out0["runs.samp2"]==1) output <- out0
+#   ## if not the trivial case, do subsampling
+#   else output <- FRtest_subsamp_each(samp1, samp2, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, return.all=return.all, ...)
+#   ## output
+#   return(output)
+# }
 
 
 ########################################################################################################

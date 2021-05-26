@@ -13,6 +13,8 @@
 #' @param use.common.markergenes Boolean variable indicating if to plot only common marker genes in a cross-experiment plot.
 #' @param cellwidth,cellheight,main,filename,... Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.
 #'
+#' @import viridis
+#'
 #' @export
 
 plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
@@ -68,7 +70,7 @@ plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
     else fscore <- NA
     ## plot
     pheatmap(mat.query,
-             color = viridis::inferno(10), border_color = NA,
+             color = inferno(10), border_color = NA,
              cluster_rows = FALSE, cluster_cols = FALSE,
              cellheight = cellheight, cellwidth = cellwidth,
              show_rownames = TRUE, show_colnames = TRUE, angle_col = "0",

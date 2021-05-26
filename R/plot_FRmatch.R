@@ -1,5 +1,5 @@
 
-#' One-way matching plots for FR-Match results
+#' Plotting function for FR-Match results
 #'
 #' This function takes in the \code{\link[FRmatch]{FRmatch}} output and generates plots for the matching results.
 #' If \code{type="matches"}, it plots the one-way matches. If \code{type=="padj"}, it plots the distribution of adjusted p-values.
@@ -29,9 +29,11 @@
 plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.level=0.05,
                          reorder=TRUE, ignore.unassigned=FALSE, return.value=FALSE,
                          cellwidth=10, cellheight=10, main=NULL, filename=NA, ...){
-
+  ## calculate adjusted p-values and determine matches
   pmat.adj <- padj.FRmatch(rst.FRmatch$pmat, p.adj.method=p.adj.method)
   pmat.cutoff <- cutoff.FRmatch(rst.FRmatch$pmat, p.adj.method=p.adj.method, sig.level=sig.level)
+
+  ## reorder
   if(reorder){
     pmat.cutoff <- reorder(pmat.cutoff)
     pmat.adj <- pmat.adj[,colnames(pmat.cutoff)]
@@ -88,7 +90,7 @@ plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.lev
 ######################
 ## cutoff.FRmatch() ##
 ######################
-## This function determines matches by cuting off the p-values from FRmatch, and
+## This function determines matches by cutting off the p-values from FRmatch, and
 ## adds the "unassigned" row in the bottom
 
 cutoff.FRmatch <- function(pmat, p.adj.method, sig.level){

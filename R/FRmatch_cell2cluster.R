@@ -131,8 +131,7 @@ FRmatch_cell2cluster <- function(sce.query, sce.ref, #imputation=FALSE,
   set.seed(subsamp.seed)
   results <- mcmapply(
     function(samp1,samp2){
-      # FRtest_cell2cluster(samp1, samp2, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, ...)
-      FRtest_cell2cluster(samp1, samp2, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter)
+      FRtest_cell2cluster(samp1, samp2, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, ...)
     },
     paired.datlst.query, paired.datlst.ref,
     mc.cores = numCores)
@@ -157,7 +156,7 @@ FRmatch_cell2cluster <- function(sce.query, sce.ref, #imputation=FALSE,
   query.cluster <- rep(names(tab.query),tab.query)
   output <- data.frame(query.cluster, match.cell2cluster, rmax.cell2cluster, pmat.cell2cluster, stringsAsFactors=FALSE) %>%
     rownames_to_column()
-  colnames(output)[1:2] <- paste0(prefix[1],c("cell","cluster"))
+  colnames(output)[1:2] <- paste0("query.",c("cell","cluster"))
 
   return(output)
 }

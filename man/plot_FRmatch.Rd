@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_FRmatch.R
 \name{plot_FRmatch}
 \alias{plot_FRmatch}
-\title{One-way matching plots for FR-Match results}
+\title{Plotting function for FR-Match results}
 \usage{
 plot_FRmatch(
   rst.FRmatch,
