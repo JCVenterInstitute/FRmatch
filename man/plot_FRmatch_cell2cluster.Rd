@@ -16,6 +16,28 @@ plot_FRmatch_cell2cluster(
   height = NULL
 )
 }
+\arguments{
+\item{rst.cell2cluster}{The \code{\link[FRmatch]{FRmatch_cell2cluster}} output.}
+
+\item{type}{If \code{type="match.prop"} (default), it plots the proportion of cells in the query cluster matched to the reference cluster.
+If \code{type=="jaccard"}, it plots XXX (NOT AVAILABLE YET).}
+
+\item{p.adj.method}{P-value adjustment method for multiple hypothesis testing correction. Default: \code{"BH"}.
+For more options, please see \code{\link[stats]{p.adjust.methods}}.}
+
+\item{sig.level}{Numeric variable that specifies the significance level of adjusted p-value. A MATCH is >\code{sig.level}.
+Default: \code{0.05}.}
+
+\item{reorder}{Boolean variable indicating if to reorder the columns so that matches are aligned along the diagonal.
+It improves the interpretability of the one-way match plot. Default: \code{TRUE}.}
+
+\item{return.value}{Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.}
+
+\item{filename, width, height}{Plotting parameters passed to \code{\link[ggplot2]{ggsave}}.}
+}
+\value{
+If \code{return.value = TRUE}, a matrix of plotted values.
+}
 \description{
-Plotting function for FR-Match cell2cluster results
+This function takes in the \code{\link[FRmatch]{FRmatch_cell2cluster}} output and generates plots for the matching results.
 }

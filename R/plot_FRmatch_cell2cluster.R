@@ -1,6 +1,22 @@
 
 #' Plotting function for FR-Match cell2cluster results
 #'
+#' This function takes in the \code{\link[FRmatch]{FRmatch_cell2cluster}} output and generates plots for the matching results.
+#'
+#' @param rst.cell2cluster The \code{\link[FRmatch]{FRmatch_cell2cluster}} output.
+#' @param type If \code{type="match.prop"} (default), it plots the proportion of cells in the query cluster matched to the reference cluster.
+#' If \code{type=="jaccard"}, it plots XXX (NOT AVAILABLE YET).
+#' @param p.adj.method P-value adjustment method for multiple hypothesis testing correction. Default: \code{"BH"}.
+#' For more options, please see \code{\link[stats]{p.adjust.methods}}.
+#' @param sig.level Numeric variable that specifies the significance level of adjusted p-value. A MATCH is >\code{sig.level}.
+#' Default: \code{0.05}.
+#' @param reorder Boolean variable indicating if to reorder the columns so that matches are aligned along the diagonal.
+#' It improves the interpretability of the one-way match plot. Default: \code{TRUE}.
+#' @param return.value Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.
+#' @param filename,width,height Plotting parameters passed to \code{\link[ggplot2]{ggsave}}.
+#'
+#' @return If \code{return.value = TRUE}, a matrix of plotted values.
+#'
 #' @export
 
 plot_FRmatch_cell2cluster <- function(rst.cell2cluster, type="match.prop", p.adj.method="BH", sig.level=0.05,
@@ -48,14 +64,14 @@ plot_FRmatch_cell2cluster <- function(rst.cell2cluster, type="match.prop", p.adj
       scale_y_discrete(drop=FALSE) + #show all ref clusters even if no match
       theme_bw() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
     ## save plot or plot on device
-    if(is.null(width)) width <- ncol(tab.match.prop)*.2+1
+    if(is.null(width)) width <- ncol(tab.match.prop)*.2+.5
     if(is.null(height)) height <- nrow(tab.match.prop)*.2
     if(!is.na(filename)) ggsave(filename, g, width=width, height=height)
     else plot(g)
 
     ## output
     if(return.value){
-      return("rst.cell2cluster.padj"=rst.cell2cluster.padj, "match.prop"=tab.match.prop)
+      return(tab.match.prop)
     }
   }
 
