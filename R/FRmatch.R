@@ -15,20 +15,19 @@
 # #' See details in \code{\link[FRmatch]{impute_dropout}}.
 #' @param filter.size,filter.fscore Filtering small/poor-quality clusters. Default: \code{filter.size=10}, filter based on the number
 #' of cells per cluster; \code{filter.fscore=NULL}, filter based on the F-beta score associated with the cell cluster if available (numeric value).
-#' @param method Methods for the FR test. Default: \code{method="subsampling"} is to iteratively subsample equal number of cells (i.e. cluster size)
+#' @param method Methods for the FR test. Default: \code{method="subsampling"} is to iteratively subsample equal number of cells (i.e. subsample size)
 #' from the query and reference clusters, and then perform the FR test. Option: \code{method="none"} is the FR test with no modification.
-#' @param subsamp.size,subsamp.iter,subsamp.seed Cluster size, number of iterations, and random seed for \code{method="subsampling"}.
-#' Default: \code{10, 1001, 1}, respectively.
+#' @param subsamp.size,subsamp.iter,subsamp.seed Subsample size, number of iterations, and random seed for \code{method="subsampling"}. YMMV.
 #' @param numCores Number of cores for parallel computing.
 #' Default: \code{NULL}, use the maximum number of cores detected by \code{\link[parallel]{detectCores}} if not specified (an integer).
 #' @param prefix Prefix names for query and reference clusters. Default: \code{prefix=c("query.", "ref.")}.
 #' @param verbose Numeric value indicating levels of details to be printed. Default: \code{1}, only print major steps.
 #' If \code{0}, no verbose; if \code{2}, print all.
 #' @param return.all Logical variable indicating if to return all results (such as runs, etc.). Default: \code{FALSE}.
-#' @param ... Additional arguments passed to \code{\link[FRmatch]{FRtest}}.
+#' @param ... Additional arguments passed to \code{\link[FRmatch]{FRtest}}, including \code{use.cosine}.
 #'
 #' @return A list of:
-#' \item{parameters}{Call of key parameters used in the analysis.}
+#' \item{settings}{Record of customized parameter settings specified in the function.}
 #' \item{pmat}{A matrix of p-values. Rows are reference clusters, and columns are query clusters.}
 #' \item{statmat}{A matrix of FR statistics. Rows are reference clusters, and columns are query clusters.}
 #' If \code{return.all = TRUE}, more intermediate results are returned.
@@ -45,11 +44,13 @@
 #' FRmatch(sce.example, sce.example)
 #' }
 #'
+#' @importFrom pbmcapply pbmcmapply
+#'
 #' @export
 
 FRmatch <- function(sce.query, sce.ref, #imputation=FALSE,
                     filter.size=10, filter.fscore=NULL, #filtering clusters
-                    method="subsampling", subsamp.size=10, subsamp.iter=1001, subsamp.seed=1, #subsampling
+                    method="subsampling", subsamp.size=5, subsamp.iter=1000, subsamp.seed=1, #subsampling
                     numCores=NULL, prefix=c("query.", "ref."),
                     verbose=1, return.all=FALSE, ...){
 
@@ -64,7 +65,7 @@ FRmatch <- function(sce.query, sce.ref, #imputation=FALSE,
   if(!is.null(filter.fscore)){
     if(verbose>0) cat("* Filtering low F-beta score clusters: reference cluster with F-beta score <", filter.fscore, " are not considered. \n")
   }
-  sce.query <- filter_cluster(sce.query, filter.size=filter.size, filter.fscore=NULL)
+  sce.query <- filter_cluster(sce.query, filter.size=filter.size) #only filter on size, not fscore
   sce.ref <- filter_cluster(sce.ref, filter.size=filter.size, filter.fscore=filter.fscore)
 
   ## imputation
@@ -123,7 +124,7 @@ FRmatch <- function(sce.query, sce.ref, #imputation=FALSE,
 
   if(method=="none"){
     if(verbose>0) cat("** method =", method, "\n")
-    results <- mcmapply(
+    results <- pbmcmapply(
       function(samp1,samp2){
         FRtest(samp1, samp2, ...)
         },
@@ -132,7 +133,7 @@ FRmatch <- function(sce.query, sce.ref, #imputation=FALSE,
   }
   if(method=="subsampling"){
     if(verbose>0) cat("** method =", method, "| subsamp.size =", subsamp.size, "| subsamp.iter =", subsamp.iter, "\n")
-    results <- mcmapply(
+    results <- pbmcmapply(
       function(samp1,samp2){
         set.seed(subsamp.seed)
         FRtest_subsamp(samp1, samp2, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, ...)
@@ -149,16 +150,17 @@ FRmatch <- function(sce.query, sce.ref, #imputation=FALSE,
   colnames(statmat) <- colnames(pmat) <- clusterNames.query
 
   ## return
-  parameters <- list(filter.size=filter.size, filter.fscore=filter.fscore, method=method, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter)
+  settings <- list(filter.size=filter.size, filter.fscore=filter.fscore, method=method,
+                   subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, subsamp.seed=subsamp.seed)
   if(return.all){
     ## all results
     all.results <- as.data.frame(t(results)) %>%
       mutate(query.cluster=rep(clusterNames.query, each=ncluster.ref),
              ref.cluster=rep(clusterNames.ref, times=ncluster.query)) %>%
       select(query.cluster, ref.cluster, p.value, stat, runs, runs.query=runs.samp1, runs.ref=runs.samp2)
-    return(list("parameters"=parameters, "pmat"=pmat, "statmat"=statmat, "all.results"=all.results))
+    return(list("settings"=settings, "pmat"=pmat, "statmat"=statmat, "all.results"=all.results))
   } else {
-    return(list("parameters"=parameters, "pmat"=pmat, "statmat"=statmat))
+    return(list("settings"=settings, "pmat"=pmat, "statmat"=statmat))
   }
 }
 

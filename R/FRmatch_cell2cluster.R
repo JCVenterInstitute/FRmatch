@@ -1,8 +1,7 @@
 
-#' \code{FRmatch} cell-to-cluster extension
+#' FR-Match cell-to-cluster matching
 #'
-#' This function is an extension of the original \code{\link[FRmatch]{FRmatch}} to assign each query cell with a reference cluster label.
-#' Please see Details for the extension.
+#' This function is an implementation of the FR-Match pipeline that matches each query cell to a reference cluster.
 #'
 #' @param sce.query Data object of the \link[SingleCellExperiment]{SingleCellExperiment} class for query experiment.
 #' See details in \code{\link[FRmatch]{sce.example}}.
@@ -12,37 +11,38 @@
 # #' See details in \code{\link[FRmatch]{impute_dropout}}.
 #' @param filter.size,filter.fscore Filtering small/poor-quality clusters. Default: \code{filter.size=10}, filter based on the number
 #' of cells per cluster; \code{filter.fscore=NULL}, filter based on the F-beta score associated with the cell cluster if available (numeric value).
-#' @param subsamp.size,subsamp.iter,subsamp.seed Cluster size, number of iterations, and random seed.
-#' Default: \code{10, 1001, 1}, respectively.
+#' @param subsamp.size,subsamp.iter,subsamp.seed Iterative subsampling size, number of iterations, and random seed for iterations. YMMV.
 #' @param numCores Number of cores for parallel computing.
 #' Default: \code{NULL}, use the maximum number of cores detected by \code{\link[parallel]{detectCores}} if not specified (an integer).
 #' @param prefix Prefix names for query and reference clusters. Default: \code{prefix=c("query.", "ref.")}.
 #' @param verbose Numeric value indicating levels of details to be printed. Default: \code{1}, only print major steps.
 #' If \code{0}, no verbose; if \code{2}, print all.
-#' @param ... Additional arguments passed to \code{\link[FRmatch]{FRtest}}.
+#' @param ... Additional arguments passed to \code{\link[FRmatch]{FRtest}}, including \code{use.cosine}.
 #'
-#' @return A data frame with columns:
-#' \item{cell}{Query cell ID.}
-#' \item{cluster}{Cluster membership of query cells.}
-#' \item{match.cell2cluster}{Matched reference cluster for the query cell by \code{FRmatch_cell2cluster}.}
-#' \item{rmax.cell2cluster}{Row maximum of \code{pmat.cell2cluster} (see below).}
-#' And concatenated by the columns from the matrix:
-#' \item{pmat.cell2cluster}{Cell-by-cluster (a.k.a. query cell by reference cluster) matrix of p-values by \code{FRmatch_cell2cluster}.}
+#' @return A list of:
+#' \item{settings}{Record of customized parameter settings specified in the function.}
+#' \item{pmat}{A cell-by-cluster (a.k.a. query cell by reference cluster) matrix of p-values retained from the iterative procedure.}
+#' \item{cell2cluster}{A data frame of cell-to-cluster matches summarized from the \code{pmat}.}
+#' Columns in \code{cell2cluster} are:
+#' \item{query.cell}{Query cell ID.}
+#' \item{query.cluster}{Cluster membership of query cells.}
+#' \item{match}{Matched reference cluster for the query cell.}
+#' \item{score}{Confidence score of \code{match.cell2cluster}, which is the maximum value of the corresponding row in \code{pmat}.}
 #'
 #' @details
-#' Apply \code{FRmatch} with its iterative subsampling scheme, which is a bootstrap-like approach to randomly select a smaller set of cells
-#' from a query cluster and quantify the confidence score of the selected cells belonging to certain reference cell type
-#' using the p-value outputted from \code{FRmatch} (i.e. a larger p-value indicates higher probability of a match, and vice versa).
+#' This implementation is \code{FRmatch} with an iterative subsampling scheme, which is a bootstrap-like approach to randomly select a smaller
+#' set of cells from a query cluster and quantify the confidence score of the selected cells belonging to certain reference cell type
+#' using the p-value outputted from \code{FRtest} (i.e. a larger p-value indicates higher probability of a match, and vice versa).
 #'
-#' Assign the cluster-level p-value to each selected query cell, and updated the assigned p-value if the query cell is reselected
-#' from the iterative procedure and assigned a higher p-value. The output from the cell-to-cluster extension is a cell-by-cluster
+#' This function assigns the cluster-level p-value to each selected query cell, and updates the assigned p-value if the query cell is reselected
+#' from the iterative procedure and assigned a higher p-value. The output from this implementation includes a cell-by-cluster
 #' (a.k.a. query cell by reference cluster) matrix of p-values.
 #'
 #' @author Yun Zhang, \email{zhangy@jcvi.org};
 #' Brian Aevermann, \email{baeverma@jcvi.org};
 #' Richard Scheuermann, \email{RScheuermann@jcvi.org}.
 #'
-# @seealso Visualization of matching results using \code{\link[FRmatch]{plot_FRmatch}}, \code{\link[FRmatch]{plot_bi_FRmatch}}.
+# @seealso Visualization of matching results using \code{\link[FRmatch]{plot_FRmatch_cell2cluster}}}.
 #'
 #' @examples
 #' \dontrun{
@@ -54,7 +54,7 @@
 
 FRmatch_cell2cluster <- function(sce.query, sce.ref, #imputation=FALSE,
                                  filter.size=10, filter.fscore=NULL, #filtering clusters
-                                 subsamp.size=10, subsamp.iter=1001, subsamp.seed=1, #subsampling
+                                 subsamp.size=5, subsamp.iter=2000, subsamp.seed=1, #subsampling
                                  numCores=NULL, prefix=c("query.", "ref."),
                                  verbose=1, ...){
 
@@ -69,7 +69,7 @@ FRmatch_cell2cluster <- function(sce.query, sce.ref, #imputation=FALSE,
   if(!is.null(filter.fscore)){
     if(verbose>0) cat("* Filtering low F-beta score clusters: reference cluster with F-beta score <", filter.fscore, " are not considered. \n")
   }
-  sce.query <- filter_cluster(sce.query, filter.size=filter.size, filter.fscore=NULL)
+  sce.query <- filter_cluster(sce.query, filter.size=filter.size) #only filter on size, not fscore
   sce.ref <- filter_cluster(sce.ref, filter.size=filter.size, filter.fscore=filter.fscore)
 
   ## imputation
@@ -128,7 +128,7 @@ FRmatch_cell2cluster <- function(sce.query, sce.ref, #imputation=FALSE,
 
   if(verbose>0) cat("** method = cell2cluster", "| subsamp.size =", subsamp.size, "| subsamp.iter =", subsamp.iter, "\n")
 
-  results <- mcmapply(
+  results <- pbmcmapply(
     function(samp1,samp2){
       set.seed(subsamp.seed)
       FRtest_cell2cluster(samp1, samp2, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, ...)
@@ -150,15 +150,17 @@ FRmatch_cell2cluster <- function(sce.query, sce.ref, #imputation=FALSE,
   pmat.cell2cluster[is.na(pmat.cell2cluster)] <- 0
 
   ## all outputs
-  rmax.cell2cluster <- apply(pmat.cell2cluster,1,max)
+  score.cell2cluster <- apply(pmat.cell2cluster,1,max)
   match.cell2cluster <- clusterNames.ref[max.col(pmat.cell2cluster)]
-  tab.query <- sapply(rstlst.query.pmat,nrow)
-  query.cluster <- rep(names(tab.query),tab.query)
-  output <- data.frame(query.cluster, match.cell2cluster, rmax.cell2cluster, pmat.cell2cluster, stringsAsFactors=FALSE) %>%
-    rownames_to_column()
-  colnames(output)[1:2] <- paste0("query.",c("cell","cluster"))
+  query.cell <- rownames(pmat.cell2cluster)
+  ncell.query <- sapply(rstlst.query.pmat,nrow)
+  query.cluster <- rep(names(ncell.query),ncell.query)
+  output <- data.frame(query.cell, query.cluster, "match"=match.cell2cluster, "score"=score.cell2cluster, stringsAsFactors=FALSE)
 
-  return(output)
+  ## return
+  settings <- list(filter.size=filter.size, filter.fscore=filter.fscore, method="cell2cluster",
+                     subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, subsamp.seed=subsamp.seed)
+  return(list("settings"=settings, "pmat"=pmat.cell2cluster, "cell2cluster"=output))
 }
 
 

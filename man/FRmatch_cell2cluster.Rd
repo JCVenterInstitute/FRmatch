@@ -2,15 +2,15 @@
 % Please edit documentation in R/FRmatch_cell2cluster.R
 \name{FRmatch_cell2cluster}
 \alias{FRmatch_cell2cluster}
-\title{\code{FRmatch} cell-to-cluster extension}
+\title{FR-Match cell-to-cluster matching}
 \usage{
 FRmatch_cell2cluster(
   sce.query,
   sce.ref,
   filter.size = 10,
   filter.fscore = NULL,
-  subsamp.size = 10,
-  subsamp.iter = 1001,
+  subsamp.size = 5,
+  subsamp.iter = 2000,
   subsamp.seed = 1,
   numCores = NULL,
   prefix = c("query.", "ref."),
@@ -28,8 +28,7 @@ See details in \code{\link[FRmatch]{sce.example}}.}
 \item{filter.size, filter.fscore}{Filtering small/poor-quality clusters. Default: \code{filter.size=10}, filter based on the number
 of cells per cluster; \code{filter.fscore=NULL}, filter based on the F-beta score associated with the cell cluster if available (numeric value).}
 
-\item{subsamp.size, subsamp.iter, subsamp.seed}{Cluster size, number of iterations, and random seed.
-Default: \code{10, 1001, 1}, respectively.}
+\item{subsamp.size, subsamp.iter, subsamp.seed}{Iterative subsampling size, number of iterations, and random seed for iterations. YMMV.}
 
 \item{numCores}{Number of cores for parallel computing.
 Default: \code{NULL}, use the maximum number of cores detected by \code{\link[parallel]{detectCores}} if not specified (an integer).}
@@ -39,28 +38,29 @@ Default: \code{NULL}, use the maximum number of cores detected by \code{\link[pa
 \item{verbose}{Numeric value indicating levels of details to be printed. Default: \code{1}, only print major steps.
 If \code{0}, no verbose; if \code{2}, print all.}
 
-\item{...}{Additional arguments passed to \code{\link[FRmatch]{FRtest}}.}
+\item{...}{Additional arguments passed to \code{\link[FRmatch]{FRtest}}, including \code{use.cosine}.}
 }
 \value{
-A data frame with columns:
-\item{cell}{Query cell ID.}
-\item{cluster}{Cluster membership of query cells.}
-\item{match.cell2cluster}{Matched reference cluster for the query cell by \code{FRmatch_cell2cluster}.}
-\item{rmax.cell2cluster}{Row maximum of \code{pmat.cell2cluster} (see below).}
-And concatenated by the columns from the matrix:
-\item{pmat.cell2cluster}{Cell-by-cluster (a.k.a. query cell by reference cluster) matrix of p-values by \code{FRmatch_cell2cluster}.}
+A list of:
+\item{settings}{Record of customized parameter settings specified in the function.}
+\item{pmat}{A cell-by-cluster (a.k.a. query cell by reference cluster) matrix of p-values retained from the iterative procedure.}
+\item{cell2cluster}{A data frame of cell-to-cluster matches summarized from the \code{pmat}.}
+Columns in \code{cell2cluster} are:
+\item{query.cell}{Query cell ID.}
+\item{query.cluster}{Cluster membership of query cells.}
+\item{match}{Matched reference cluster for the query cell.}
+\item{score}{Confidence score of \code{match.cell2cluster}, which is the maximum value of the corresponding row in \code{pmat}.}
 }
 \description{
-This function is an extension of the original \code{\link[FRmatch]{FRmatch}} to assign each query cell with a reference cluster label.
-Please see Details for the extension.
+This function is an implementation of the FR-Match pipeline that matches each query cell to a reference cluster.
 }
 \details{
-Apply \code{FRmatch} with its iterative subsampling scheme, which is a bootstrap-like approach to randomly select a smaller set of cells
-from a query cluster and quantify the confidence score of the selected cells belonging to certain reference cell type
-using the p-value outputted from \code{FRmatch} (i.e. a larger p-value indicates higher probability of a match, and vice versa).
+This implementation is \code{FRmatch} with an iterative subsampling scheme, which is a bootstrap-like approach to randomly select a smaller
+set of cells from a query cluster and quantify the confidence score of the selected cells belonging to certain reference cell type
+using the p-value outputted from \code{FRtest} (i.e. a larger p-value indicates higher probability of a match, and vice versa).
 
-Assign the cluster-level p-value to each selected query cell, and updated the assigned p-value if the query cell is reselected
-from the iterative procedure and assigned a higher p-value. The output from the cell-to-cluster extension is a cell-by-cluster
+This function assigns the cluster-level p-value to each selected query cell, and updates the assigned p-value if the query cell is reselected
+from the iterative procedure and assigned a higher p-value. The output from this implementation includes a cell-by-cluster
 (a.k.a. query cell by reference cluster) matrix of p-values.
 }
 \examples{

@@ -10,8 +10,8 @@ FRmatch(
   filter.size = 10,
   filter.fscore = NULL,
   method = "subsampling",
-  subsamp.size = 10,
-  subsamp.iter = 1001,
+  subsamp.size = 5,
+  subsamp.iter = 2000,
   subsamp.seed = 1,
   numCores = NULL,
   prefix = c("query.", "ref."),
@@ -30,11 +30,10 @@ See details in \code{\link[FRmatch]{sce.example}}.}
 \item{filter.size, filter.fscore}{Filtering small/poor-quality clusters. Default: \code{filter.size=10}, filter based on the number
 of cells per cluster; \code{filter.fscore=NULL}, filter based on the F-beta score associated with the cell cluster if available (numeric value).}
 
-\item{method}{Methods for the FR test. Default: \code{method="subsampling"} is to iteratively subsample equal number of cells (i.e. cluster size)
+\item{method}{Methods for the FR test. Default: \code{method="subsampling"} is to iteratively subsample equal number of cells (i.e. subsample size)
 from the query and reference clusters, and then perform the FR test. Option: \code{method="none"} is the FR test with no modification.}
 
-\item{subsamp.size, subsamp.iter, subsamp.seed}{Cluster size, number of iterations, and random seed for \code{method="subsampling"}.
-Default: \code{10, 1001, 1}, respectively.}
+\item{subsamp.size, subsamp.iter, subsamp.seed}{Subsample size, number of iterations, and random seed for \code{method="subsampling"}. YMMV.}
 
 \item{numCores}{Number of cores for parallel computing.
 Default: \code{NULL}, use the maximum number of cores detected by \code{\link[parallel]{detectCores}} if not specified (an integer).}
@@ -46,11 +45,11 @@ If \code{0}, no verbose; if \code{2}, print all.}
 
 \item{return.all}{Logical variable indicating if to return all results (such as runs, etc.). Default: \code{FALSE}.}
 
-\item{...}{Additional arguments passed to \code{\link[FRmatch]{FRtest}}.}
+\item{...}{Additional arguments passed to \code{\link[FRmatch]{FRtest}}, including \code{use.cosine}.}
 }
 \value{
 A list of:
-\item{parameters}{Call of key parameters used in the analysis.}
+\item{settings}{Record of customized parameter settings specified in the function.}
 \item{pmat}{A matrix of p-values. Rows are reference clusters, and columns are query clusters.}
 \item{statmat}{A matrix of FR statistics. Rows are reference clusters, and columns are query clusters.}
 If \code{return.all = TRUE}, more intermediate results are returned.
