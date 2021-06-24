@@ -54,7 +54,7 @@ subset_by_cluster <- function(sce.object, cluster.keep){
   ## metaData
   if(!is.null(sce.object@metadata$cluster_marker_info)){
     sce.object.filt@metadata$cluster_marker_info <- sce.object@metadata$cluster_marker_info %>%
-      filter(cluster %in% cluster.keep)
+      filter(clusterName %in% cluster.keep)
   }
   if(!is.null(sce.object@metadata$f_score)){
     sce.object.filt@metadata$f_score <- sce.object@metadata$f_score %>%

@@ -26,8 +26,10 @@ plot_FRmatch_cell2cluster <- function(rst.cell2cluster, type="match.prop", p.adj
   ## calculate adjusted p-values
   clusterNames.ref <- names(rst.cell2cluster)[-(1:4)] #reference cluster names IN ORDER
   pmat <- rst.cell2cluster[,clusterNames.ref]
-  pmat.adj <- pmat %>% as_tibble() %>%
-    mutate(across(everything(), ~ p.adjust(.x, method=p.adj.method)))
+  # pmat.adj <- pmat %>% as_tibble() %>%
+  #   mutate(across(everything(), ~ p.adjust(.x, method=p.adj.method)))
+  pmat.adj <- pmat %>% as.matrix() %>%
+    apply(1, function(x) p.adjust(x, method=p.adj.method)) %>% t()
   rst.cell2cluster.padj <- rst.cell2cluster %>% select(query.cell, query.cluster) %>%
     mutate(match.cell2cluster=clusterNames.ref[max.col(pmat.adj)], rmax.cell2cluster=apply(pmat.adj,1,max)) %>%
     cbind(pmat.adj)

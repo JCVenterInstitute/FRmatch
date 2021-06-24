@@ -132,9 +132,9 @@ FRmatch <- function(sce.query, sce.ref, #imputation=FALSE,
   }
   if(method=="subsampling"){
     if(verbose>0) cat("** method =", method, "| subsamp.size =", subsamp.size, "| subsamp.iter =", subsamp.iter, "\n")
-    set.seed(subsamp.seed)
     results <- mcmapply(
       function(samp1,samp2){
+        set.seed(subsamp.seed)
         FRtest_subsamp(samp1, samp2, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, ...)
       },
       paired.datlst.query, paired.datlst.ref,

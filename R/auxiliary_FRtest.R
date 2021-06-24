@@ -56,8 +56,10 @@ FRtest_cell2cluster <- function(samp1, samp2, subsamp.size, subsamp.iter, ...){
   m <- max(ncol(xx), 1)
   n <- max(ncol(yy), 1)
 
+  ## create output object to store results
   out.cell2cluster <- rep(NA, m)
   names(out.cell2cluster) <- colnames(xx)
+  ## iterations
   for(b in 1:subsamp.iter){
     ## subsampling sizes
     mm <- sample(1:m, min(subsamp.size,m), replace=FALSE)
