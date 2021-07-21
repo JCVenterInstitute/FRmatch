@@ -14,7 +14,7 @@ For more options, please see \code{\link[stats]{p.adjust.methods}}.}
 }
 \value{
 A data frame of the most similar reference cluster for each query cluster,
-which is the "match" with the highest adjusted p-value.
+which is the "match" with the highest adjusted p-value. If there are tied p-values, all will be returned.
 }
 \description{
 This function takes in the \code{\link[FRmatch]{FRmatch}} output and predicts the most similar reference cluster for each query cluster.
