@@ -11,7 +11,7 @@ FRmatch(
   filter.fscore = NULL,
   method = "subsampling",
   subsamp.size = 5,
-  subsamp.iter = 2000,
+  subsamp.iter = 1000,
   subsamp.seed = 1,
   numCores = NULL,
   prefix = c("query.", "ref."),

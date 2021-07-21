@@ -15,7 +15,7 @@
 #' @param return.value Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.
 #' @param filename,width,height Plotting parameters passed to \code{\link[ggplot2]{ggsave}}.
 #'
-#' @return If \code{return.value = TRUE}, a matrix of \code{plotted.values}, and a data frame of \code{cell2cluster} with adjusted score.
+#' @return If \code{return.value = TRUE}, a matrix of \code{plotted.values}, and \code{pmat.adj} and \code{cell2cluster.adj} after adjustment.
 #'
 #' @export
 
@@ -66,7 +66,7 @@ plot_FRmatch_cell2cluster <- function(rst.cell2cluster, type="match.prop", p.adj
 
     ## output
     if(return.value){
-      return(list("plotted.values"=tab.match.prop, "cell2cluster"=rst.cell2cluster$cell2cluster))
+      return(list("plotted.values"=tab.match.prop, "pmat.adj"=pmat.adj, "cell2cluster.adj"=rst.cell2cluster$cell2cluster))
     }
   }
 

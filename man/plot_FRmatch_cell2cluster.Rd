@@ -36,7 +36,7 @@ It improves the interpretability of the one-way match plot. Default: \code{TRUE}
 \item{filename, width, height}{Plotting parameters passed to \code{\link[ggplot2]{ggsave}}.}
 }
 \value{
-If \code{return.value = TRUE}, a matrix of \code{plotted.values}, and a data frame of \code{cell2cluster} with adjusted score.
+If \code{return.value = TRUE}, a matrix of \code{plotted.values}, and \code{pmat.adj} and \code{cell2cluster.adj} after adjustment.
 }
 \description{
 This function takes in the \code{\link[FRmatch]{FRmatch_cell2cluster}} output and generates plots for the matching results.

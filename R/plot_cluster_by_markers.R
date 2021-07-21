@@ -6,7 +6,7 @@
 #' @param sce.E1,sce.E2 Data objects of the \link[SingleCellExperiment]{SingleCellExperiment} data class. If only \code{sce.E1},
 #' then the "barcode" is a self plot, i.e. both cluster (\code{cluster.name}) and marker genes are from the same experiment.
 #' If both \code{sce.E1} and \code{sce.E2} are provided, then the "barcode" is a cross-experiment plot, i.e. marker genes are from
-#' \code{sce.E1} (reference) andcluster (\code{cluster.name}) is from \code{sce.E2} (query).
+#' \code{sce.E1} (reference) and cluster (\code{cluster.name}) is from \code{sce.E2} (query).
 #' @param cluster.name Name of the cluster to be plotted.
 #' @param nsamp Number of randomly selected cells to plot for a large cluster. Default: \code{30}.
 #' @param name.E1,name.E2 Prefix names for E1 and E2. Default: \code{"E1."} and \code{"E2."}, respectively.
@@ -28,7 +28,7 @@ plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
     stop(paste(cluster.name, "is not found in the plotting data object. \n"))}
 
   ## reference marker genes
-  markergenes <- rownames(sce.ref)[rowData(sce.ref)$marker_gene==1]
+  markergenes <- unique(sce.ref@metadata$cluster_marker_info$markerGene) #marker genes in ORDER!!!
   ## cells of query cluster
   col.query <- colData(sce.query)$cluster_membership==cluster.name
 
@@ -41,6 +41,7 @@ plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
     mat.query <- assay(sce.query[,col.query]) %>% as.data.frame() %>% rownames_to_column() %>%
       right_join(as.data.frame(markergenes, stringsAsFactors=FALSE), by=c("rowname"="markergenes")) %>%
       column_to_rownames() %>% as.matrix()
+    mat.query <- mat.query[markergenes,]
   }
 
   ## randomly select nsamp number of cells
@@ -49,10 +50,10 @@ plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
   ### self plot ###
   if(is.null(sce.E2)){
     ## main
-    if(is.null(main)) main <- paste0(name.E1,cluster.name)
+    if(is.null(main)) main <- paste0(name.E1, cluster.name)
     ## indicator for markers
     if(!is.null(sce.query@metadata$cluster_marker_info)){
-      mat.query <- mat.query[unique(sce.query@metadata$cluster_marker_info$markerGene),]
+      # mat.query <- mat.query[unique(sce.query@metadata$cluster_marker_info$markerGene),]
       temp <- rep(0, nrow(mat.query))
       markers.i <- sce.query@metadata$cluster_marker_info %>% filter(clusterName==cluster.name) %>% pull(markerGene)
       temp[rownames(mat.query) %in% markers.i] <- 1
@@ -86,13 +87,12 @@ plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
     if(is.null(main)) main <- paste0(name.E2,cluster.name)
     ## plot
     pheatmap(mat.query,
-             color = viridis::inferno(10), border_color = NA,
+             color = inferno(10), border_color = NA,
              cluster_rows = FALSE, cluster_cols = FALSE,
              cellheight = cellheight, cellwidth = cellwidth,
              show_rownames = TRUE, show_colnames = FALSE,
              labels_col = "Cells", angle_col = "0",
-             main=main,
-             filename=filename,
+             main=main, filename=filename,
              ...)
   }
 }

@@ -23,7 +23,7 @@ plot_cluster_by_markers(
 \item{sce.E1, sce.E2}{Data objects of the \link[SingleCellExperiment]{SingleCellExperiment} data class. If only \code{sce.E1},
 then the "barcode" is a self plot, i.e. both cluster (\code{cluster.name}) and marker genes are from the same experiment.
 If both \code{sce.E1} and \code{sce.E2} are provided, then the "barcode" is a cross-experiment plot, i.e. marker genes are from
-\code{sce.E1} (reference) andcluster (\code{cluster.name}) is from \code{sce.E2} (query).}
+\code{sce.E1} (reference) and cluster (\code{cluster.name}) is from \code{sce.E2} (query).}
 
 \item{cluster.name}{Name of the cluster to be plotted.}
 
