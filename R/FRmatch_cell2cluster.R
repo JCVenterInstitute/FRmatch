@@ -9,7 +9,7 @@
 #' See details in \code{\link[FRmatch]{sce.example}}.
 # #' @param imputation INACTIVE. Logical variable indicating if to impute expression zero values for the reference experiment. Default: \code{FALSE}.
 # #' See details in \code{\link[FRmatch]{impute_dropout}}.
-#' @param filter.size,filter.fscore Filtering small/poor-quality clusters. Default: \code{filter.size=10}, filter based on the number
+#' @param filter.size,filter.fscore Filtering small/poor-quality clusters. Default: \code{filter.size=5}, filter based on the number
 #' of cells per cluster; \code{filter.fscore=NULL}, filter based on the F-beta score associated with the cell cluster if available (numeric value).
 #' @param subsamp.size,subsamp.iter,subsamp.seed Iterative subsampling size, number of iterations, and random seed for iterations. YMMV.
 #' @param numCores Number of cores for parallel computing.
@@ -53,8 +53,8 @@
 #' @export
 
 FRmatch_cell2cluster <- function(sce.query, sce.ref, #imputation=FALSE,
-                                 filter.size=10, filter.fscore=NULL, #filtering clusters
-                                 subsamp.size=5, subsamp.iter=2000, subsamp.seed=1, #subsampling
+                                 filter.size=5, filter.fscore=NULL, #filtering clusters
+                                 subsamp.size=10, subsamp.iter=2000, subsamp.seed=1, #subsampling
                                  numCores=NULL, prefix=c("query.", "ref."),
                                  verbose=1, ...){
 

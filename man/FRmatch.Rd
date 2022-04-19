@@ -7,10 +7,10 @@
 FRmatch(
   sce.query,
   sce.ref,
-  filter.size = 10,
+  filter.size = 5,
   filter.fscore = NULL,
   method = "subsampling",
-  subsamp.size = 5,
+  subsamp.size = 20,
   subsamp.iter = 1000,
   subsamp.seed = 1,
   numCores = NULL,
@@ -27,13 +27,13 @@ See details in \code{\link[FRmatch]{sce.example}}.}
 \item{sce.ref}{Data object of the \link[SingleCellExperiment]{SingleCellExperiment} class for reference experiment.
 See details in \code{\link[FRmatch]{sce.example}}.}
 
-\item{filter.size, filter.fscore}{Filtering small/poor-quality clusters. Default: \code{filter.size=10}, filter based on the number
+\item{filter.size, filter.fscore}{Filtering small/poor-quality clusters. Default: \code{filter.size=5}, filter based on the number
 of cells per cluster; \code{filter.fscore=NULL}, filter based on the F-beta score associated with the cell cluster if available (numeric value).}
 
 \item{method}{Methods for the FR test. Default: \code{method="subsampling"} is to iteratively subsample equal number of cells (i.e. subsample size)
 from the query and reference clusters, and then perform the FR test. Option: \code{method="none"} is the FR test with no modification.}
 
-\item{subsamp.size, subsamp.iter, subsamp.seed}{Subsample size, number of iterations, and random seed for \code{method="subsampling"}. YMMV.}
+\item{subsamp.size, subsamp.iter, subsamp.seed}{Iterative subsampling size, number of iterations, and random seed for iterations. YMMV.}
 
 \item{numCores}{Number of cores for parallel computing.
 Default: \code{NULL}, use the maximum number of cores detected by \code{\link[parallel]{detectCores}} if not specified (an integer).}

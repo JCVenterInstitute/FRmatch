@@ -16,7 +16,7 @@ Authors@R: c(
            email = "RScheuermann@jcvi.org")
     )
 Description: FR-Match is a cell type cluster mapping algorithm for single cell RNA sequencing (scRNAseq) data. It is based on a statistical test called Friedman-Rafsky (FR) test, which is a multivariate generalization of nonparametric two-sample test. This package also provides visualization tools for the implemented method.
-Depends: R (>= 4.0.0), shiny (>= 1.2.0), SingleCellExperiment
+Depends: R (>= 4.0.0), shiny (>= 1.2.0), SingleCellExperiment, pbmcapply
 Imports: methods, S4Vectors, SummarizedExperiment, Seurat, scmap, lsa, igraph, ade4, tibble, dplyr, tidyr, forcats, magrittr, pheatmap, RColorBrewer, ggplot2, gridExtra, viridis
 Suggests: 
     knitr,

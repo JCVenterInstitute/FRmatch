@@ -7,9 +7,9 @@
 FRmatch_cell2cluster(
   sce.query,
   sce.ref,
-  filter.size = 10,
+  filter.size = 5,
   filter.fscore = NULL,
-  subsamp.size = 5,
+  subsamp.size = 10,
   subsamp.iter = 2000,
   subsamp.seed = 1,
   numCores = NULL,
@@ -25,7 +25,7 @@ See details in \code{\link[FRmatch]{sce.example}}.}
 \item{sce.ref}{Data object of the \link[SingleCellExperiment]{SingleCellExperiment} class for reference experiment.
 See details in \code{\link[FRmatch]{sce.example}}.}
 
-\item{filter.size, filter.fscore}{Filtering small/poor-quality clusters. Default: \code{filter.size=10}, filter based on the number
+\item{filter.size, filter.fscore}{Filtering small/poor-quality clusters. Default: \code{filter.size=5}, filter based on the number
 of cells per cluster; \code{filter.fscore=NULL}, filter based on the F-beta score associated with the cell cluster if available (numeric value).}
 
 \item{subsamp.size, subsamp.iter, subsamp.seed}{Iterative subsampling size, number of iterations, and random seed for iterations. YMMV.}

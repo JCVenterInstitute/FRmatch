@@ -27,8 +27,13 @@ plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
   if(!cluster.name %in% unique(colData(sce.query)$cluster_membership)){
     stop(paste(cluster.name, "is not found in the plotting data object. \n"))}
 
+  ## REORDER clusters according to the given order if available
+  if(!is.null(sce.ref@metadata$cluster_order)){
+    sce.ref@metadata$cluster_marker_info %<>% arrange(match(clusterName, sce.ref@metadata$cluster_order))}
+
   ## reference marker genes
   markergenes <- unique(sce.ref@metadata$cluster_marker_info$markerGene) #marker genes in ORDER!!!
+  if(is.null(markergenes)) markergenes <- rownames(sce.ref)[rowData(sce.ref)$marker_gene==1] #if metadat is not available
   ## cells of query cluster
   col.query <- colData(sce.query)$cluster_membership==cluster.name
 

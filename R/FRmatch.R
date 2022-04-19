@@ -13,11 +13,11 @@
 #' See details in \code{\link[FRmatch]{sce.example}}.
 # #' @param imputation INACTIVE. Logical variable indicating if to impute expression zero values for the reference experiment. Default: \code{FALSE}.
 # #' See details in \code{\link[FRmatch]{impute_dropout}}.
-#' @param filter.size,filter.fscore Filtering small/poor-quality clusters. Default: \code{filter.size=10}, filter based on the number
+#' @param filter.size,filter.fscore Filtering small/poor-quality clusters. Default: \code{filter.size=5}, filter based on the number
 #' of cells per cluster; \code{filter.fscore=NULL}, filter based on the F-beta score associated with the cell cluster if available (numeric value).
 #' @param method Methods for the FR test. Default: \code{method="subsampling"} is to iteratively subsample equal number of cells (i.e. subsample size)
 #' from the query and reference clusters, and then perform the FR test. Option: \code{method="none"} is the FR test with no modification.
-#' @param subsamp.size,subsamp.iter,subsamp.seed Subsample size, number of iterations, and random seed for \code{method="subsampling"}. YMMV.
+#' @param subsamp.size,subsamp.iter,subsamp.seed Iterative subsampling size, number of iterations, and random seed for iterations. YMMV.
 #' @param numCores Number of cores for parallel computing.
 #' Default: \code{NULL}, use the maximum number of cores detected by \code{\link[parallel]{detectCores}} if not specified (an integer).
 #' @param prefix Prefix names for query and reference clusters. Default: \code{prefix=c("query.", "ref.")}.
@@ -49,8 +49,8 @@
 #' @export
 
 FRmatch <- function(sce.query, sce.ref, #imputation=FALSE,
-                    filter.size=10, filter.fscore=NULL, #filtering clusters
-                    method="subsampling", subsamp.size=5, subsamp.iter=1000, subsamp.seed=1, #subsampling
+                    filter.size=5, filter.fscore=NULL, #filtering clusters
+                    method="subsampling", subsamp.size=20, subsamp.iter=1000, subsamp.seed=1, #subsampling
                     numCores=NULL, prefix=c("query.", "ref."),
                     verbose=1, return.all=FALSE, ...){
 
@@ -75,8 +75,10 @@ FRmatch <- function(sce.query, sce.ref, #imputation=FALSE,
   # }
 
   ## extract info from sce.objects
-  querydat <- assay(sce.query) #matrix
-  refdat <- assay(sce.ref)
+  # querydat <- assay(sce.query) #matrix
+  # refdat <- assay(sce.ref)
+  querydat <- logcounts(sce.query) #matrix
+  refdat <- logcounts(sce.ref)
   membership.query <- colData(sce.query)$cluster_membership
   membership.ref <- colData(sce.ref)$cluster_membership
   order.query <- sce.query@metadata$cluster_order

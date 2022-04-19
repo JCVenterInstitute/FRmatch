@@ -21,7 +21,7 @@
 
 plot_FRmatch_cell2cluster <- function(rst.cell2cluster, type="match.prop", p.adj.method="BH", sig.level=0.1,
                                       reorder=TRUE, return.value=FALSE,
-                                      filename=NA, width=NULL, height=NULL){
+                                      main=NULL, filename=NA, width=NULL, height=NULL){
 
   ## calculate adjusted p-values
   pmat <- rst.cell2cluster$pmat
@@ -52,12 +52,14 @@ plot_FRmatch_cell2cluster <- function(rst.cell2cluster, type="match.prop", p.adj
       mutate(match=factor(match, levels = rev(c(clusterNames.ref, "unassigned"))))
 
     ## plot
+    if(is.null(main)) main <- "FR-Match cell-to-cluster"
     g <- ggplot(long.tab.match.prop, aes(x=query.cluster, y=match, size=Prop, fill=Prop)) +
       geom_point(alpha=0.7, shape=21, color="black") +
       scale_size_continuous(range = c(0, 10)) +
       scale_fill_viridis(option="D", guide = "legend") +
       scale_y_discrete(drop=FALSE) + #show all ref clusters even if no match
-      theme_bw() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+      theme_bw() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+      ggtitle(main)
     ## save plot or plot on device
     if(is.null(width)) width <- ncol(tab.match.prop)*.2+.5
     if(is.null(height)) height <- nrow(tab.match.prop)*.2

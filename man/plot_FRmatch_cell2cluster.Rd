@@ -11,6 +11,7 @@ plot_FRmatch_cell2cluster(
   sig.level = 0.1,
   reorder = TRUE,
   return.value = FALSE,
+  main = NULL,
   filename = NA,
   width = NULL,
   height = NULL
