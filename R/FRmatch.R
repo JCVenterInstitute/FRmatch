@@ -32,10 +32,6 @@
 #' \item{statmat}{A matrix of FR statistics. Rows are reference clusters, and columns are query clusters.}
 #' If \code{return.all = TRUE}, more intermediate results are returned.
 #'
-#' @author Yun Zhang, \email{zhangy@jcvi.org};
-#' Brian Aevermann, \email{baeverma@jcvi.org};
-#' Richard Scheuermann, \email{RScheuermann@jcvi.org}.
-#'
 #' @seealso Visualization of matching results using \code{\link[FRmatch]{plot_FRmatch}}, \code{\link[FRmatch]{plot_bi_FRmatch}}.
 #'
 #' @examples
