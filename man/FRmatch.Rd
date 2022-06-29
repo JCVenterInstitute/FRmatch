@@ -71,8 +71,3 @@ FRmatch(sce.example, sce.example)
 \seealso{
 Visualization of matching results using \code{\link[FRmatch]{plot_FRmatch}}, \code{\link[FRmatch]{plot_bi_FRmatch}}.
 }
-\author{
-Yun Zhang, \email{zhangy@jcvi.org};
-Brian Aevermann, \email{baeverma@jcvi.org};
-Richard Scheuermann, \email{RScheuermann@jcvi.org}.
-}

@@ -70,8 +70,3 @@ FRmatch_cell2cluster(sce.example, sce.example)
 }
 
 }
-\author{
-Yun Zhang, \email{zhangy@jcvi.org};
-Brian Aevermann, \email{baeverma@jcvi.org};
-Richard Scheuermann, \email{RScheuermann@jcvi.org}.
-}

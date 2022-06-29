@@ -401,7 +401,7 @@ plot_seurat <- function(rst.seurat, type="matches", pct.cutoff=0.3,
 ## plot_bi_seurat() ##
 ######################
 
-plot_bi_seurat <- function(rst.seurat.E1toE2, rst.seurat.E2toE1, name.E1="E1", name.E2="E2",
+plot_bi_seurat <- function(rst.seurat.E1toE2, rst.seurat.E2toE1, name.E1="E1.", name.E2="E2.",
                            pct.cutoff=0.3,
                            reorder=TRUE, return.value=FALSE,
                            cellwidth=10, cellheight=10, main=NULL, filename=NA, ...){
@@ -416,8 +416,8 @@ plot_bi_seurat <- function(rst.seurat.E1toE2, rst.seurat.E2toE1, name.E1="E1", n
   ## unassigned row
   mat.bi <- rbind(mat.bi, 2*as.numeric(colSums(mat.bi)==0))
   ## rename colnames and rownames
-  rownames(mat.bi) <- gsub("ref", name.E2, rownames(pctmat.cutoff.E1toE2))
-  colnames(mat.bi) <- gsub("query", name.E1, colnames(pctmat.cutoff.E1toE2))
+  rownames(mat.bi) <- gsub("ref.", name.E2, rownames(pctmat.cutoff.E1toE2))
+  colnames(mat.bi) <- gsub("query.", name.E1, colnames(pctmat.cutoff.E1toE2))
 
   ## plot
   if(is.null(main)) main <- "Seurat"
@@ -434,3 +434,48 @@ plot_bi_seurat <- function(rst.seurat.E1toE2, rst.seurat.E2toE1, name.E1="E1", n
   cat("pct.cutoff = ", pct.cutoff, "\n")
   if(return.value) return(mat.bi)
 }
+
+plot_seurat_cell2cluster <- function(rst, type="match.prop",
+                                     reorder=TRUE, return.value=FALSE,
+                                     main=NULL, filename=NA, width=NULL, height=NULL){
+  if(type=="match.prop"){
+    tab.match <- table(rst$all.results$predicted.ref.cluster, rst$all.results$query.cluster) #query subclass in columns, prediction in rows
+    tab.match.prop <- sweep(tab.match,2,colSums(tab.match),"/") #column sums should be 1
+
+    ## order reference cluster orders in rows
+    clusterNames.ref <- gsub("ref.","",rownames(rst$pctmat)) #reference cluster names IN ORDER
+    oo <- match(clusterNames.ref, rownames(tab.match.prop))
+    oo.names <- rownames(tab.match.prop)[oo] %>% na.omit() #some ref clusters may not have matched query cells
+    tab.match.prop <- tab.match.prop[oo.names,]
+
+    ## reorder columns for query
+    if(reorder) tab.match.prop <- reorder(tab.match.prop)
+
+    ## for ggplot
+    long.tab.match.prop <- tab.match.prop %>% as.data.frame() %>%
+      select(query.cluster=Var2, match=Var1, Prop=Freq) %>%
+      mutate(match=factor(match, levels = rev(clusterNames.ref)))
+
+    ## plot
+    if(is.null(main)) main <- "Seurat cell-to-cluster"
+    g <- ggplot(long.tab.match.prop, aes(x=query.cluster, y=match, size=Prop, fill=Prop)) +
+      geom_point(alpha=0.7, shape=21, color="black") +
+      scale_size_continuous(range = c(0, 10), limits = c(0, 1)) +
+      scale_fill_viridis(option="D", guide = "legend", limits = c(0, 1)) +
+      scale_y_discrete(drop=FALSE) + #show all ref clusters even if no match
+      theme_bw() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+      ggtitle(main)
+
+    ## save plot or plot on device
+    if(is.null(width)) width <- ncol(tab.match.prop)*.2+.5
+    if(is.null(height)) height <- nrow(tab.match.prop)*.2
+    if(!is.na(filename)) ggsave(filename, g, width=width, height=height)
+    else plot(g)
+
+    ## output
+    if(return.value){
+      return(list("plotted.values"=tab.match.prop))
+    }
+  }
+}
+

@@ -55,8 +55,8 @@ plot_FRmatch_cell2cluster <- function(rst.cell2cluster, type="match.prop", p.adj
     if(is.null(main)) main <- "FR-Match cell-to-cluster"
     g <- ggplot(long.tab.match.prop, aes(x=query.cluster, y=match, size=Prop, fill=Prop)) +
       geom_point(alpha=0.7, shape=21, color="black") +
-      scale_size_continuous(range = c(0, 10)) +
-      scale_fill_viridis(option="D", guide = "legend") +
+      scale_size_continuous(range = c(0, 10), limits = c(0, 1)) +
+      scale_fill_viridis(option="D", guide = "legend", limits = c(0, 1)) +
       scale_y_discrete(drop=FALSE) + #show all ref clusters even if no match
       theme_bw() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
       ggtitle(main)

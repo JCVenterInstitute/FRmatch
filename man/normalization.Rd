@@ -2,21 +2,21 @@
 % Please edit documentation in R/normalization.R
 \name{normalization}
 \alias{normalization}
-\title{Normalization function for FR-Match pipeline}
+\title{Normalization function for FR-Match analysis}
 \usage{
 normalization(sce.object, scale = TRUE, norm.by = NULL)
 }
 \arguments{
 \item{sce.object}{Data object.}
 
-\item{scale}{Boolean variable indicating if to scale the per gene expression range to 0 and 1. Default: \code{TRUE}.}
+\item{scale}{Boolean variable indicating if to scale the per gene expression to the range [0,1]. Default: \code{TRUE}.}
 
-\item{norm.by}{If \code{norm.by=NULL} (default), do nothing. If \code{norm.by="median"}, to weight each gene by its median then rescale to unit range.
-If \code{norm.by="mean"}, to weight each gene by its mean then rescale to unit range.}
+\item{norm.by}{If \code{norm.by=NULL} (default), do nothing. If \code{norm.by="median"}, weight each gene by its median.
+If \code{norm.by="mean"}, weight each gene by its mean. After normalization, all values are re-scale to [0,1] range.}
 }
 \value{
 A data object with normalized expression data.
 }
 \description{
-Normalization function for FR-Match pipeline
+Normalization function for FR-Match analysis
 }
