@@ -7,14 +7,16 @@
 plot_exprDist(
   sce.E1,
   sce.E2,
+  markers = NULL,
   name.E1 = "E1",
   name.E2 = "E2",
   breaks = 20,
   xlim = c(0, 10),
-  ylim = c(0, 1.7),
+  ylim = c(0, 2),
   filename = NA,
   width = 10,
-  height = 5
+  height = 5,
+  ...
 )
 }
 \arguments{
@@ -27,6 +29,8 @@ plot_exprDist(
 \item{filename}{File name if to save the plot. Default: \code{NA}, not to save the plot.}
 
 \item{width, height}{Width and height for saved plot.}
+
+\item{...}{Additional arguments passed to \code{\link[graphics]{hist}}}
 }
 \description{
 This function plots the expression data distributions of the two single cell datasets (e.g. query and reference) to be compared.

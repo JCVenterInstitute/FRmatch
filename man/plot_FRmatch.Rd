@@ -39,7 +39,7 @@ in the \code{type="matches"} plot. Default: \code{FALSE}. If \code{TRUE}, number
 
 \item{return.value}{Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.}
 
-\item{cellwidth, cellheight, main, filename, ...}{Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.}
+\item{cellwidth, cellheight, main, filename, ...}{Plotting parameters passed to \code{\link[graphics]{hist}}.}
 }
 \value{
 If \code{return.value = TRUE}, a matrix of one-way matching values 1 = match, and 0 = no match, or a matrix of adjusted p-values.

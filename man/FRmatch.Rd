@@ -7,8 +7,10 @@
 FRmatch(
   sce.query,
   sce.ref,
+  use.cosine = TRUE,
   filter.size = 5,
   filter.fscore = NULL,
+  filter.nomarker = TRUE,
   method = "subsampling",
   subsamp.size = 20,
   subsamp.iter = 1000,
@@ -27,8 +29,9 @@ See details in \code{\link[FRmatch]{sce.example}}.}
 \item{sce.ref}{Data object of the \link[SingleCellExperiment]{SingleCellExperiment} class for reference experiment.
 See details in \code{\link[FRmatch]{sce.example}}.}
 
-\item{filter.size, filter.fscore}{Filtering small/poor-quality clusters. Default: \code{filter.size=5}, filter based on the number
-of cells per cluster; \code{filter.fscore=NULL}, filter based on the F-beta score associated with the cell cluster if available (numeric value).}
+\item{filter.size, filter.fscore, filter.nomarker}{Filtering small/poor-quality/no-marker clusters. Default: \code{filter.size=5}, filter based on the number
+of cells per cluster; \code{filter.fscore=NULL}, filter based on the F-beta score associated with the cell cluster if available (numeric value);
+\code{filter.nomarker=TRUE}, filter based boolean variable indicating if to filter reference clusters with no marker genes available in query.}
 
 \item{method}{Methods for the FR test. Default: \code{method="subsampling"} is to iteratively subsample equal number of cells (i.e. subsample size)
 from the query and reference clusters, and then perform the FR test. Option: \code{method="none"} is the FR test with no modification.}
@@ -41,7 +44,7 @@ Default: \code{NULL}, use the maximum number of cores detected by \code{\link[pa
 \item{prefix}{Prefix names for query and reference clusters. Default: \code{prefix=c("query.", "ref.")}.}
 
 \item{verbose}{Numeric value indicating levels of details to be printed. Default: \code{1}, only print major steps.
-If \code{0}, no verbose; if \code{2}, print all.}
+If \code{0}, no verbose; if \code{2}, print all, including warnings.}
 
 \item{return.all}{Logical variable indicating if to return all results (such as runs, etc.). Default: \code{FALSE}.}
 

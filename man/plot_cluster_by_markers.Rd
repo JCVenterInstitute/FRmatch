@@ -9,9 +9,10 @@ plot_cluster_by_markers(
   sce.E2 = NULL,
   cluster.name,
   nsamp = 30,
-  name.E1 = "E1.",
-  name.E2 = "E2.",
+  name.self = "E1.",
+  name.cross = "E2.",
   use.common.markergenes = TRUE,
+  scale.colorbar = FALSE,
   cellheight = 10,
   cellwidth = 5,
   main = NULL,
@@ -29,9 +30,11 @@ If both \code{sce.E1} and \code{sce.E2} are provided, then the "barcode" is a cr
 
 \item{nsamp}{Number of randomly selected cells to plot for a large cluster. Default: \code{30}.}
 
-\item{name.E1, name.E2}{Prefix names for E1 and E2. Default: \code{"E1."} and \code{"E2."}, respectively.}
+\item{name.self, name.cross}{Prefix name of experiment for self and cross-experiment plots. Default: \code{"E1."} and \code{"E2."}, respectively.}
 
 \item{use.common.markergenes}{Boolean variable indicating if to plot only common marker genes in a cross-experiment plot.}
+
+\item{scale.colorbar}{Boolean variable indicating if to scale the color bar to [0,1] for normalized gene expression values. Default: \code{"FALSE"}.}
 
 \item{cellwidth, cellheight, main, filename, ...}{Plotting parameters passed to \code{\link[pheatmap]{pheatmap}}.}
 }

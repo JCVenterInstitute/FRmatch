@@ -4,7 +4,7 @@
 
 ## Citation
 
-Zhang et al. 2022. Cell type matching in single-cell RNA-sequencing data using FR-Match. [https://doi.org/10.1038/s41598-022-14192-z](https://doi.org/10.1038/s41598-022-14192-z)
+Zhang et al. 2022. Cell type matching in single-cell RNA-sequencing data using FR-Match. *Scientific Reports*, [https://doi.org/10.1038/s41598-022-14192-z](https://doi.org/10.1038/s41598-022-14192-z)
 
 Zhang et al. 2020. FR-Match: robust matching of cell type clusters from single cell RNA sequencing data using the Friedman–Rafsky non-parametric test. *Briefings in Bioinformatics*, [https://doi.org/10.1093/bib/bbaa339](https://doi.org/10.1093/bib/bbaa339).
 
@@ -57,8 +57,8 @@ Please report issues using the [issue traker](https://github.com/JCVenterInstitu
 ## Acknowledgments
 
 * Allen Institute for Brain Science
-* Chan Zuckerberg Initiative (Completed grant: DAF 2018–182730)
-* The NIH BRAIN Initiative (Active grant: 1RF1MH123220)
+* Chan Zuckerberg Initiative (DAF 2018–182730)
+* The NIH BRAIN Initiative (1RF1MH123220)
 
 ## License
 

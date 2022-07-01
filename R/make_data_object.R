@@ -42,6 +42,10 @@ make_data_object <- function(dat, tab, markers,
   dat %<>% mutate(Sample=gsub("-| |\\.|/", "_", Sample))
   names(dat) <- gsub("-| |\\.|/", "_", names(dat))
   tab %<>% mutate(Sample=gsub("-| |\\.|/", "_", Sample), Cluster=gsub("-| |\\.|/", "_", Cluster))
+  markers <- gsub("-| |\\.|/", "_", markers)
+  cluster_marker_info %<>% mutate(clusterName=gsub("-| |\\.|/", "_", clusterName), markerGene=gsub("-| |\\.|/", "_", markerGene))
+  f_score %<>% mutate(clusterName=gsub("-| |\\.|/", "_", clusterName))
+  cluster_order <- gsub("-| |\\.|/", "_", cluster_order)
 
   ## data table with "Sample", "Cluster", and gene columns for constructing the sce.object
   dt <- dat %>% inner_join(tab, by="Sample") %>% #inner_join: make sure that cells are in the SAME order!!!
