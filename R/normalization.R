@@ -16,6 +16,7 @@ normalization <- function(sce.object, scale=TRUE, norm.by=NULL){
   if(scale){
     mat <- assay(sce.object)
     mat.scale <- sweep(mat,1,rowMax(mat),"/")
+    mat.scale[is.na(mat.scale)] <- 0 #if rowMax(mat)==0
     assay(sce.object) <- mat.scale
   }
 

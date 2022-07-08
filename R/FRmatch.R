@@ -74,7 +74,7 @@ FRmatch <- function(sce.query, sce.ref, use.cosine=TRUE,  #imputation=FALSE,
     ref.cluster.nomarker <- setdiff(unique(colData(sce.ref)$cluster_membership), ref.cluster.keep)
     sce.ref <- FRmatch:::subset_by_cluster(sce.ref, ref.cluster.keep)
     if(length(ref.cluster.nomarker)>0){
-      if(verbose>1) warning(paste(ref.cluster.nomarker, collapse = ", ")," with no marker genes available in query.")
+      if(verbose>1) warning(paste(ref.cluster.nomarker, collapse = ", ")," with no marker gene available in query.")
     }
   }
 
