@@ -10,7 +10,9 @@ FRmatch(
   use.cosine = TRUE,
   filter.size = 5,
   filter.fscore = NULL,
-  filter.nomarker = TRUE,
+  filter.nomarker = FALSE,
+  add.pseudo.marker = FALSE,
+  pseudo.expr = 1,
   method = "subsampling",
   subsamp.size = 20,
   subsamp.iter = 1000,
@@ -31,7 +33,11 @@ See details in \code{\link[FRmatch]{sce.example}}.}
 
 \item{filter.size, filter.fscore, filter.nomarker}{Filtering small/poor-quality/no-marker clusters. Default: \code{filter.size=5}, filter based on the number
 of cells per cluster; \code{filter.fscore=NULL}, filter based on the F-beta score associated with the cell cluster if available (numeric value);
-\code{filter.nomarker=TRUE}, filter based boolean variable indicating if to filter reference clusters with no marker genes available in query.}
+\code{filter.nomarker=FALSE}, filter based boolean variable indicating if to filter reference clusters with no marker genes available in query.}
+
+\item{add.pseudo.marker, pseudo.expr}{Adding pseudo marker to stabilize no expression query clusters in the reference marker gene space.
+Default: \code{add.pseudo.marker=FALSE}, boolean. Pseudo marker expression values are drawn from uniform distribution from 0 to \code{pseudo.expr}.
+Default: \code{pseudo.expr=1}, numeric, for min-max scaled data after normalization.}
 
 \item{method}{Methods for the FR test. Default: \code{method="subsampling"} is to iteratively subsample equal number of cells (i.e. subsample size)
 from the query and reference clusters, and then perform the FR test. Option: \code{method="none"} is the FR test with no modification.}
