@@ -46,7 +46,6 @@ If \code{return.value = TRUE}, a matrix of one-way matching values 1 = match, an
 }
 \description{
 This function takes in the \code{\link[FRmatch]{FRmatch}} output and generates plots for the matching results.
-If \code{type="matches"}, it plots the one-way matches. If \code{type=="padj"}, it plots the distribution of adjusted p-values.
 }
 \seealso{
 \code{\link[FRmatch]{plot_bi_FRmatch}}.

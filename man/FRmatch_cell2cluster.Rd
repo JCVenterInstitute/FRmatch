@@ -7,8 +7,13 @@
 FRmatch_cell2cluster(
   sce.query,
   sce.ref,
+  use.cosine = TRUE,
+  feature.selection = "reference.markers",
   filter.size = 5,
   filter.fscore = NULL,
+  filter.nomarker = FALSE,
+  add.pseudo.marker = FALSE,
+  pseudo.expr = 1,
   subsamp.size = 10,
   subsamp.iter = 2000,
   subsamp.seed = 1,
@@ -25,18 +30,27 @@ See details in \code{\link[FRmatch]{sce.example}}.}
 \item{sce.ref}{Data object of the \link[SingleCellExperiment]{SingleCellExperiment} class for reference experiment.
 See details in \code{\link[FRmatch]{sce.example}}.}
 
-\item{filter.size, filter.fscore}{Filtering small/poor-quality clusters. Default: \code{filter.size=5}, filter based on the number
-of cells per cluster; \code{filter.fscore=NULL}, filter based on the F-beta score associated with the cell cluster if available (numeric value).}
+\item{feature.selection}{Which set of features to use for the matching space? Default: \code{feature.selection="reference.markers"}, use reference marker genes.
+If \code{feature.selection="query.genes"}, use all query genes as the feature space, e.g. the query genes are probe genes for spatial transcriptomics experiment}
 
-\item{subsamp.size, subsamp.iter, subsamp.seed}{Iterative subsampling size, number of iterations, and random seed for iterations. YMMV.}
+\item{filter.size, filter.fscore, filter.nomarker}{Filtering out small/poor-quality/no-marker clusters. Default: \code{filter.size=5}, filter based on the number
+of cells per cluster; \code{filter.fscore=NULL}, do not filter based on the F-beta score, otherwise specify a numeric value between 0 and 1;
+\code{filter.nomarker=FALSE}, filter based on the boolean variable indicating if to filter reference clusters with no marker genes available in query
+in the case \code{feature.selection="reference.markers"}.}
 
-\item{numCores}{Number of cores for parallel computing.
-Default: \code{NULL}, use the maximum number of cores detected by \code{\link[parallel]{detectCores}} if not specified (an integer).}
+\item{add.pseudo.marker, pseudo.expr}{Adding pseudo marker to stabilize no expression clusters in the marker gene feature space.
+Default: \code{add.pseudo.marker=FALSE}, boolean. Pseudo marker expression values are drawn from uniform distribution from 0 to \code{pseudo.expr}.
+Default: \code{pseudo.expr=1}, numeric, for the min-max scaled data after normalization.}
+
+\item{subsamp.size, subsamp.iter, subsamp.seed}{Numeric variables for iterative subsampling size, number of iterations, and random seed for iterations. YMMV.}
+
+\item{numCores}{Number of cores for parallel computing. Default: \code{NULL}, use the maximum number of cores detected by \code{\link[parallel]{detectCores}}.
+Otherwise, specify by an integer value.}
 
 \item{prefix}{Prefix names for query and reference clusters. Default: \code{prefix=c("query.", "ref.")}.}
 
 \item{verbose}{Numeric value indicating levels of details to be printed. Default: \code{1}, only print major steps.
-If \code{0}, no verbose; if \code{2}, print all.}
+If \code{0}, no verbose; if \code{2}, print all, including warnings.}
 
 \item{...}{Additional arguments passed to \code{\link[FRmatch]{FRtest}}, including \code{use.cosine}.}
 }
@@ -52,7 +66,8 @@ Columns in \code{cell2cluster} are:
 \item{score}{Confidence score of \code{match.cell2cluster}, which is the maximum value of the corresponding row in \code{pmat}.}
 }
 \description{
-This function is an implementation of the FR-Match pipeline that matches each query cell to a reference cluster.
+This is a user-end wrapper function that implements the steps of cell type matching between two single cell RNA-seq experiments
+(namely, \code{query} and \code{reference}) using the cell-to-cluster FR-Match approach that matches each query cell to a reference cluster.
 }
 \details{
 This implementation is \code{FRmatch} with an iterative subsampling scheme, which is a bootstrap-like approach to randomly select a smaller
@@ -68,5 +83,8 @@ from the iterative procedure and assigned a higher p-value. The output from this
 data("sce.example")
 FRmatch_cell2cluster(sce.example, sce.example)
 }
+
+}
+\seealso{
 
 }

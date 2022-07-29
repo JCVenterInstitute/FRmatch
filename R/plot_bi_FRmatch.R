@@ -45,7 +45,7 @@ plot_bi_FRmatch <- function(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1,
   colnames(mat.bi) <- gsub(prefix[1],name.E1,colnames(pmat.cutoff.E1toE2))
 
   ## plot
-  if(is.null(main)) main <- "FR-Match"
+  if(is.null(main)) main <- "FR-Match cluster-to-cluster"
   if(reorder) mat.bi <- reorder(mat.bi)
   if(two.way.only){
     pheatmap(mat.bi,

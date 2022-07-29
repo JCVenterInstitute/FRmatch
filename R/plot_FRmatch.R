@@ -2,7 +2,6 @@
 #' Plotting function for FR-Match results
 #'
 #' This function takes in the \code{\link[FRmatch]{FRmatch}} output and generates plots for the matching results.
-#' If \code{type="matches"}, it plots the one-way matches. If \code{type=="padj"}, it plots the distribution of adjusted p-values.
 #'
 #' @param rst.FRmatch The \code{\link[FRmatch]{FRmatch}} output.
 #' @param type If \code{type="matches"} (default), it plots the one-way matches.
@@ -41,7 +40,7 @@ plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.lev
 
   ## plot
   if(type=="matches"){
-    if(is.null(main)) main <- "FR-Match"
+    if(is.null(main)) main <- "FR-Match cluster-to-cluster"
     if(ignore.unassigned){
       ind <- pmat.cutoff["unassigned",]==1 #unassigned columns
       pmat.cutoff <- pmat.cutoff[,!ind]
@@ -64,11 +63,10 @@ plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.lev
 
   ## plot
   if(type=="padj"){
-    # if(is.null(main)) main <- "Distribution of adjusted p-values"
     df <- tibble(padj=as.vector(pmat.adj),
-                 query_cluster = rep(colnames(pmat.adj), each=nrow(pmat.adj))) %>%
-      mutate(query_cluster = fct_relevel(query_cluster, colnames(pmat.adj)))
-    g <- ggplot(df, aes(x=query_cluster, y=padj)) +
+                 query.cluster = rep(colnames(pmat.adj), each=nrow(pmat.adj))) %>%
+      mutate(query.cluster = fct_relevel(query.cluster, colnames(pmat.adj)))
+    g <- ggplot(df, aes(x=query.cluster, y=padj)) +
       geom_boxplot() +
       theme_bw() +
       theme(axis.text.x = element_text(angle = 270, hjust = 0)) +

@@ -1,33 +1,28 @@
 
 #' FR-Match for single cell RNA-seq data
 #'
-#' This is a user-end function that wraps up the steps of matching cell type clusters between two single cell RNA-seq experiments
-#' (namely, \code{query} and \code{reference}) with \emph{clustered} expression data and \emph{informative} marker genes
-#' using the Friedman-Rafsky (FR) statistical test.
-#' This function inputs two data objects of the \link[SingleCellExperiment]{SingleCellExperiment} class,
-#' and outputs the FR statistics, p-values, and optionally, all intermediate restuls from the FR test.
+#' This is a user-end wrapper function that implements the steps of cell type matching between two single cell RNA-seq experiments
+#' (namely, \code{query} and \code{reference}) using the cluster-to-cluster FR-Match approach.
 #'
 #' @param sce.query Data object of the \link[SingleCellExperiment]{SingleCellExperiment} class for query experiment.
 #' See details in \code{\link[FRmatch]{sce.example}}.
 #' @param sce.ref Data object of the \link[SingleCellExperiment]{SingleCellExperiment} class for reference experiment.
 #' See details in \code{\link[FRmatch]{sce.example}}.
-# #' @param imputation INACTIVE. Logical variable indicating if to impute expression zero values for the reference experiment. Default: \code{FALSE}.
+# #' @param imputation INACTIVE. Boolean variable indicating if to impute expression zero values for the reference experiment. Default: \code{FALSE}.
 # #' See details in \code{\link[FRmatch]{impute_dropout}}.
-#' @param filter.size,filter.fscore,filter.nomarker  Filtering small/poor-quality/no-marker clusters. Default: \code{filter.size=5}, filter based on the number
-#' of cells per cluster; \code{filter.fscore=NULL}, filter based on the F-beta score associated with the cell cluster if available (numeric value);
-#' \code{filter.nomarker=FALSE}, filter based boolean variable indicating if to filter reference clusters with no marker genes available in query.
-#' @param add.pseudo.marker,pseudo.expr Adding pseudo marker to stabilize no expression query clusters in the reference marker gene space.
+#' @param filter.size,filter.fscore,filter.nomarker Filtering out small/poor-quality/no-marker clusters. Default: \code{filter.size=5}, filter based on the number
+#' of cells per cluster; \code{filter.fscore=NULL}, do not filter based on the F-beta score, otherwise specify a numeric value between 0 and 1;
+#' \code{filter.nomarker=FALSE}, filter based on the boolean variable indicating if to filter reference clusters with no marker genes available in query.
+#' @param add.pseudo.marker,pseudo.expr Adding pseudo marker to stabilize no expression clusters in the marker gene feature space.
 #' Default: \code{add.pseudo.marker=FALSE}, boolean. Pseudo marker expression values are drawn from uniform distribution from 0 to \code{pseudo.expr}.
-#' Default: \code{pseudo.expr=1}, numeric, for min-max scaled data after normalization.
-#' @param method Methods for the FR test. Default: \code{method="subsampling"} is to iteratively subsample equal number of cells (i.e. subsample size)
-#' from the query and reference clusters, and then perform the FR test. Option: \code{method="none"} is the FR test with no modification.
-#' @param subsamp.size,subsamp.iter,subsamp.seed Iterative subsampling size, number of iterations, and random seed for iterations. YMMV.
-#' @param numCores Number of cores for parallel computing.
-#' Default: \code{NULL}, use the maximum number of cores detected by \code{\link[parallel]{detectCores}} if not specified (an integer).
+#' Default: \code{pseudo.expr=1}, numeric, for the min-max scaled data after normalization.
+#' @param subsamp.size,subsamp.iter,subsamp.seed Numeric variables for iterative subsampling size, number of iterations, and random seed for iterations. YMMV.
+#' @param numCores Number of cores for parallel computing. Default: \code{NULL}, use the maximum number of cores detected by \code{\link[parallel]{detectCores}}.
+#' Otherwise, specify by an integer value.
 #' @param prefix Prefix names for query and reference clusters. Default: \code{prefix=c("query.", "ref.")}.
 #' @param verbose Numeric value indicating levels of details to be printed. Default: \code{1}, only print major steps.
 #' If \code{0}, no verbose; if \code{2}, print all, including warnings.
-#' @param return.all Logical variable indicating if to return all results (such as runs, etc.). Default: \code{FALSE}.
+#' @param return.all Boolean variable indicating if to return all results (such as runs, etc.). Default: \code{FALSE}.
 #' @param ... Additional arguments passed to \code{\link[FRmatch]{FRtest}}, including \code{use.cosine}.
 #'
 #' @return A list of:
@@ -50,8 +45,8 @@
 
 FRmatch <- function(sce.query, sce.ref, use.cosine=TRUE,  #imputation=FALSE,
                     filter.size=5, filter.fscore=NULL, filter.nomarker=FALSE, #filtering clusters
-                    add.pseudo.marker=FALSE, pseudo.expr=1, #adding pseudo marker to stabilize no expression clusters
-                    method="subsampling", subsamp.size=20, subsamp.iter=1000, subsamp.seed=1, #subsampling
+                    add.pseudo.marker=FALSE, pseudo.expr=1, #adding pseudo marker
+                    subsamp.size=20, subsamp.iter=1000, subsamp.seed=1, #subsampling
                     numCores=NULL, prefix=c("query.", "ref."),
                     verbose=1, return.all=FALSE, ...){
 
@@ -97,14 +92,12 @@ FRmatch <- function(sce.query, sce.ref, use.cosine=TRUE,  #imputation=FALSE,
   # }
 
   ## get expr data and dimension reduction by selecting common marker genes
-  # querydat <- logcounts(sce.query) #matrix
-  # refdat <- logcounts(sce.ref)
   querydat.reduced <- logcounts(sce.query)[markergenes.common,]
   refdat.reduced <- logcounts(sce.ref)[markergenes.common,]
 
   ## if to add pseudo marker to give signals in query clusters with almost no expression
   if(add.pseudo.marker){
-    if(verbose>0) cat("* Adding pseudo marker to stablize no expression query clusters.\n")
+    if(verbose>0) cat("* Adding pseudo marker to stablize no expression clusters.\n")
     querydat.reduced <- rbind(querydat.reduced, runif(ncol(querydat.reduced), 0, pseudo.expr))
     refdat.reduced <- rbind(refdat.reduced, runif(ncol(refdat.reduced), 0, pseudo.expr))
   }
@@ -143,25 +136,16 @@ FRmatch <- function(sce.query, sce.ref, use.cosine=TRUE,  #imputation=FALSE,
   paired.datlst.ref <- rep(datlst.ref, times=ncluster.query)
   ##---------------------------------------##
 
-  if(method=="none"){
-    if(verbose>0) cat("** method =", method, "\n")
-    results <- pbmcmapply(
-      function(samp1,samp2){
-        FRtest(samp1, samp2, use.cosine=use.cosine, ...)
-        },
-        paired.datlst.query, paired.datlst.ref,
-        mc.cores = numCores)
-  }
-  if(method=="subsampling"){
-    if(verbose>0) cat("** method =", method, "| subsamp.size =", subsamp.size, "| subsamp.iter =", subsamp.iter, "\n")
-    results <- pbmcmapply(
-      function(samp1,samp2){
-        set.seed(subsamp.seed)
-        FRtest_subsamp(samp1, samp2, use.cosine=use.cosine, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, ...)
-      },
-      paired.datlst.query, paired.datlst.ref,
-      mc.cores = numCores)
-  }
+  if(verbose>0) cat("** method = cluster2cluster", "| subsamp.size =", subsamp.size, "| subsamp.iter =", subsamp.iter, "\n")
+
+  results <- pbmcmapply(
+    function(samp1,samp2){
+      set.seed(subsamp.seed)
+      FRtest_subsamp(samp1, samp2, use.cosine=use.cosine, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, ...)
+    },
+    paired.datlst.query, paired.datlst.ref,
+    mc.cores = numCores)
+
   if(verbose>0) cat("* Done parallel and returning results. \n")
 
   ## outputs
@@ -173,7 +157,7 @@ FRmatch <- function(sce.query, sce.ref, use.cosine=TRUE,  #imputation=FALSE,
   ## return
   settings <- list(filter.size=filter.size, filter.fscore=filter.fscore, filter.nomarker=filter.nomarker,
                    add.pseudo.marker=add.pseudo.marker, pseudo.expr=pseudo.expr,
-                   use.cosine=use.cosine, method=method,
+                   use.cosine=use.cosine, method="cluster2cluster",
                    subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, subsamp.seed=subsamp.seed)
   if(return.all){
     ## all results

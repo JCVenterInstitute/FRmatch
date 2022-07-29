@@ -13,7 +13,6 @@ FRmatch(
   filter.nomarker = FALSE,
   add.pseudo.marker = FALSE,
   pseudo.expr = 1,
-  method = "subsampling",
   subsamp.size = 20,
   subsamp.iter = 1000,
   subsamp.seed = 1,
@@ -31,28 +30,25 @@ See details in \code{\link[FRmatch]{sce.example}}.}
 \item{sce.ref}{Data object of the \link[SingleCellExperiment]{SingleCellExperiment} class for reference experiment.
 See details in \code{\link[FRmatch]{sce.example}}.}
 
-\item{filter.size, filter.fscore, filter.nomarker}{Filtering small/poor-quality/no-marker clusters. Default: \code{filter.size=5}, filter based on the number
-of cells per cluster; \code{filter.fscore=NULL}, filter based on the F-beta score associated with the cell cluster if available (numeric value);
-\code{filter.nomarker=FALSE}, filter based boolean variable indicating if to filter reference clusters with no marker genes available in query.}
+\item{filter.size, filter.fscore, filter.nomarker}{Filtering out small/poor-quality/no-marker clusters. Default: \code{filter.size=5}, filter based on the number
+of cells per cluster; \code{filter.fscore=NULL}, do not filter based on the F-beta score, otherwise specify a numeric value between 0 and 1;
+\code{filter.nomarker=FALSE}, filter based on the boolean variable indicating if to filter reference clusters with no marker genes available in query.}
 
-\item{add.pseudo.marker, pseudo.expr}{Adding pseudo marker to stabilize no expression query clusters in the reference marker gene space.
+\item{add.pseudo.marker, pseudo.expr}{Adding pseudo marker to stabilize no expression clusters in the marker gene feature space.
 Default: \code{add.pseudo.marker=FALSE}, boolean. Pseudo marker expression values are drawn from uniform distribution from 0 to \code{pseudo.expr}.
-Default: \code{pseudo.expr=1}, numeric, for min-max scaled data after normalization.}
+Default: \code{pseudo.expr=1}, numeric, for the min-max scaled data after normalization.}
 
-\item{method}{Methods for the FR test. Default: \code{method="subsampling"} is to iteratively subsample equal number of cells (i.e. subsample size)
-from the query and reference clusters, and then perform the FR test. Option: \code{method="none"} is the FR test with no modification.}
+\item{subsamp.size, subsamp.iter, subsamp.seed}{Numeric variables for iterative subsampling size, number of iterations, and random seed for iterations. YMMV.}
 
-\item{subsamp.size, subsamp.iter, subsamp.seed}{Iterative subsampling size, number of iterations, and random seed for iterations. YMMV.}
-
-\item{numCores}{Number of cores for parallel computing.
-Default: \code{NULL}, use the maximum number of cores detected by \code{\link[parallel]{detectCores}} if not specified (an integer).}
+\item{numCores}{Number of cores for parallel computing. Default: \code{NULL}, use the maximum number of cores detected by \code{\link[parallel]{detectCores}}.
+Otherwise, specify by an integer value.}
 
 \item{prefix}{Prefix names for query and reference clusters. Default: \code{prefix=c("query.", "ref.")}.}
 
 \item{verbose}{Numeric value indicating levels of details to be printed. Default: \code{1}, only print major steps.
 If \code{0}, no verbose; if \code{2}, print all, including warnings.}
 
-\item{return.all}{Logical variable indicating if to return all results (such as runs, etc.). Default: \code{FALSE}.}
+\item{return.all}{Boolean variable indicating if to return all results (such as runs, etc.). Default: \code{FALSE}.}
 
 \item{...}{Additional arguments passed to \code{\link[FRmatch]{FRtest}}, including \code{use.cosine}.}
 }
@@ -64,11 +60,8 @@ A list of:
 If \code{return.all = TRUE}, more intermediate results are returned.
 }
 \description{
-This is a user-end function that wraps up the steps of matching cell type clusters between two single cell RNA-seq experiments
-(namely, \code{query} and \code{reference}) with \emph{clustered} expression data and \emph{informative} marker genes
-using the Friedman-Rafsky (FR) statistical test.
-This function inputs two data objects of the \link[SingleCellExperiment]{SingleCellExperiment} class,
-and outputs the FR statistics, p-values, and optionally, all intermediate restuls from the FR test.
+This is a user-end wrapper function that implements the steps of cell type matching between two single cell RNA-seq experiments
+(namely, \code{query} and \code{reference}) using the cluster-to-cluster FR-Match approach.
 }
 \examples{
 \dontrun{

@@ -6,7 +6,7 @@
 \usage{
 plot_FRmatch_cell2cluster(
   rst.cell2cluster,
-  type = "match.prop",
+  type = "match",
   p.adj.method = "BH",
   sig.level = 0.1,
   reorder = TRUE,
@@ -20,8 +20,8 @@ plot_FRmatch_cell2cluster(
 \arguments{
 \item{rst.cell2cluster}{The \code{\link[FRmatch]{FRmatch_cell2cluster}} output.}
 
-\item{type}{If \code{type="match.prop"} (default), it plots the proportion of cells in the query cluster matched to the reference cluster.
-If \code{type=="jaccard"}, it plots XXX (NOT AVAILABLE YET).}
+\item{type}{If \code{type="match"} (default), it plots the proportion of cells in the query cluster matched to the reference cluster.
+If \code{type=="padj"}, it plots the distribution of adjusted p-values.}
 
 \item{p.adj.method}{P-value adjustment method for multiple hypothesis testing correction. Default: \code{"BH"}.
 For more options, please see \code{\link[stats]{p.adjust.methods}}.}
