@@ -1,10 +1,10 @@
-# Cell type matching in single-cell RNA-sequencing data using FR-Match
+# FR-Match
 
 <img src="vignettes/FRmatch-sticker-2.png" width="110" height="125">
 
 ## Getting Started
 
-## Prerequisites
+### Prerequisites
 
 * R, Shiny
 * Data class: [Bioconductor-SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html)
