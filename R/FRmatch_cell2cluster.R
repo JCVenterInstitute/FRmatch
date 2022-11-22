@@ -46,7 +46,7 @@
 #' from the iterative procedure and assigned a higher p-value. The output from this implementation includes a cell-by-cluster
 #' (a.k.a. query cell by reference cluster) matrix of p-values.
 #'
-#' @seealso Visualization of matching results using \code{\link[FRmatch]{plot_FRmatch_cell2cluster}}}.
+#' @seealso Visualization of matching results using \code{\link[FRmatch]{plot_FRmatch_cell2cluster}}.
 #'
 #' @examples
 #' \dontrun{

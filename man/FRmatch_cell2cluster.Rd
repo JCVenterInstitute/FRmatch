@@ -86,5 +86,5 @@ FRmatch_cell2cluster(sce.example, sce.example)
 
 }
 \seealso{
-
+Visualization of matching results using \code{\link[FRmatch]{plot_FRmatch_cell2cluster}}.
 }

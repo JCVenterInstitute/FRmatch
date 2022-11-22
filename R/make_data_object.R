@@ -38,20 +38,20 @@ make_data_object <- function(dat, tab, markers,
   names(tab) <- c("Sample", "Cluster")
 
   ## replace special symbols by "_"
-  cat("Replace any special symbol in sample and cluster names by '_'. \n")
-  dat %<>% mutate(Sample=gsub("-| |\\.|/", "_", Sample))
-  names(dat) <- gsub("-| |\\.|/", "_", names(dat))
-  tab %<>% mutate(Sample=gsub("-| |\\.|/", "_", Sample), Cluster=gsub("-| |\\.|/", "_", Cluster))
-  markers <- gsub("-| |\\.|/", "_", markers)
-  if(!is.null(cluster_marker_info)){
-    cluster_marker_info %<>% mutate(clusterName=gsub("-| |\\.|/", "_", clusterName), markerGene=gsub("-| |\\.|/", "_", markerGene))
-  }
-  if(!is.null(f_score)){
-    f_score %<>% mutate(clusterName=gsub("-| |\\.|/", "_", clusterName))
-  }
-  if(!is.null(cluster_order)){
-    cluster_order <- gsub("-| |\\.|/", "_", cluster_order)
-  }
+  # cat("Replace any special symbol in sample and cluster names by '_'. \n")
+  # dat %<>% mutate(Sample=gsub("-| |\\.|/", "_", Sample))
+  # names(dat) <- gsub("-| |\\.|/", "_", names(dat))
+  # tab %<>% mutate(Sample=gsub("-| |\\.|/", "_", Sample), Cluster=gsub("-| |\\.|/", "_", Cluster))
+  # markers <- gsub("-| |\\.|/", "_", markers)
+  # if(!is.null(cluster_marker_info)){
+  #   cluster_marker_info %<>% mutate(clusterName=gsub("-| |\\.|/", "_", clusterName), markerGene=gsub("-| |\\.|/", "_", markerGene))
+  # }
+  # if(!is.null(f_score)){
+  #   f_score %<>% mutate(clusterName=gsub("-| |\\.|/", "_", clusterName))
+  # }
+  # if(!is.null(cluster_order)){
+  #   cluster_order <- gsub("-| |\\.|/", "_", cluster_order)
+  # }
 
   ## data table with "Sample", "Cluster", and gene columns for constructing the sce.object
   dt <- dat %>% inner_join(tab, by="Sample") %>% #inner_join: make sure that cells are in the SAME order!!!
@@ -81,15 +81,15 @@ make_data_object <- function(dat, tab, markers,
   ## metadata:
   if(!is.null(cluster_marker_info)){
     names(cluster_marker_info) <- c("clusterName", "markerGene")
-    cluster_marker_info %<>% mutate(clusterName=gsub("-| |\\.|/", "_", clusterName))
-    cluster_marker_info %<>% mutate(markerGene=gsub("-| |\\.|/", "_", markerGene))
+    # cluster_marker_info %<>% mutate(clusterName=gsub("-| |\\.|/", "_", clusterName))
+    # cluster_marker_info %<>% mutate(markerGene=gsub("-| |\\.|/", "_", markerGene))
   }
   if(!is.null(f_score)){
     names(f_score) <- c("clusterName", "score")
-    f_score %<>% mutate(clusterName=gsub("-| |\\.|/", "_", clusterName))
+    # f_score %<>% mutate(clusterName=gsub("-| |\\.|/", "_", clusterName))
   }
   if(!is.null(cluster_order)){
-    cluster_order <- gsub("-| |\\.|/", "_", cluster_order)
+    # cluster_order <- gsub("-| |\\.|/", "_", cluster_order)
   }
   metadata(sce.object)$cluster_marker_info <- cluster_marker_info
   metadata(sce.object)$f_score <- f_score
