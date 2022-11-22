@@ -1,9 +1,7 @@
 ---
 title: "FR-Match: A cell type matching algorithm for single cell RNA sequencing (scRNAseq) data"
 author: "Yun (Renee) Zhang, zhangy@jcvi.org"
-# - "Brian Aevermann, baeverma@jcvi.org"
-# - "Richard Scheuermann, RScheuermann@jcvi.org"
-date: "`r format(Sys.time(), '%B %d, %Y')`"
+date: "`r format(Sys.time(), '%B %d, %Y')` - update raw data link"
 output: 
   rmarkdown::html_vignette:
     toc: true
@@ -50,12 +48,12 @@ library(tibble)
 library(data.table)
 ```
 
-## Shiny App
+<!-- ## Shiny App -->
 
-We complement this package with a Shiny App, which can be launched by calling the following function.
-```{r, shinyapp, eval=FALSE}
-runShiny()
-```
+<!-- We complement this package with a Shiny App, which can be launched by calling the following function. -->
+<!-- ```{r, shinyapp, eval=FALSE} -->
+<!-- runShiny() -->
+<!-- ``` -->
 
 
 # Getting data ready 
@@ -102,7 +100,7 @@ Here, we introduce two datasets to be used in this vignette. Both datasets are g
 ## rename the data object
 sce.layer1 <- sce.example
 ## cell type clusters and cluster sizes
-knitr::kable(table(colData(sce.layer1)$cluster_membership), col.names=c("Cluster", "Size"), row.names=1:15)
+knitr::kable(table(colData(sce.layer1)$cluster_membership), col.names=c("Cluster", "Size"))
 ```
 
 The second dataset is sampled from the full laminar depth (layer 1-6) of the MTG cerebral cortex ([Hodge et al., 2019](https://www.nature.com/articles/s41586-019-1506-7)). The MTG dataset consist of 13945 genes and 15603 cells; 75 cell type clusters are identified and labeled by the authors. We are going to devote the next section to introduce a function that compiles the necessary input data files from the MTG dataset into a data object that can be used in our matching function.
@@ -111,15 +109,15 @@ The second dataset is sampled from the full laminar depth (layer 1-6) of the MTG
 
 ## Construct data object using `make_data_object()`
 
-(We suggest downloading the data files by copying and pasting the following URLs into your browser, and reading the files from your local folder.)
+The following raw data files are [here](https://github.com/JCVenterInstitute/celligrate-data/tree/main/AIBS_MTG_data).
 
-```{r, data-read-aws}
+```{r, data-read}
 ## read in pieces of input data - this may take a few minutes
-cell_by_gene_expression <- fread("https://allen-data.s3-us-west-2.amazonaws.com/cell_by_gene_expression.csv")
-cell_cluster_labels <- fread("https://allen-data.s3-us-west-2.amazonaws.com/cell_cluster_labels.csv")
-NSForest_marker_genes <- fread("https://allen-data.s3-us-west-2.amazonaws.com/NSForest_marker_genes.csv")
-NSForest_fscores <- fread("https://allen-data.s3-us-west-2.amazonaws.com/NSForest_fscores.csv")
-MTG_taxonomy <- fread("https://allen-data.s3-us-west-2.amazonaws.com/MTG_taxonomy.csv")$x #need to be a vector
+cell_by_gene_expression <- fread("cell_by_gene_expression.csv")
+cell_cluster_labels <- fread("cell_cluster_labels.csv")
+NSForest_marker_genes <- fread("NSForest_marker_genes.csv")
+NSForest_fscores <- fread("NSForest_fscores.csv")
+MTG_taxonomy <- fread("MTG_taxonomy.csv")$x #need to be a vector
 
 ## unique markers
 unique_markers <- unique(NSForest_marker_genes$markerGene)
@@ -150,9 +148,9 @@ sce.MTG
 In the FR-Match workflow, we utilize the informative marker genes for dimensionality reduction. Good marker genes display on-off binary expression pattern producing, in combination, a unique gene expression “barcode” for each cell type cluster. We provide the `plot_cluster_by_markers()` function for plotting the marker gene expression patterns for a random set of cells in each cluster, visualizing the cell type "barcode". Examples below show that the "barcodes" for excitatory cell type, glial cell type, and inhibitory cell type from the layer 1 data are distinctively different using the NS-Forest marker genes.
 
 ```{r, barcode-plot, fig.height = 5, fig.width = 7}
-plot_cluster_by_markers(sce.example, cluster.name = "e1_e299_SLC17A7_L5b_Cdh13", name.E1 = "Layer1_")
-plot_cluster_by_markers(sce.example, cluster.name = "g1_g48_GLI3_Astro_Gja1", name.E1 = "Layer1_")
-plot_cluster_by_markers(sce.example, cluster.name = "i1_i90_COL5A2_Ndnf_Car4", name.E1 = "Layer1_")
+plot_cluster_by_markers(sce.example, cluster.name = "e1_e299_SLC17A7_L5b_Cdh13", name.self = "Layer1_")
+plot_cluster_by_markers(sce.example, cluster.name = "g1_g48_GLI3_Astro_Gja1", name.self = "Layer1_")
+plot_cluster_by_markers(sce.example, cluster.name = "i1_i90_COL5A2_Ndnf_Car4", name.self = "Layer1_")
 ```
 
 ## Cluster sizes
@@ -169,19 +167,19 @@ Note that cluster sizes range widely, which may cause the unbalance cluster size
 The `FRmatch()` function is a wrapper function that takes in two input data objects in the `sce.query =` and `sce.ref =` arguments. By performing this function, it carries out our matching workflow in default setting. Key steps are reported while running. To start, let's regard `sce.layer1` as the query data and `sce.MTG` as the reference data.
 
 ```{r, FRmatch_layer1toMTG, warning=FALSE, message=FALSE}
-rst.layer1toMTG <- FRmatch(sce.query = sce.layer1, sce.ref = sce.MTG)
+rst.layer1toMTG <- FRmatch(sce.query = sce.layer1, sce.ref = sce.MTG, subsamp.size = 10)
 ```
 
 **A few remarks:**
 
-- Note that not all clusters are passed to the matching algorithm. In the default setting, query and reference clusters with less 10 cells are filtered out. This is can be tuned using the `filter.size =` argument. It is also optional to filter clusters based on F-beta score using the `filter.fscore=` argument.
-- `FRmatch()` uses an iterative subsampling scheme to overcome the unbalanced cluster sizes between the query and reference clusters when applying the FR test. The default settings are `method="subsampling", subsamp.size=10, subsamp.iter=1001, subsamp.seed=1`.
-- Due to the iterative scheme, it may take some computational time. We provide the `numCores=` argument to specific the number of cores to utilize for parallel computing.
+- Note that not all clusters are passed to the matching algorithm. In the default setting, query and reference clusters with less 10 cells are filtered out. This is can be tuned using the `filter.size =` argument. It is also optional to filter clusters based on F-beta score using the `filter.fscore =` argument.
+- `FRmatch()` uses an iterative subsampling scheme to overcome the unbalanced cluster sizes between the query and reference clusters when applying the FR test. The subsampling parameters are `subsamp.size =, subsamp.iter =, subsamp.seed =`.
+- Due to the iterative scheme, it may take some computational time. We provide the `numCores =` argument to specific the number of cores to utilize for parallel computing.
 
 Also, we may want to swap the query and reference data to perform FR-Match in the other direction. In practice, if we want to match between two independently conducted experiments (for example, each experiment may focus on a different specimen region, inducing different cell type clusters and different set of marker genes), different directions of matching may lead to quiet different matching results. We recommend to perform both directions of matching, and conclude with a consensus matching results from both directions. 
 
 ```{r, FRmatch_MTGtolayer1, warning=FALSE, message=FALSE}
-rst.MTGtolayer1 <- FRmatch(sce.query = sce.MTG, sce.ref = sce.layer1)
+rst.MTGtolayer1 <- FRmatch(sce.query = sce.MTG, sce.ref = sce.layer1, subsamp.size = 10)
 ```
 
 The `FRmatch()` output is a list of results. The best way to present these results is to use our customized plotting functions.
