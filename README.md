@@ -19,7 +19,7 @@ devtools::install_github("JCVenterInstitute/FRmatch")
 
 ### Tutorial
 
-To start with a [tutorial](https://jcventerinstitute.github.io/celligrate/FRmatch-vignette.html).
+To start with a [tutorial](https://jcventerinstitute.github.io/celligrate/tutorials/FRmatch-vignette.html).
 
 ### Shiny App
 
