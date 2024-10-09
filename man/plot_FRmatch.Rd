@@ -23,7 +23,7 @@ plot_FRmatch(
 \item{rst.FRmatch}{The \code{\link[FRmatch]{FRmatch}} output.}
 
 \item{type}{If \code{type="matches"} (default), it plots the one-way matches.
-If \code{type=="padj"}, it plots the distribution of adjusted p-values.}
+If \code{type="padj"}, it plots the distribution of adjusted p-values.}
 
 \item{p.adj.method}{P-value adjustment method for multiple hypothesis testing correction. Default: \code{"BY"}.
 For more options, please see \code{\link[stats]{p.adjust.methods}}.}

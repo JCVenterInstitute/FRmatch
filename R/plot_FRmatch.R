@@ -5,7 +5,7 @@
 #'
 #' @param rst.FRmatch The \code{\link[FRmatch]{FRmatch}} output.
 #' @param type If \code{type="matches"} (default), it plots the one-way matches.
-#' If \code{type=="padj"}, it plots the distribution of adjusted p-values.
+#' If \code{type="padj"}, it plots the distribution of adjusted p-values.
 #' @param p.adj.method P-value adjustment method for multiple hypothesis testing correction. Default: \code{"BY"}.
 #' For more options, please see \code{\link[stats]{p.adjust.methods}}.
 #' @param sig.level Numeric variable that specifies the significance level of adjusted p-value. A MATCH is >\code{sig.level}.

@@ -17,6 +17,8 @@ FRmatch_cell2cluster(
   subsamp.size = 10,
   subsamp.iter = 2000,
   subsamp.seed = 1,
+  subsamp.iter.custom = FALSE,
+  subsamp.iter.custom.k = 5,
   numCores = NULL,
   prefix = c("query.", "ref."),
   verbose = 1,
@@ -31,7 +33,7 @@ See details in \code{\link[FRmatch]{sce.example}}.}
 See details in \code{\link[FRmatch]{sce.example}}.}
 
 \item{feature.selection}{Which set of features to use for the matching space? Default: \code{feature.selection="reference.markers"}, use reference marker genes.
-If \code{feature.selection="query.genes"}, use all query genes as the feature space, e.g. the query genes are probe genes for spatial transcriptomics experiment}
+If \code{feature.selection="query.genes"}, use all query genes as the feature space, e.g. the query genes are probe genes for spatial transcriptomics experiment.}
 
 \item{filter.size, filter.fscore, filter.nomarker}{Filtering out small/poor-quality/no-marker clusters. Default: \code{filter.size=5}, filter based on the number
 of cells per cluster; \code{filter.fscore=NULL}, do not filter based on the F-beta score, otherwise specify a numeric value between 0 and 1;
@@ -43,6 +45,10 @@ Default: \code{add.pseudo.marker=FALSE}, boolean. Pseudo marker expression value
 Default: \code{pseudo.expr=1}, numeric, for the min-max scaled data after normalization.}
 
 \item{subsamp.size, subsamp.iter, subsamp.seed}{Numeric variables for iterative subsampling size, number of iterations, and random seed for iterations. YMMV.}
+
+\item{subsamp.iter.custom, subsamp.iter.custom.k}{Customization of number of iterations when query cluster sizes vary a lot. Default: \code{FALSE}, no customization.
+If \code{TRUE}, set a numeric value to \code{subsamp.iter.custom.k}, e.g. 5 (default), which will set the number of iterations to be at least \code{subsamp.iter}
+or 5 times the cluster size for each query cluster.}
 
 \item{numCores}{Number of cores for parallel computing. Default: \code{NULL}, use the maximum number of cores detected by \code{\link[parallel]{detectCores}}.
 Otherwise, specify by an integer value.}

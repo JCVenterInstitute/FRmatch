@@ -11,7 +11,7 @@
 # #' @param imputation INACTIVE. Boolean variable indicating if to impute expression zero values for the reference experiment. Default: \code{FALSE}.
 # #' See details in \code{\link[FRmatch]{impute_dropout}}.
 #' @param feature.selection Which set of features to use for the matching space? Default: \code{feature.selection="reference.markers"}, use reference marker genes.
-#' If \code{feature.selection="query.genes"}, use all query genes as the feature space, e.g. the query genes are probe genes for spatial transcriptomics experiment
+#' If \code{feature.selection="query.genes"}, use all query genes as the feature space, e.g. the query genes are probe genes for spatial transcriptomics experiment.
 #' @param filter.size,filter.fscore,filter.nomarker Filtering out small/poor-quality/no-marker clusters. Default: \code{filter.size=5}, filter based on the number
 #' of cells per cluster; \code{filter.fscore=NULL}, do not filter based on the F-beta score, otherwise specify a numeric value between 0 and 1;
 #' \code{filter.nomarker=FALSE}, filter based on the boolean variable indicating if to filter reference clusters with no marker genes available in query
@@ -20,6 +20,9 @@
 #' Default: \code{add.pseudo.marker=FALSE}, boolean. Pseudo marker expression values are drawn from uniform distribution from 0 to \code{pseudo.expr}.
 #' Default: \code{pseudo.expr=1}, numeric, for the min-max scaled data after normalization.
 #' @param subsamp.size,subsamp.iter,subsamp.seed Numeric variables for iterative subsampling size, number of iterations, and random seed for iterations. YMMV.
+#' @param subsamp.iter.custom,subsamp.iter.custom.k Customization of number of iterations when query cluster sizes vary a lot. Default: \code{FALSE}, no customization.
+#' If \code{TRUE}, set a numeric value to \code{subsamp.iter.custom.k}, e.g. 5 (default), which will set the number of iterations to be at least \code{subsamp.iter}
+#' or 5 times the cluster size for each query cluster.
 #' @param numCores Number of cores for parallel computing. Default: \code{NULL}, use the maximum number of cores detected by \code{\link[parallel]{detectCores}}.
 #' Otherwise, specify by an integer value.
 #' @param prefix Prefix names for query and reference clusters. Default: \code{prefix=c("query.", "ref.")}.
@@ -61,6 +64,7 @@ FRmatch_cell2cluster <- function(sce.query, sce.ref, use.cosine=TRUE,  #imputati
                                  filter.size=5, filter.fscore=NULL, filter.nomarker=FALSE, #filtering clusters
                                  add.pseudo.marker=FALSE, pseudo.expr=1, #adding pseudo marker
                                  subsamp.size=10, subsamp.iter=2000, subsamp.seed=1, #subsampling
+                                 subsamp.iter.custom=FALSE, subsamp.iter.custom.k=5, #customization
                                  numCores=NULL, prefix=c("query.", "ref."),
                                  verbose=1, ...){
 
@@ -183,10 +187,14 @@ FRmatch_cell2cluster <- function(sce.query, sce.ref, use.cosine=TRUE,  #imputati
   paired.datlst.ref <- rep(datlst.ref, times=ncluster.query)
   ##---------------------------------------##
 
-  if(verbose>0) cat(" ** method = cell2cluster", "| subsamp.size =", subsamp.size, "| subsamp.iter =", subsamp.iter, "\n")
+  if(verbose>0) cat(" ** method = cell2cluster", "| subsamp.size =", subsamp.size, "| subsamp.iter =", subsamp.iter,
+                    "| subsamp.iter.custom =", subsamp.iter.custom, "| subsamp.iter.custom.k =", subsamp.iter.custom.k, "\n")
 
   results <- pbmcmapply(
     function(samp1,samp2){
+      ## customization of number of iterations by query cluster sizes
+      if(subsamp.iter.custom) subsamp.iter = max(subsamp.iter, subsamp.iter.custom.k*ncol(samp1))
+      ## start iterations by subsampling
       set.seed(subsamp.seed)
       FRtest_cell2cluster(samp1, samp2, subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, ...)
     },
@@ -218,7 +226,8 @@ FRmatch_cell2cluster <- function(sce.query, sce.ref, use.cosine=TRUE,  #imputati
   settings <- list(filter.size=filter.size, filter.fscore=filter.fscore, filter.nomarker=filter.nomarker,
                    add.pseudo.marker=add.pseudo.marker, pseudo.expr=pseudo.expr,
                    use.cosine=use.cosine, method="cluster2cluster",
-                   subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, subsamp.seed=subsamp.seed)
+                   subsamp.size=subsamp.size, subsamp.iter=subsamp.iter, subsamp.seed=subsamp.seed,
+                   subsamp.iter.custom=subsamp.iter.custom, subsamp.iter.custom.k=subsamp.iter.custom.k)
   return(list("settings"=settings, "pmat"=pmat.cell2cluster, "cell2cluster"=output))
 }
 
