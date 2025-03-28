@@ -8,7 +8,7 @@
 
 * R, Shiny
 * Data class: [Bioconductor-SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html)
-* Feature selection: [JCVenterInstitute/NSForest](https://github.com/JCVenterInstitute/NSForest) (suggested)
+* Feature selection: [JCVenterInstitute/NSForest](https://github.com/JCVenterInstitute/NSForest)
 
 ### Installation
 
@@ -31,7 +31,7 @@ FRmatch::runShiny()
 
 ## Versioning
 
-This repo is going through CI/CD (continuous integration and continuous delivery) code development. Stable releases are managed in [Releases](https://github.com/JCVenterInstitute/FRmatch/releases).
+Stable releases are managed in [Releases](https://github.com/JCVenterInstitute/FRmatch/releases).
 
 Please report issues using the [issue traker](https://github.com/JCVenterInstitute/FRmatch/issues).
 
@@ -43,8 +43,8 @@ Zhang et al. 2020. FR-Match: robust matching of cell type clusters from single c
 
 ## Authors
 
-* Yun (Renee) Zhang zhangy@jcvi.org
-* Richard Scheuermann RScheuermann@jcvi.org
+* Yun (Renee) Zhang, @yunzhang813 (https://github.com/yunzhang813)
+* Richard Scheuermann, @scheuerm (https://github.com/scheuerm)
 
 ## License
 
