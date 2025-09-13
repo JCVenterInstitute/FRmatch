@@ -25,7 +25,7 @@
 #' @export
 
 
-check_data_object <- function(sce.object, verbose=TRUE){
+check_data_object <- function(sce.object, is.ref=TRUE, verbose=TRUE){
 
   ############
   ## assays ##
@@ -41,10 +41,11 @@ check_data_object <- function(sce.object, verbose=TRUE){
   if(is.null(rownames(sce.object))){
     stop("'rownames' of this data object is not found. Please see example in help('sce.example').")
   }
-
-  ## rowData
-  if(is.null(rowData(sce.object)$marker_gene)){
-    stop("'marker_gene' is not found in the rowData of this data object. Please see example in help('sce.example').")
+  ## rowData - only required by ref object
+  if(is.ref) {
+    if(is.null(rowData(sce.object)$marker_gene)){
+      stop("'marker_gene' is not found in the rowData of this data object. Please see example in help('sce.example').")
+    }
   }
 
   #############
@@ -62,19 +63,22 @@ check_data_object <- function(sce.object, verbose=TRUE){
   ##############
   ## metadata ##
   ##############
-  ## cluster_marker_info
-  if(is.null(sce.object@metadata$cluster_marker_info)){
-    if(verbose) cat("'cluster_marker_info' is not available. \n")
+  if(is.ref){
+    ## cluster_marker_info - only required by ref object
+    if(is.null(sce.object@metadata$cluster_marker_info)){
+      if(verbose) cat("'cluster_marker_info' is not available. \n")
+    }
+    ## f_score - only required by ref object
+    if(is.null(sce.object@metadata$f_score)){
+      if(verbose) cat("'f_score' is not available. \n")
+    }
   }
-  ## f_score
-  if(is.null(sce.object@metadata$f_score)){
-    if(verbose) cat("'f_score' is not available. \n")
-  }
-  ## cluster_order
+  ## cluster_order - needed for both query and ref!!!
   if(is.null(sce.object@metadata$cluster_order)){
     sce.object@metadata$cluster_order <- sort(unique(colData(sce.object)$cluster_membership))
     if(verbose) cat("'cluster_order' (alphabetical order) is added to the metadata of this data object. \n")
   }
+
 
   ######################
   ## final sce.object ##

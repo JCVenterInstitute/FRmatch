@@ -52,7 +52,7 @@ FRmatch <- function(sce.query, sce.ref, use.cosine=TRUE,  #imputation=FALSE,
 
   ## check data object
   if(verbose>0) cat("* Check query data object. \n")
-  sce.query <- check_data_object(sce.query, verbose=(verbose>1))
+  sce.query <- check_data_object(sce.query, is.ref=FALSE, verbose=(verbose>1))
   if(verbose>0) cat("* Check reference data object. \n")
   sce.ref <- check_data_object(sce.ref, verbose=(verbose>1))
 

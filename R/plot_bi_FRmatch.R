@@ -36,7 +36,8 @@ plot_bi_FRmatch <- function(rst.FRmatch.E1toE2, rst.FRmatch.E2toE1,
   ## combine two matrices to one two-way matrix
   mat1 <- pmat.cutoff.E1toE2[-nrow(pmat.cutoff.E1toE2),] #use E1toE2 as the framework for final plot
   mat2 <- t(pmat.cutoff.E2toE1[-nrow(pmat.cutoff.E2toE1),]) #so transpose E2toE1
-  mat.bi <- mat1+mat2
+  mat2.oo <- mat2[gsub("ref.","query.",rownames(mat1)),gsub("query.","ref.",colnames(mat1))] #make same order
+  mat.bi <- mat1+mat2.oo
   if(two.way.only) mat.bi <- matrix(2*as.numeric(mat.bi==2), nrow(mat1), ncol(mat1))
   ## unassigned row
   mat.bi <- rbind(mat.bi, 2*as.numeric(colSums(mat.bi)==0))
