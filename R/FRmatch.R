@@ -8,6 +8,7 @@
 #' See details in \code{\link[FRmatch]{sce.example}}.
 #' @param sce.ref Data object of the \link[SingleCellExperiment]{SingleCellExperiment} class for reference experiment.
 #' See details in \code{\link[FRmatch]{sce.example}}.
+#' @param use.cosine Boolean variable indicating if to use cosine distance in \code(\link[FRmatch]{FR-test}}. Default: \code{TRUE}.
 # #' @param imputation INACTIVE. Boolean variable indicating if to impute expression zero values for the reference experiment. Default: \code{FALSE}.
 # #' See details in \code{\link[FRmatch]{impute_dropout}}.
 #' @param filter.size,filter.fscore,filter.nomarker Filtering out small/poor-quality/no-marker clusters. Default: \code{filter.size=5}, filter based on the number

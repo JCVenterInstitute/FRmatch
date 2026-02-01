@@ -34,7 +34,7 @@ plot_cluster_by_markers <- function(sce.E1, sce.E2=NULL, cluster.name, nsamp=30,
 
   ## reference marker genes
   markergenes <- unique(sce.ref@metadata$cluster_marker_info$markerGene) #marker genes in ORDER!!!
-  if(is.null(markergenes)) markergenes <- rownames(sce.ref)[rowData(sce.ref)$marker_gene==1] #if metadat is not available
+  # if(is.null(markergenes)) markergenes <- rownames(sce.ref)[rowData(sce.ref)$marker_gene==1] #if metadata is not available
   ## cells of query cluster
   col.query <- colData(sce.query)$cluster_membership==cluster.name
 

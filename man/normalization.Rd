@@ -2,21 +2,23 @@
 % Please edit documentation in R/normalization.R
 \name{normalization}
 \alias{normalization}
-\title{Normalization function for FR-Match analysis}
+\title{Normalization function for FR-Match analysis.}
 \usage{
-normalization(sce.object, scale = TRUE, norm.by = NULL)
+normalization(sce.object, scale = TRUE, norm.by = "mean", impute.zero = FALSE)
 }
 \arguments{
 \item{sce.object}{Data object.}
 
-\item{scale}{Boolean variable indicating if to scale the per gene expression to the range [0,1]. Default: \code{TRUE}.}
+\item{scale}{Boolean variable indicating if to scale the PER GENE expression to the range [0,1]. Defualt: \code{TRUE}.}
 
-\item{norm.by}{If \code{norm.by=NULL} (default), do nothing. If \code{norm.by="median"}, weight each gene by its median.
-If \code{norm.by="mean"}, weight each gene by its mean. After normalization, all values are re-scale to [0,1] range.}
+\item{norm.by}{Normalization options PER CLUSTER. Choose from \code{"softmax", "mean", "none"}.
+If \code{"softmax"} (default), use the \code{\link[mclust]{softmax}} function to normalize all values globally. Afterwards, each cell is rescaled to unit length (i.e., L2 normalization).
+If \code{"mean"}, each gene is weighted to de-noise lowly expressed genes. Afterwards, all values are rescaled to [0,1].
+If \code{"none"}, do nothing.}
 }
 \value{
 A data object with normalized expression data.
 }
 \description{
-Normalization function for FR-Match analysis
+Normalization function for FR-Match analysis.
 }

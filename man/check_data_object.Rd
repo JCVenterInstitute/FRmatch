@@ -4,7 +4,7 @@
 \alias{check_data_object}
 \title{Check data object}
 \usage{
-check_data_object(sce.object, verbose = TRUE)
+check_data_object(sce.object, is.ref = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{sce.object}{Data object of the \link[SingleCellExperiment]{SingleCellExperiment} class.
