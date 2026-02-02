@@ -6,7 +6,6 @@
 #' @param rst.cell2cluster The \code{\link[FRmatch]{FRmatch_cell2cluster}} output.
 #' @param type If \code{type="match"} (default), it plots the proportion of cells in the query cluster matched to the reference cluster.
 #' If \code{type=="padj"}, it plots the distribution of adjusted p-values.
-# If \code{type=="jaccard"}, it plots XXX (NOT AVAILABLE YET).
 #' @param p.adj.method P-value adjustment method for multiple hypothesis testing correction. Default: \code{"BH"}.
 #' For more options, please see \code{\link[stats]{p.adjust.methods}}.
 #' @param sig.level Numeric variable that specifies the significance level of adjusted p-value. A MATCH is >\code{sig.level}.
@@ -32,6 +31,10 @@ plot_FRmatch_cell2cluster <- function(rst.cell2cluster, type="match", p.adj.meth
 
   ## table of matches
   tab.match <- table(df$match, df$query.cluster) #query subclass in columns, prediction in rows
+  if(!"unassigned" %in% rownames(tab.match)){
+    tab.match <- rbind(tab.match,"unassigned"=0) #add the "unassigned" row if all matched
+    tab.match <- as.table(tab.match) #still make it as a table class
+  }
   tab.match.prop <- sweep(tab.match,2,colSums(tab.match),"/") #column sums should be 1
 
   ## order reference cluster orders in rows
@@ -130,8 +133,4 @@ plot_FRmatch_cell2cluster <- function(rst.cell2cluster, type="match", p.adj.meth
       return(list("plotted.values"=tab.match.prop))
     }
   }
-
-
-  ### TODO: plot jaccard similarity between query and ref clusters ###
-
 }

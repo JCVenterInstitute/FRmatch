@@ -1,6 +1,6 @@
 Package: FRmatch
 Title: Cell type matching in single-cell RNA-sequencing data using FR-Match
-Version: 2.26.1
+Version: 2.26.2
 Authors@R: c(
     person(given = "Yun",
            family = "Zhang",
