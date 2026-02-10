@@ -61,8 +61,8 @@ plot_FRmatch_cell2cluster <- function(rst.cell2cluster, type="match", p.adj.meth
       theme_bw() + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
       ggtitle(main)
     ## save plot or plot on device
-    if(is.null(width)) width <- ncol(tab.match.prop)*.9 + max(nchar(colnames(tab.match.prop)))/5 + 3
-    if(is.null(height)) height <- length(clusterNames.ref)*.9 + max(nchar(clusterNames.ref))/5 + 1 #show all ref clusters even if no match
+    if(is.null(width)) width <- ncol(tab.match.prop) + max(nchar(colnames(tab.match.prop)))/5 + 3
+    if(is.null(height)) height <- length(clusterNames.ref) + max(nchar(clusterNames.ref))/5 + 1 #show all ref clusters even if no match
     if(!is.na(filename)){
       ggsave(filename, g, width = width, height = height, units = "cm")
     }
@@ -121,8 +121,8 @@ plot_FRmatch_cell2cluster <- function(rst.cell2cluster, type="match", p.adj.meth
       theme_bw() + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
       ggtitle(main)
     ## save plot or plot on device
-    if(is.null(width)) width <- ncol(tab.match.prop)*.9 + max(nchar(colnames(tab.match.prop)))/5 + 3
-    if(is.null(height)) height <- length(clusterNames.ref)*.9 + max(nchar(clusterNames.ref))/5 + 1 #show all ref clusters even if no match
+    if(is.null(width)) width <- ncol(tab.match.prop) + max(nchar(colnames(tab.match.prop)))/5 + 3
+    if(is.null(height)) height <- length(clusterNames.ref) + max(nchar(clusterNames.ref))/5 + 1 #show all ref clusters even if no match
     if(!is.na(filename)){
       ggsave(filename, g, width = width, height = height, units = "cm")
     }
