@@ -12,6 +12,7 @@
 #' @param reorder Boolean variable indicating if to reorder the columns so that matches are aligned along the diagonal. Default: \code{TRUE}.
 #' @param return.value Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.
 #' @param main Plot title.
+#' @param base_size Base font size in the theme function of \code{ggplot2}.
 #' @param filename,width,height,units Plotting parameters passed to \code{\link[ggplot2]{ggsave}}.
 #'
 #' @return If \code{return.value = TRUE}, a matrix of \code{plotted.values}, and \code{pmat.adj} and \code{cell2cluster.adj} after adjustment.
@@ -20,7 +21,8 @@
 
 plot_FRmatch_cell2cluster <- function(rst.cell2cluster, type="match", p.adj.method="BH", sig.level=0.1,
                                       reorder=TRUE, return.value=FALSE,
-                                      main=NULL, filename=NA, width=NULL, height=NULL){
+                                      main=NULL, base_size=15,
+                                      filename=NA, width=NULL, height=NULL, units="cm"){
 
   pmat <- rst.cell2cluster$pmat #query cells in rows, ref cluster in columns
   pmat.adj <- apply(pmat, 1, function(x) p.adjust(x, method=p.adj.method)) %>% t() #row-wise p-value adjustment, i.e. per query cell
@@ -58,13 +60,15 @@ plot_FRmatch_cell2cluster <- function(rst.cell2cluster, type="match", p.adj.meth
       scale_size_continuous(range = c(0, 10), limits = c(0, 1)) +
       scale_fill_viridis(option="D", guide = "legend", limits = c(0, 1)) +
       scale_y_discrete(drop=FALSE) + #show all ref clusters even if no match
-      theme_bw() + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+      theme_bw(base_size = base_size) +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+      xlab("Query cluster") + ylab("Match of reference cluster") +
       ggtitle(main)
-    ## save plot or plot on device
-    if(is.null(width)) width <- ncol(tab.match.prop) + max(nchar(colnames(tab.match.prop)))/5 + 3
-    if(is.null(height)) height <- length(clusterNames.ref) + max(nchar(clusterNames.ref))/5 + 1 #show all ref clusters even if no match
+    ## save plot (figsize units in "cm")
+    if(is.null(width)) width <- max(17, ncol(tab.match.prop) + max(nchar(colnames(tab.match.prop)))/5 + 3)
+    if(is.null(height)) height <- max(17, length(clusterNames.ref) + max(nchar(clusterNames.ref))/5 + 1) #show all ref clusters even if no match
     if(!is.na(filename)){
-      ggsave(filename, g, width = width, height = height, units = "cm")
+      ggsave(filename, g, width = width, height = height, units = units)
     }
     else plot(g)
     ## output
@@ -77,15 +81,22 @@ plot_FRmatch_cell2cluster <- function(rst.cell2cluster, type="match", p.adj.meth
   if(type=="padj"){
     df.padj <- df %>% select(query.cluster, score) %>%
       mutate(query.cluster = fct_relevel(query.cluster, oo.query.clusters))
+    ## plot
+    if(is.null(main)) main <- "Adjusted p-value"
     g <- ggplot(df.padj, aes(x=query.cluster, y=score)) +
-      geom_boxplot(outlier.size=.5) +
-      theme_bw() +
-      theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+      geom_boxplot(outlier.size=1) +
       geom_hline(linetype = "dashed", yintercept = sig.level, color = "red") +
       scale_y_continuous(breaks = seq(0, 1, 0.2), limits = c(0, 1)) +
-      xlab("Query cluster") + ylab("Adjusted p-value")
-    ## save plot or plot on device
-    if(!is.na(filename)) ggsave(filename, g, width=length(oo.query.clusters)*.2, height=5)
+      theme_bw(base_size = base_size-3) +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+      xlab("Query cluster") + ylab("Adjusted p-value") +
+      ggtitle(main)
+    ## save plot
+    if(is.null(width)) width <- max(12, length(oo.query.clusters))
+    if(is.null(height)) height <- max(nchar(oo.query.clusters))/5 + 7 #fixed
+    if(!is.na(filename)){
+      ggsave(filename, g, width = width, height = height, units = units)
+    }
     else plot(g)
     ## output
     if(return.value) return(list("pmat.adj"=pmat.adj)) #plotted are the max padj for each query cell!!!
@@ -118,13 +129,14 @@ plot_FRmatch_cell2cluster <- function(rst.cell2cluster, type="match", p.adj.meth
       scale_size_continuous(range = c(0, 10), limits = c(0, 1)) +
       scale_fill_viridis(option="D", guide = "legend", limits = c(0, 1)) +
       scale_y_discrete(drop=FALSE) + #show all ref clusters even if no match
-      theme_bw() + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+      theme_bw(base_size = base_size) + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+      xlab("Query cluster") + ylab("Match of reference cluster") +
       ggtitle(main)
-    ## save plot or plot on device
-    if(is.null(width)) width <- ncol(tab.match.prop) + max(nchar(colnames(tab.match.prop)))/5 + 3
-    if(is.null(height)) height <- length(clusterNames.ref) + max(nchar(clusterNames.ref))/5 + 1 #show all ref clusters even if no match
+    ## save plot (figsize units in "cm")
+    if(is.null(width)) width <- max(17, ncol(tab.match.prop) + max(nchar(colnames(tab.match.prop)))/5 + 3)
+    if(is.null(height)) height <- max(17, length(clusterNames.ref) + max(nchar(clusterNames.ref))/5 + 1) #show all ref clusters even if no match
     if(!is.na(filename)){
-      ggsave(filename, g, width = width, height = height, units = "cm")
+      ggsave(filename, g, width = width, height = height, units = units)
     }
     else plot(g)
     ## output

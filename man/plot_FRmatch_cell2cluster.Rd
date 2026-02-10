@@ -12,9 +12,11 @@ plot_FRmatch_cell2cluster(
   reorder = TRUE,
   return.value = FALSE,
   main = NULL,
+  base_size = 15,
   filename = NA,
   width = NULL,
-  height = NULL
+  height = NULL,
+  units = "cm"
 )
 }
 \arguments{
@@ -33,6 +35,8 @@ For more options, please see \code{\link[stats]{p.adjust.methods}}.}
 \item{return.value}{Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.}
 
 \item{main}{Plot title.}
+
+\item{base_size}{Base font size in the theme function of \code{ggplot2}.}
 
 \item{filename, width, height, units}{Plotting parameters passed to \code{\link[ggplot2]{ggsave}}.}
 }
