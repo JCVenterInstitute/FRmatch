@@ -26,15 +26,15 @@ If \code{type=="padj"}, it plots the distribution of adjusted p-values.}
 \item{p.adj.method}{P-value adjustment method for multiple hypothesis testing correction. Default: \code{"BH"}.
 For more options, please see \code{\link[stats]{p.adjust.methods}}.}
 
-\item{sig.level}{Numeric variable that specifies the significance level of adjusted p-value. A MATCH is >\code{sig.level}.
-Default: \code{0.1}.}
+\item{sig.level}{Numeric variable that specifies the significance level of adjusted p-value. A MATCH is >\code{sig.level}. Default: \code{0.1}.}
 
-\item{reorder}{Boolean variable indicating if to reorder the columns so that matches are aligned along the diagonal.
-It improves the interpretability of the one-way match plot. Default: \code{TRUE}.}
+\item{reorder}{Boolean variable indicating if to reorder the columns so that matches are aligned along the diagonal. Default: \code{TRUE}.}
 
 \item{return.value}{Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.}
 
-\item{filename, width, height}{Plotting parameters passed to \code{\link[ggplot2]{ggsave}}.}
+\item{main}{Plot title.}
+
+\item{filename, width, height, units}{Plotting parameters passed to \code{\link[ggplot2]{ggsave}}.}
 }
 \value{
 If \code{return.value = TRUE}, a matrix of \code{plotted.values}, and \code{pmat.adj} and \code{cell2cluster.adj} after adjustment.
