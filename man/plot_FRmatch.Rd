@@ -12,9 +12,9 @@ plot_FRmatch(
   reorder = TRUE,
   ignore.unassigned = FALSE,
   return.value = FALSE,
+  main = NULL,
   cellwidth = 10,
   cellheight = 10,
-  main = NULL,
   filename = NA,
   ...
 )
@@ -39,7 +39,9 @@ in the \code{type="matches"} plot. Default: \code{FALSE}. If \code{TRUE}, number
 
 \item{return.value}{Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.}
 
-\item{cellwidth, cellheight, main, filename, ...}{Plotting parameters passed to \code{\link[graphics]{hist}}.}
+\item{main}{Plot title.}
+
+\item{cellwidth, cellheight, filename, ...}{Plotting parameters passed to \code{\link[pheatmat]{pheatmap}}.}
 }
 \value{
 If \code{return.value = TRUE}, a matrix of one-way matching values 1 = match, and 0 = no match, or a matrix of adjusted p-values.

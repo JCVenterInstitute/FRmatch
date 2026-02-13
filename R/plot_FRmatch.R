@@ -15,7 +15,8 @@
 #' @param ignore.unassigned Boolean variable indicating if to skip the columns of unassigned query clusters
 #' in the \code{type="matches"} plot. Default: \code{FALSE}. If \code{TRUE}, number of ignored columns reported in the unassigned row.
 #' @param return.value Boolean variable indicating if to return the plotted values. Default: \code{FALSE}.
-#' @param cellwidth,cellheight,main,filename,... Plotting parameters passed to \code{\link[graphics]{hist}}.
+#' @param main Plot title.
+#' @param cellwidth,cellheight,filename,... Plotting parameters passed to \code{\link[pheatmat]{pheatmap}}.
 #'
 #' @return If \code{return.value = TRUE}, a matrix of one-way matching values 1 = match, and 0 = no match, or a matrix of adjusted p-values.
 #'
@@ -27,7 +28,7 @@
 
 plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.level=0.05,
                          reorder=TRUE, ignore.unassigned=FALSE, return.value=FALSE,
-                         cellwidth=10, cellheight=10, main=NULL, filename=NA, ...){
+                         main=NULL, cellwidth=10, cellheight=10, filename=NA, ...){
   ## calculate adjusted p-values and determine matches
   pmat.adj <- padj.FRmatch(rst.FRmatch$pmat, p.adj.method=p.adj.method)
   pmat.cutoff <- cutoff.FRmatch(rst.FRmatch$pmat, p.adj.method=p.adj.method, sig.level=sig.level)
@@ -38,7 +39,7 @@ plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.lev
     pmat.adj <- pmat.adj[,colnames(pmat.cutoff)]
   }
 
-  ## plot
+  ## plot: matches heatmap
   if(type=="matches"){
     if(is.null(main)) main <- "FR-Match cluster-to-cluster"
     if(ignore.unassigned){
@@ -46,7 +47,7 @@ plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.lev
       pmat.cutoff <- pmat.cutoff[,!ind]
       rownames(pmat.cutoff)[nrow(pmat.cutoff)] <- paste0("unassigned (", sum(ind),")")
     }
-    ## heatmap
+    ## plot
     pheatmap(pmat.cutoff,
              color = colorRampPalette(rev(brewer.pal(n=7, name="RdYlBu")[c(3,3,7)]))(3),
              breaks = seq(0,1,length.out=3),
@@ -61,20 +62,24 @@ plot_FRmatch <- function(rst.FRmatch, type="matches", p.adj.method="BY", sig.lev
     if(return.value) return(pmat.cutoff)
   }
 
-  ## plot
+  ## plot: adjusted p-values boxplot
   if(type=="padj"){
     df <- tibble(padj=as.vector(pmat.adj),
                  query.cluster = rep(colnames(pmat.adj), each=nrow(pmat.adj))) %>%
       mutate(query.cluster = fct_relevel(query.cluster, colnames(pmat.adj)))
+    ## plot
+    if(is.null(main)) main <- "Adjusted p-value"
     g <- ggplot(df, aes(x=query.cluster, y=padj)) +
       geom_boxplot() +
       theme_bw() +
-      theme(axis.text.x = element_text(angle = 270, hjust = 0)) +
+      theme(axis.text.x = element_text(angle = 270, hjust = 0, vjust = 0.5)) +
       geom_hline(linetype = "dashed", yintercept = sig.level, color = "red") +
       scale_y_continuous(breaks=seq(0,1,0.2), limits=c(0,1)) +
-      xlab("Query cluster") + ylab("Adjusted p-value")
-    ## save plot or plot on device
-    if(!is.na(filename)) ggsave(filename, g, width=ncol(pmat.adj)*.2, height=5)
+      xlab("Query cluster") + ylab("Adjusted p-value") + ggtitle(main)
+    ## save plot
+    if(!is.na(filename)){
+      ggsave(filename, g, width=ncol(pmat.adj)*.2, height=5.5)
+    }
     else plot(g)
     ## output
     if(return.value) return(pmat.adj)
