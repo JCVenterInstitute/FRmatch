@@ -68,7 +68,7 @@ plot_FRmatch_cell2cluster <- function(rst.cell2cluster, type="match", p.adj.meth
     if(is.null(width)) width <- max(17, ncol(tab.match.prop) + max(nchar(colnames(tab.match.prop)))/5 + 3)
     if(is.null(height)) height <- max(17, length(clusterNames.ref) + max(nchar(clusterNames.ref))/5 + 1) #show all ref clusters even if no match
     if(!is.na(filename)){
-      ggsave(filename, g, width = width, height = height, units = units)
+      ggsave(filename, g, width = width, height = height, units = units, limitsize = FALSE)
     }
     else plot(g)
     ## output
@@ -95,7 +95,7 @@ plot_FRmatch_cell2cluster <- function(rst.cell2cluster, type="match", p.adj.meth
     if(is.null(width)) width <- max(12, length(oo.query.clusters))
     if(is.null(height)) height <- max(nchar(oo.query.clusters))/5 + 7 #fixed
     if(!is.na(filename)){
-      ggsave(filename, g, width = width, height = height, units = units)
+      ggsave(filename, g, width = width, height = height, units = units, limitsize = FALSE)
     }
     else plot(g)
     ## output
@@ -136,7 +136,7 @@ plot_FRmatch_cell2cluster <- function(rst.cell2cluster, type="match", p.adj.meth
     if(is.null(width)) width <- max(17, ncol(tab.match.prop) + max(nchar(colnames(tab.match.prop)))/5 + 3)
     if(is.null(height)) height <- max(17, length(clusterNames.ref) + max(nchar(clusterNames.ref))/5 + 1) #show all ref clusters even if no match
     if(!is.na(filename)){
-      ggsave(filename, g, width = width, height = height, units = units)
+      ggsave(filename, g, width = width, height = height, units = units, limitsize = FALSE)
     }
     else plot(g)
     ## output
