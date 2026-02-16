@@ -11,9 +11,11 @@ normalization(sce.object, scale = TRUE, norm.by = "mean", impute.zero = FALSE)
 
 \item{scale}{Boolean variable indicating if to scale the PER GENE expression to the range [0,1]. Defualt: \code{TRUE}.}
 
-\item{norm.by}{Normalization options PER CLUSTER. Choose from \code{"softmax", "mean", "none"}.
-If \code{"softmax"} (default), use the \code{\link[mclust]{softmax}} function to normalize all values globally. Afterwards, each cell is rescaled to unit length (i.e., L2 normalization).
-If \code{"mean"}, each gene is weighted to de-noise lowly expressed genes. Afterwards, all values are rescaled to [0,1].
+\item{norm.by}{Normalization options PER CLUSTER. Choose from \code{"softmax", "mean", "median", "none"}.
+If \code{"softmax"} (default), use the \code{\link[mclust]{softmax}} function to normalize all values globally.
+Afterwards, each cell is rescaled to unit length (i.e., L2 normalization).
+If \code{"mean", "median"}, each gene is weighted by the row-wise statistic to de-noise lowly expressed values.
+Afterwards, all values are rescaled to [0,1].
 If \code{"none"}, do nothing.}
 }
 \value{
